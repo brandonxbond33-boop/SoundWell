@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soundwell — free sound effects & music</title>
+  <meta name="description" content="Free sound effects and music for videos, games, podcasts and apps. Clear licenses, instant previews, no account needed.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f7fb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e0e14" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Icon sprite -->
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m20 20-4.2-4.2M18 11a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-heart-fill" viewBox="0 0 24 24"><path fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 9h10v10H9zM5 15V5h10"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 3l3 3-3 3M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3m13-2v2a3 3 0 0 1-3 3H4"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path fill="currentColor" d="M6 5h2v14H6zM19 5.8v12.4a.8.8 0 0 1-1.2.7L9.5 12.7a.8.8 0 0 1 0-1.4l8.3-6.2a.8.8 0 0 1 1.2.7Z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path fill="currentColor" d="M16 5h2v14h-2zM5 5.8v12.4a.8.8 0 0 0 1.2.7l8.3-6.2a.8.8 0 0 0 0-1.4L6.2 5.1A.8.8 0 0 0 5 5.8Z"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 9.5h3.5L12 5v14l-4.5-4.5H4zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 9.5h3.5L12 5v14l-4.5-4.5H4zM16 9.5l5 5m0-5-5 5"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path fill="currentColor" stroke="none" d="M12 4a8 8 0 0 1 0 16Z"/></g></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M8 14h8"/></g></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="currentColor"/><path fill="none" stroke="var(--logo-ink, #fff)" stroke-width="2.6" stroke-linecap="round" d="M8 13v6M12.5 9v14M17 12v8M21.5 7.5v17M26 13v6"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/" data-link aria-label="Soundwell home">
+        <svg class="brand-mark" aria-hidden="true"><use href="#i-logo"/></svg>
+        <span class="brand-name">Soundwell</span>
+      </a>
+      <form class="search" role="search" id="search-form">
+        <label for="q" class="visually-hidden">Search sounds and music</label>
+        <svg class="search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="q" name="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Search rain, laser, lofi, whoosh…" aria-describedby="search-hint">
+        <kbd class="search-kbd" id="search-hint" aria-label="Press slash to search">/</kbd>
+      </form>
+      <nav class="top-actions" aria-label="Account and settings">
+        <a class="icon-btn with-label" href="/favorites" data-link>
+          <svg aria-hidden="true"><use href="#i-heart"/></svg>
+          <span class="label">Saved</span><span class="count" id="fav-count" aria-label="saved sounds">0</span>
+        </a>
+        <button class="icon-btn" type="button" id="theme-btn" aria-label="Theme: system">
+          <svg aria-hidden="true"><use href="#i-auto"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="keys-btn" aria-label="Keyboard shortcuts" aria-haspopup="dialog">
+          <svg aria-hidden="true"><use href="#i-keyboard"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- Views are rendered here by app.js -->
+    <div id="view"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Soundwell is free, funded by unobtrusive ads. Every sound shows its license in plain English.</p>
+    <p><a href="/about" data-link>About &amp; licensing</a> · <a href="https://creativecommons.org/about/cclicenses/" rel="noopener">What are Creative Commons licenses?</a></p>
+  </footer>
+
+  <!-- Persistent player -->
+  <section class="player" id="player" aria-label="Audio player" hidden>
+    <div class="player-inner">
+      <div class="player-transport">
+        <button class="icon-btn" type="button" id="p-prev" aria-label="Previous sound"><svg aria-hidden="true"><use href="#i-prev"/></svg></button>
+        <button class="play-btn lg" type="button" id="p-toggle" aria-label="Play"><svg aria-hidden="true"><use href="#i-play"/></svg></button>
+        <button class="icon-btn" type="button" id="p-next" aria-label="Next sound"><svg aria-hidden="true"><use href="#i-next"/></svg></button>
+      </div>
+      <div class="player-meta">
+        <a class="player-title" id="p-title" href="#" data-link></a>
+        <span class="player-sub" id="p-sub"></span>
+      </div>
+      <div class="player-seek">
+        <span class="time" id="p-cur" aria-hidden="true">0:00</span>
+        <div class="seek-wrap">
+          <svg class="wave wave-player" id="p-wave" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <input type="range" id="p-seek" min="0" max="1000" value="0" step="1" aria-label="Seek" aria-valuetext="0:00 of 0:00">
+        </div>
+        <span class="time" id="p-dur" aria-hidden="true">0:00</span>
+      </div>
+      <div class="player-extra">
+        <button class="icon-btn" type="button" id="p-loop" aria-pressed="false" aria-label="Loop"><svg aria-hidden="true"><use href="#i-loop"/></svg></button>
+        <button class="icon-btn" type="button" id="p-mute" aria-label="Mute"><svg aria-hidden="true"><use href="#i-volume"/></svg></button>
+        <input type="range" id="p-vol" class="vol" min="0" max="100" value="80" aria-label="Volume">
+        <button class="icon-btn" type="button" id="p-fav" aria-pressed="false" aria-label="Save"><svg aria-hidden="true"><use href="#i-heart"/></svg></button>
+        <a class="icon-btn" id="p-dl" href="#" aria-label="Download"><svg aria-hidden="true"><use href="#i-download"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="modal" id="keys-dialog" aria-labelledby="keys-title">
+    <div class="modal-head">
+      <h2 id="keys-title">Keyboard shortcuts</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <dl class="keys">
+      <div><dt><kbd>/</kbd></dt><dd>Search</dd></div>
+      <div><dt><kbd>Space</kbd></dt><dd>Play / pause</dd></div>
+      <div><dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>Next / previous sound</dd></div>
+      <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Seek 5 seconds</dd></div>
+      <div><dt><kbd>R</kbd></dt><dd>Toggle loop</dd></div>
+      <div><dt><kbd>F</kbd></dt><dd>Save / unsave current sound</dd></div>
+      <div><dt><kbd>M</kbd></dt><dd>Mute</dd></div>
+      <div><dt><kbd>?</kbd></dt><dd>Show this list</dd></div>
+    </dl>
+    <label class="switch-row">
+      <input type="checkbox" id="opt-keys" checked>
+      <span>Enable single-key shortcuts</span>
+    </label>
+    <label class="switch-row">
+      <input type="checkbox" id="opt-autonext">
+      <span>Play the next sound automatically</span>
+    </label>
+    <p class="muted small">Single-key shortcuts never fire while you're typing in a field.</p>
+  </dialog>
+
+  <dialog class="modal drawer" id="filters-dialog" aria-labelledby="filters-dialog-title">
+    <div class="modal-head">
+      <h2 id="filters-dialog-title">Filters</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close filters"><svg aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div id="filters-dialog-body"></div>
+    <div class="drawer-foot"><button class="btn primary" type="button" data-close id="filters-done">Show results</button></div>
+  </dialog>
+
+  <div class="visually-hidden" aria-live="polite" aria-atomic="true" id="announcer"></div>
+  <div class="toast" role="status" aria-live="polite" id="toast" hidden></div>
+</body>
+</html>
