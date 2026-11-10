@@ -1,43 +1,45 @@
-<title>Soundwell</title>
+<title>SoundWell</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a mixing-desk strip. Sticky search/filter console on top, one channel row per sound, transport bar docked at the bottom. */
-/* Layout: a sample-library console. Side menu of collections, generated cover art per pack, table rows with key and tempo, transport docked at the bottom. */
+/* Layout: a sample-library console in the SoundWell identity: deep navy, an electric blue-to-cyan signal, white geometric type. */
 :root {
-  --bg: #0d0e12;          /* control-room dark */
-  --side: #101117;
-  --panel: #16181f;
-  --panel2: #1f222b;
-  --ink: #eeeef2;
-  --muted: #9a9fad;
-  --line: #262a34;
-  --wave: #3c4252;
-  --accent: #ff6b4a;      /* ember: playing, progress, primary actions */
-  --accent-ink: #1a0802;
-  --meter: #ffc24b;       /* amber: loops, saved */
-  --focus: #8ab4ff;
-  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
-  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
+  --bg: #050813;          /* night navy */
+  --side: #070b18;
+  --panel: #0b1122;
+  --panel2: #111a30;
+  --ink: #f3f6ff;
+  --muted: #8d9abb;
+  --line: #19223b;
+  --wave: #25314f;
+  --accent: #1f86ff;      /* electric blue: playing, progress, primary actions */
+  --accent2: #22d3ff;     /* cyan: highlights, loops */
+  --grad: linear-gradient(135deg, #22d3ff 0%, #1f6bff 100%);
+  --accent-ink: #ffffff;
+  --meter: #22d3ff;
+  --focus: #9cc8ff;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 12px 30px -18px rgba(0,0,0,.95);
+  --f-display: "Figtree", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --radius: 10px;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --bg: #f5f4f1; --side: #efede8; --panel: #ffffff; --panel2: #ecebe7; --ink: #15161b; --muted: #5d6270; --line: #e0ded8; --wave: #c8cad1;
-    --accent: #e2492a; --accent-ink: #ffffff; --meter: #b26f00; --focus: #1658c7;
-    --shadow: 0 1px 0 rgba(20,20,30,.05), 0 10px 28px -18px rgba(20,20,30,.3);
+    --bg: #f4f7fd; --side: #edf1fa; --panel: #ffffff; --panel2: #e8edf8; --ink: #0a1020; --muted: #55607a; --line: #dbe2f0; --wave: #c3cbdd;
+    --accent: #1167f0; --accent2: #0592c9; --grad: linear-gradient(135deg, #0cb4e6 0%, #1160f0 100%); --accent-ink: #ffffff; --meter: #0582b5; --focus: #1658c7;
+    --shadow: 0 1px 0 rgba(10,16,32,.05), 0 12px 30px -18px rgba(10,16,32,.3);
     color-scheme: light;
   }
 }
 :root[data-theme="light"] {
-  --bg: #f5f4f1; --side: #efede8; --panel: #ffffff; --panel2: #ecebe7; --ink: #15161b; --muted: #5d6270; --line: #e0ded8; --wave: #c8cad1;
-  --accent: #e2492a; --accent-ink: #ffffff; --meter: #b26f00; --focus: #1658c7;
-  --shadow: 0 1px 0 rgba(20,20,30,.05), 0 10px 28px -18px rgba(20,20,30,.3);
+  --bg: #f4f7fd; --side: #edf1fa; --panel: #ffffff; --panel2: #e8edf8; --ink: #0a1020; --muted: #55607a; --line: #dbe2f0; --wave: #c3cbdd;
+  --accent: #1167f0; --accent2: #0592c9; --grad: linear-gradient(135deg, #0cb4e6 0%, #1160f0 100%); --accent-ink: #ffffff; --meter: #0582b5; --focus: #1658c7;
+  --shadow: 0 1px 0 rgba(10,16,32,.05), 0 12px 30px -18px rgba(10,16,32,.3);
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -382,10 +384,41 @@ ol.list { gap: 0; }
 .transport, .mixer { background: var(--side); }
 .badge { background: var(--accent); color: var(--accent-ink); }
 
+
+/* ---------- SoundWell identity ---------- */
+body { font-family: var(--f-body); letter-spacing: .005em; }
+.lockup { display: inline-grid; grid-template-columns: auto; justify-items: start; gap: 2px; text-decoration: none; color: var(--ink); }
+.side .brand .lockup .lmark, .lockup .lmark { width: 100px; height: 40px; margin-left: -4px; color: inherit; }
+.lockup .lword { font: 800 1.45rem/1 var(--f-display); letter-spacing: -.02em; }
+.lockup .lsub { font: 600 .66rem/1.2 var(--f-display); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.lockup:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 6px; }
+.side .brand { padding: 2px 10px 6px; }
+.mobile-brand .lockup { grid-template-columns: auto auto; align-items: center; column-gap: 10px; }
+.mobile-brand .lockup .lmark, .mobile-brand svg.lmark { width: 76px; height: 30px; grid-row: span 2; }
+.hero { background: #050813; border-color: var(--line); }
+.hero::after { background: linear-gradient(90deg, rgba(5,8,19,.9) 0%, rgba(5,8,19,.62) 48%, rgba(5,8,19,.05) 85%); }
+.hero .hero-mark { position: absolute; z-index: 1; right: 4%; top: 50%; translate: 0 -50%; width: min(36%, 380px); height: auto; aspect-ratio: 120 / 48; filter: drop-shadow(0 0 24px rgba(34,211,255,.35)); }
+@media (max-width: 760px) { .hero .hero-mark { display: none; } }
+.hero h1 { font-weight: 800; letter-spacing: -.03em; }
+.hero .eyebrow, .eyebrow { color: var(--accent2); letter-spacing: .14em; }
+.btn.primary, .card.scene .btn, .tbtns .big, .chip[aria-pressed="true"], .badge { background: var(--grad); border-color: transparent; color: var(--accent-ink); }
+.btn.primary:hover, .tbtns .big:hover { filter: brightness(1.08); }
+.chip.opt[aria-pressed="true"] { background: var(--accent2); color: #03121c; border-color: var(--accent2); }
+.navlist button[aria-current="true"] { box-shadow: inset 3px 0 0 var(--accent2); }
+.mobilenav .navlist button[aria-current="true"] { border-color: var(--accent2); }
+.row.playing { box-shadow: inset 3px 0 0 var(--accent2); }
+.row .meta .loop { color: var(--accent2); }
+.card.scene { background: linear-gradient(160deg, color-mix(in srgb, #1f6bff 26%, var(--panel)) 0%, var(--panel) 72%); }
+.card.describe { background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, #22d3ff 16%, var(--panel)) 0%, var(--panel) 58%); }
+.clear { color: var(--accent2); }
+.ib.inmix, .ib[aria-pressed="true"] { color: var(--accent2); }
+.secth h2, .packhero h2, .reshead h2, .card h3 { letter-spacing: -.015em; }
+.pcard .pn { font-weight: 700; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="currentColor"/><g stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M8 13v6M12.5 9v14M17 12v8M21.5 7v18M26 14v4"/></g></symbol>
+  <defs><linearGradient id="sw-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ff"/><stop offset="1" stop-color="#1f6bff"/></linearGradient></defs>
+  <symbol id="i-logo" viewBox="0 0 120 48"><g fill="url(#sw-grad)"><rect x="17.1" y="21.0" width="3.8" height="6" rx="1.9"/><rect x="23.1" y="19.0" width="3.8" height="10" rx="1.9"/><rect x="29.1" y="16.5" width="3.8" height="15" rx="1.9"/><rect x="35.1" y="14.0" width="3.8" height="20" rx="1.9"/><rect x="41.1" y="11.0" width="3.8" height="26" rx="1.9"/><rect x="47.1" y="14.0" width="3.8" height="20" rx="1.9"/><rect x="53.1" y="7.0" width="3.8" height="34" rx="1.9"/><rect x="59.1" y="2.0" width="3.8" height="44" rx="1.9"/><rect x="65.1" y="7.0" width="3.8" height="34" rx="1.9"/><rect x="71.1" y="12.0" width="3.8" height="24" rx="1.9"/><rect x="77.1" y="10.0" width="3.8" height="28" rx="1.9"/><rect x="83.1" y="14.0" width="3.8" height="20" rx="1.9"/><rect x="89.1" y="16.5" width="3.8" height="15" rx="1.9"/><rect x="95.1" y="19.0" width="3.8" height="10" rx="1.9"/><rect x="101.1" y="21.0" width="3.8" height="6" rx="1.9"/><circle cx="5" cy="24" r="2"/><circle cx="11.5" cy="24" r="2"/><circle cx="108.5" cy="24" r="2"/><circle cx="115" cy="24" r="2"/></g></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></symbol>
@@ -410,7 +443,7 @@ ol.list { gap: 0; }
 </svg>
 
 <nav class="side" aria-label="Library">
-  <div class="brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span class="brandname">Soundwell</span></div>
+  <div class="brand"><a class="lockup" href="#" data-nav="discover" aria-label="SoundWell home"><svg class="lmark" aria-hidden="true"><use href="#i-logo"/></svg><span class="lword">SoundWell</span><span class="lsub">Helion Design Labs</span></a></div>
   <ul class="navlist">
       <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
@@ -425,7 +458,7 @@ ol.list { gap: 0; }
   <p class="sidefoot">Every sound is original and CC0. Use it anywhere, no credit needed.</p>
 </nav>
 <header class="wrap mast" id="mast">
-  <div class="brand mobile-brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span class="brandname">Soundwell</span></div>
+  <div class="brand mobile-brand"><a class="lockup" href="#" data-nav="discover" aria-label="SoundWell home"><svg class="lmark" aria-hidden="true"><use href="#i-logo"/></svg><span class="lword">SoundWell</span><span class="lsub">Helion Design Labs</span></a></div>
   <nav class="mobilenav" aria-label="Library"><ul class="navlist">
       <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
@@ -437,7 +470,7 @@ ol.list { gap: 0; }
       <li><button type="button" data-nav="saved"><svg aria-hidden="true"><use href="#i-heart"/></svg>Saved<span class="cnt" data-cnt="saved"></span></button></li>
       <li><button type="button" data-nav="mixer"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Mixer<span class="cnt" data-cnt="mix"></span></button></li>
     </ul></nav>
-  <div class="hero" id="hero"><canvas id="heroart" aria-hidden="true"></canvas>
+  <div class="hero" id="hero"><canvas id="heroart" aria-hidden="true"></canvas><svg class="hero-mark" aria-hidden="true"><use href="#i-logo"/></svg>
     <div class="hero-in"><span class="eyebrow">Free sound library</span><h1>Sounds for anything you make.</h1>
       <p class="tag">Effects, loops, stems and one-shots, most of them generated right in your browser. Layer them, tweak them, download them. Every sound is CC0: use it anywhere, commercial work included.</p>
       <ul class="stats" id="stats"></ul></div></div>
@@ -483,7 +516,7 @@ ol.list { gap: 0; }
   <ol class="list" id="list"></ol>
   <footer class="foot">
     <span>Keyboard: <kbd>/</kbd> search · <kbd>Space</kbd> play or pause · <kbd>J</kbd> <kbd>K</kbd> next and previous · <kbd>←</kbd> <kbd>→</kbd> seek 5 s · <kbd>L</kbd> loop · <kbd>M</kbd> mixer · <kbd>1</kbd>–<kbd>9</kbd> trigger mixer pads</span>
-    <span>All sounds are original, synthesized from code by Soundwell, and dedicated to the public domain (CC0 1.0).</span>
+    <span>All sounds are original, synthesized from code by SoundWell, and dedicated to the public domain (CC0 1.0).</span>
   </footer>
 </main>
 
@@ -1442,7 +1475,7 @@ return { enumerate, renderEntry, peaks, SR };
       ${state.open === s.slug ? detailHtml(s) : ''}
     </li>`;
   }
-  function credit(s) { return `"${s.title}" by Soundwell (CC0 1.0)`; }
+  function credit(s) { return `"${s.title}" by SoundWell (CC0 1.0)`; }
   function similar(s) {
     const tagset = new Set(s.tags);
     return SOUNDS.filter((o) => o !== s && o.kind === s.kind)
@@ -1613,9 +1646,9 @@ return { enumerate, renderEntry, peaks, SR };
   const kitArt = (k, w) => artFor('kit-' + k.id, 'Stem Kits', w);
   function drawHero() {
     const cv = $('#heroart'); if (!cv || !cv.clientWidth) return; const dpr = Math.min(2, window.devicePixelRatio || 1); const W = Math.round(cv.clientWidth * dpr), H = Math.round(cv.clientHeight * dpr); cv.width = W; cv.height = H; const ctx = cv.getContext('2d');
-    paint(ctx, W, H, 'hero-soundwell', 'waves', PALETTES[0]);
+    paint(ctx, W, H, 'hero-soundwell', 'waves', ['#1f6bff', '#22d3ff', '#050813', '#123a8f', '#0b1530']);
     const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0)'); const n = 70; const bw = W / n; const r = rng(7);
-    for (let i = 0; i < n; i++) { const x = i * bw; const env = 0.3 + 0.7 * Math.abs(Math.sin(i / n * Math.PI * 3)); const hgt = H * 0.5 * env * (0.4 + 0.6 * r()); ctx.fillStyle = `rgba(255,255,255,${0.10 + 0.1 * (i / n)})`; ctx.fillRect(x + bw * 0.25, H * 0.42 - hgt / 2, bw * 0.5, hgt); }
+    for (let i = 0; i < n; i++) { const x = i * bw; const env = 0.3 + 0.7 * Math.abs(Math.sin(i / n * Math.PI * 3)); const hgt = H * 0.5 * env * (0.4 + 0.6 * r()); ctx.fillStyle = `rgba(110,210,255,${0.08 + 0.1 * (i / n)})`; ctx.fillRect(x + bw * 0.25, H * 0.42 - hgt / 2, bw * 0.5, hgt); }
   }
   const shortKey = (k) => (k ? k.replace(' minor', 'm').replace(' major', '') : '');
   function pcardHtml(p) { return `<button type="button" class="pcard" data-pack="${p.id}"><span class="cover" style="background-image:url(${packArt(p, 320, true)})"></span><span class="pn">${esc(p.name)}</span><span class="pm">${p.count.toLocaleString('en-US')} sounds · ${esc(p.cat)}</span></button>`; }
@@ -1913,7 +1946,7 @@ return { enumerate, renderEntry, peaks, SR };
       const out = await oc.startRendering();
       const d = out.getChannelData(0); let pk = 0; for (let i = 0; i < d.length; i++) pk = Math.max(pk, Math.abs(d[i])); if (pk > 0.95) { const g = 0.95 / pk; for (let i = 0; i < d.length; i++) d[i] *= g; }
       const names = loops.map((l) => `- ${bySlug[l.slug].title} (volume ${Math.round(l.vol * 100)}%)`).join('\n');
-      const note = `Soundwell mix, ${secs} seconds\n\nLayers:\n${names}\n\nEvery layer is CC0 1.0 (public domain). Use this mix for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`;
+      const note = `SoundWell mix, ${secs} seconds\n\nLayers:\n${names}\n\nEvery layer is CC0 1.0 (public domain). Use this mix for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`;
       await saveZip('soundwell-mix.zip', [{ name: 'soundwell-mix.wav', data: toWav(out) }, { name: 'LICENSE.txt', data: enc(note) }]);
     } catch { toast('Couldn’t render the mix. Try a shorter length.'); }
     btn.disabled = false; btn.innerHTML = old;

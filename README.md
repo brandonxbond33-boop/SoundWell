@@ -1,4 +1,4 @@
-# Soundwell
+# SoundWell
 
 A free, fast, accessible library of sound effects and music. **5,360 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files.
 
