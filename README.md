@@ -1,16 +1,51 @@
 # Soundwell
 
-A free, fast, accessible library of sound effects and music. It has instant previews, plain-English licenses, one-click credits, and no login.
+A free, fast, accessible library of sound effects and music. **5,360 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files.
 
-- **Search** with full-text ranking, prefix matching, synonyms ("scary" also finds horror), and multi-select facets with live counts.
-- **Filters:** type, category, length, license, mood, BPM, and seamless loops.
-- **Waveform rows and a persistent player.** Click a waveform to jump to that point. Loop, volume, next/previous, and keyboard shortcuts.
-- **License clarity:** only CC0 and CC BY are allowed (enforced in the database). Each sound has a "Can I use this?" card and a credit line you can copy.
-- **Accessibility:** a written description for every sound, full keyboard support, a screen-reader live region, and reduced-motion, high-contrast, and forced-colors support. 0 axe-core violations.
-- **Ads:** slots with reserved space that never play audio and never shift the layout (`web/config.js`).
-- **Saved sounds** (stored in your browser), light/dark/system themes, and layouts for phone, tablet, and desktop.
+## The current app: `site/`
 
-## Run it
+`site/index.html` is a single self-contained page (no server, no build step needed to run it):
+
+- **Search** with synonyms, plus filters for type, category, key and tempo. Results load 40 at a time.
+- **Describe a sound:** type "a heavy wooden door slamming in a church" and get a custom sound (on claude.ai, Claude picks and tunes it; elsewhere it uses the closest keyword match). Creations are saved in the browser.
+- **Layer mixer:** stack loops in sync, play one-shots as pads (keys 1–9), and download the mix as WAV.
+- **Stem kits** (Neon Groove, Rainy Lo-fi, Epic Trailer) in all 12 keys, and a **song starter** that builds chords, bass, arpeggio, melody and drums in any key.
+- **Sound editor:** speed/pitch, reverse, trim, fades, volume, and a pack of 5 natural variations.
+- **Scene builder:** describe a scene ("cozy cabin in a thunderstorm") and get a layered soundscape.
+- Downloads arrive as `.zip` files (MP3 or WAV plus a license note). Waveforms, keyboard shortcuts, light and dark themes, phone layout.
+
+### Run it locally
+
+```bash
+node build/serve.mjs site      # http://localhost:3190
+```
+
+Any static file server works too. The page needs its `media/` folder next to it.
+
+### Put it online
+
+Upload the `site/` folder to any static host. No Git integration is required for these:
+
+- **Netlify Drop:** drag the `site` folder onto https://app.netlify.com/drop
+- **Cloudflare Pages:** create a project with **Direct Upload** and upload `site`
+
+It also runs on claude.ai as an Artifact, where downloads and the Claude-powered features (Describe a sound, scene builder) use claude.ai's built-in capabilities. On a normal website, downloads use regular browser downloads and those two features fall back to keyword matching.
+
+### Change or add sounds
+
+Everything that generates the library lives in `build/`. See **[build/README.md](build/README.md)** for the pipeline: add a sound family to `build/gens.js`, then rebuild the engine, the waveform data and the page:
+
+```bash
+cd build && ./assemble-engine.sh && node --no-warnings build-procedural.mjs && cd ..
+# re-inline build/engine-core.js into build/template.html.txt (see build/README.md), then:
+node build/build-page.cjs build site/index.html
+```
+
+## The original server version
+
+The first version of Soundwell (47 sounds) is a zero-dependency Node server with SQLite search. It is kept here as-is.
+
+### Run it
 
 Requirements: Node 22.5+ (uses the built-in `node:sqlite`) and `ffmpeg` (only for seeding).
 
@@ -22,7 +57,7 @@ npm test         # API tests
 
 No `npm install` needed. There are zero dependencies.
 
-### Import from Freesound (optional)
+#### Import from Freesound (optional)
 
 ```bash
 FREESOUND_API_KEY=your_key npm run import:freesound -- --queries "rain:Nature,whoosh:Transitions" --pages 2 --peaks
@@ -30,7 +65,7 @@ FREESOUND_API_KEY=your_key npm run import:freesound -- --queries "rain:Nature,wh
 
 Read **docs/ROADMAP.md → Content sourcing** first. Commercial (ad-funded) use of the Freesound API needs their permission.
 
-## Layout
+### Layout
 
 ```
 server/   index.js (HTTP, static files, Range streaming, CSP) · db.js (schema, FTS5) · search.js (queries, facets)
@@ -40,7 +75,7 @@ docs/     COMPETITIVE-ANALYSIS.md · ROADMAP.md
 test/     api.test.js
 ```
 
-## API
+### API
 
 | Endpoint | Notes |
 |---|---|
