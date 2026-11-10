@@ -15,7 +15,6 @@ A free, fast, accessible library of sound effects and music. It has instant prev
 Requirements: Node 22.5+ (uses the built-in `node:sqlite`) and `ffmpeg` (only for seeding).
 
 ```bash
-cd soundwell
 npm run seed     # renders 47 original CC0 sounds + music loops to MP3 and builds the DB
 npm start        # http://localhost:3000
 npm test         # API tests
