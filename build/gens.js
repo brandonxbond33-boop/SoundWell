@@ -728,6 +728,171 @@ G({ id: 'sc-brassstab', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.
   meta: (p) => oneMeta(`Brass Stab · ${keyName(p.key, p.minor)}`, ['brass', 'stab', 'horns', 'trombone', 'accent', 'epic'], `A short, punchy brass section stab on a ${keyName(p.key, p.minor)} chord.`, keyName(p.key, p.minor)),
   render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const notes = [r - 12, r, r + (p.minor ? 3 : 4), r + 7].map((note) => ({ note, start: 0, dur: 0.25, att: 0.01, rel: 0.25, cut: 4000 })); const f = sequence(notes, BRASS({ seed: 38 }), 0.6); const h = hall(0.32, 0.87); return render(2.5, (t) => h(f(t))); } });
 
+// ======================= SPOOKY: horror and haunted sounds =======================
+const VOWELS = { ah: [800, 1150, 2900], oo: [300, 870, 2240], oh: [450, 800, 2830], ee: [270, 2290, 3010], eh: [530, 1840, 2480] };
+/** Three formant band-passes that can glide between vowels. */
+function formants(q = 7) { const a = bandpass(500, q), b = bandpass(1000, q + 1), c = bandpass(2500, q + 2); return (x, F) => a(x, F[0]) * 1.2 + b(x, F[1]) * 0.8 + c(x, F[2]) * 0.4; }
+const mixV = (A, B, k) => A.map((v, i) => v + (B[i] - v) * k);
+/** Stick-slip friction creak: an irregular pulse train ringing wooden resonances. */
+function creaker(seed, res = [900, 2100, 3400]) { const r = rng(seed); const bs = res.map((f, i) => bandpass(f, 8 + i * 2)); let next = 0;
+  return (t, rate, amp) => { let x = 0; if (t >= next && rate > 0) { x = 1; next = t + (1 / rate) * (0.82 + 0.36 * r()); } return bs.reduce((s, b, i) => s + b(x) * [0.6, 0.5, 0.3][i], 0) * amp * 12; }; }
+const HOR = (o) => ({ cat: 'Horror', kind: 'sfx', ...o });
+const hTags = (...t) => ['horror', 'spooky', 'scary', 'creepy', 'haunted', 'halloween', ...t];
+
+G(HOR({ id: 'hr-creak', grid: { type: [0, 1, 2, 3], v: [0, 1, 2, 3] },
+  meta: (p) => ({ title: `${['Creaking Door', 'Floorboard Creaks', 'Rocking Chair', 'Coffin Lid'][p.type]} ${p.v + 1}`, tags: hTags('creak', ['door', 'floorboard', 'rocking chair', 'coffin'][p.type], 'wood', 'old house'),
+    desc: `${['An old door slowly creaking open on rusty hinges', 'Floorboards creaking under slow footsteps', 'An empty rocking chair creaking back and forth on its own', 'A heavy coffin lid grinding open'][p.type]}.` }),
+  render: (p) => { const k = 1 + (p.v - 1.5) * 0.12; const res = [[900, 2100, 3400], [420, 1300, 2600], [650, 1700, 3000], [260, 780, 1900]][p.type].map((f) => f * k); const c = creaker(9800 + p.type * 7 + p.v, res); const h = hall(0.25, 0.86); const L = [3, 4, 6, 4][p.type];
+    return render(L, (t) => { let rate = 0, amp = 1;
+      if (p.type === 0) { const x = Math.min(1, t / (L - 0.4)); rate = 40 + 220 * Math.sin(Math.PI * x) + 50 * Math.sin(TAU * 1.3 * t + p.v); amp = Math.min(1, t * 6) * Math.min(1, (L - t) * 3); }
+      else if (p.type === 1) { const st = [0.2, 1.4, 2.6].find((s) => t >= s && t < s + 0.7); if (st != null) { const lt = t - st; rate = 90 + 160 * Math.sin(Math.PI * lt / 0.7); amp = Math.sin(Math.PI * lt / 0.7); } }
+      else if (p.type === 2) { const ph = (t % 1.6) / 1.6; const w = Math.sin(Math.PI * ph); rate = w > 0.25 ? 70 + 120 * w : 0; amp = w; }
+      else { const x = Math.min(1, t / 3.2); rate = 30 + 80 * Math.sin(Math.PI * x); amp = Math.min(1, t * 3) * Math.min(1, (L - t) * 2); }
+      return h(c(t, rate, amp)); }); } }));
+
+G(HOR({ id: 'hr-whisper', grid: { mood: [0, 1, 2], len: [0, 1], n: [0, 1] },
+  meta: (p) => ({ title: `Ghostly Whispers (${['soft', 'urgent', 'chanting'][p.mood]}, ${p.n ? 'many voices' : 'one voice'}${p.len ? ', long' : ''})`, tags: hTags('whisper', 'ghost', 'voices', 'paranormal'),
+    desc: `${p.n ? 'Several unseen voices' : 'A single unseen voice'} whispering ${['softly', 'urgently', 'in a slow chant'][p.mood]}, words you can almost make out, drifting around you.` }),
+  render: (p) => { const L = p.len ? 9 : 4; const nv = p.n ? 4 : 1; const pg = panned(); const r = rng(9900 + p.mood * 5 + p.len * 2 + p.n); const vs = Array.from({ length: nv }, (_, i) => { const syl = []; let t = 0.2 + r() * 0.5; const rate = [3.2, 5.5, 2][p.mood]; while (t < L - 0.4) { const d = (0.12 + r() * 0.2) * (p.mood === 2 ? 1.8 : 1); syl.push({ s: t, d, v: Object.values(VOWELS)[Math.floor(r() * 5)], sib: r() < 0.3 }); t += d + (r() < 0.25 ? 0.4 + r() * 0.8 : 0.03) / (rate / 3); } return { syl, n: noise(9901 + i), f: formants(6), hp: highpass(4500), pan: nv > 1 ? (i / (nv - 1) - 0.5) * 1.6 : 0, gain: 1 - i * 0.12 }; });
+    const h = hall(0.4, 0.88);
+    return render(L, (t) => { let s = 0; for (const v of vs) { const sy = v.syl.find((x) => t >= x.s && t < x.s + x.d); const x = v.n(); if (!sy) { v.f(0, VOWELS.ah); v.hp(0); continue; } const lt = (t - sy.s) / sy.d; const env = Math.sin(Math.PI * lt) ** 1.5; s += (v.f(x, sy.v) * 0.9 + (sy.sib ? v.hp(x) * 0.5 * (lt < 0.4 ? 1 : 0) : v.hp(x) * 0.05)) * env * v.gain * pg(v.pan); } return h(s * 1.3); }); } }));
+
+G(HOR({ id: 'hr-drone', loop: true, xfade: true, wide: true, grid: { tex: [0, 1, 2, 3], reg: [0, 1, 2] },
+  meta: (p) => ({ title: `Dread Drone: ${['Abyss', 'Heartbeat Pulse', 'Rusted Metal', 'Lost Choir'][p.tex]} (${['deep', 'low', 'mid'][p.reg]})`, loop: true, mood: 'Dark', tags: hTags('drone', 'dread', 'dark', 'ambient', 'underscore', 'tension', 'loop'),
+    desc: `A seamless ${['bottomless, rumbling', 'slowly pulsing', 'grinding, metallic', 'distant, wordless choral'][p.tex]} dread drone in the ${['deep', 'low', 'middle'][p.reg]} register. Lay it under any scary scene.` }),
+  render: (p) => { const f0 = [32, 46, 65][p.reg]; const b = brownNoise(10000 + p.tex * 3 + p.reg); const lp = lowpass(300); const h = hall(0.45, 0.89);
+    const pad = p.tex === 3 ? choirBus([{ note: 36 + p.reg * 7, start: 0, dur: 22 }, { note: 37 + p.reg * 7, start: 0, dur: 22 }, { note: 43 + p.reg * 7, start: 0, dur: 22 }], 1, 10001) : null;
+    const R = [1, 1.414, 2.13, 2.97, 3.81, 5.2];
+    return loopRender(20, (t) => { const slow = 0.5 + 0.5 * Math.sin(TAU * t / 20); let s = lp(b(), 120 + 200 * slow) * 2.2;
+      s += (saw(f0 * t) * 0.18 + saw(f0 * 1.006 * t) * 0.18 + sin(f0 * 1.5 * 0.97 * t) * 0.12) * (0.6 + 0.4 * slow);
+      if (p.tex === 1) s *= 0.55 + 0.45 * Math.max(0, Math.sin(TAU * t / 1.25)) ** 4;
+      if (p.tex === 2) s += R.reduce((a, r, i) => a + sin(f0 * 4 * r * t + 0.3 * Math.sin(TAU * t / (7 + i))) * 0.05 / (1 + i * 0.3), 0) * (0.5 + 0.5 * Math.sin(TAU * t / 10 + 1));
+      if (pad) s = s * 0.5 + pad(t) * 0.9;
+      return h(s); }, 3); } }));
+
+G(HOR({ id: 'hr-scare', grid: { type: [0, 1, 2, 3, 4], v: [0, 1, 2] },
+  meta: (p) => ({ title: `Jump Scare: ${['String Screech', 'Brass Slam', 'Metal Shriek', 'Choir Scream', 'Sub Boom'][p.type]} ${p.v + 1}`, tags: hTags('jump scare', 'stinger', 'shock', 'hit', 'scream', ['strings', 'brass', 'metal', 'choir', 'boom'][p.type]),
+    desc: `A sudden, loud ${['screech of dissonant violins', 'blast of low brass and a door slam', 'metallic shriek', 'scream from a ghostly choir', 'sub-bass boom with a rush of noise'][p.type]} for the moment something jumps out.` }),
+  render: (p) => { const k = 2 ** (p.v / 12 * 2); const h = hall(0.42, 0.89); const n = noise(10100 + p.type * 3 + p.v); const hp = highpass(3000);
+    if (p.type === 0) { const f = sequence([88, 89, 91, 94, 95].map((note) => ({ note: note + p.v * 2, start: 0, dur: 0.9, att: 0.005, rel: 0.6, vel: 1 })), STRINGS({ seed: 41, att: 0.005, bright: 7000, vib: 0.012 }), 1); return render(3, (t) => h(f(t) * 1.4 + hp(n()) * expDecay(t, 25) * 0.3)); }
+    if (p.type === 1) { const f = sequence([34, 35, 41, 46].map((note) => ({ note: note + p.v, start: 0, dur: 0.8, att: 0.01, rel: 0.6, cut: 2400 })), BRASS({ seed: 42, bright: 2400 }), 1); const dk = bigDrum(10101 + p.v, 48); return render(3.5, (t) => h(sat(f(t) * 2, 1.5) * 0.7 + dk(t) * 0.9 + hp(n()) * expDecay(t, 30) * 0.4)); }
+    if (p.type === 2) { const m = metalTone(1900 * k, [1, 1.414, 2.31, 3.17, 4.53], 2.2); const ph = phasor(); return render(2.6, (t) => h(m(t) * 0.6 + sin(ph(2600 * k * (1 + 0.25 * Math.sin(TAU * 7 * t)) * (1 + t * 0.4))) * expDecay(t, 3) * 0.25 + hp(n()) * expDecay(t, 18) * 0.5)); }
+    if (p.type === 3) { const f = choirBus([76, 77, 79, 82].map((note) => ({ note: note + p.v * 2, start: 0, dur: 1, att: 0.02, rel: 0.8 })), 0, 43); return render(3.5, (t) => h(f(t) * 1.8 + hp(n()) * expDecay(t, 20) * 0.2)); }
+    const ph = phasor(); const lp = lowpass(3000); return render(3.5, (t) => { const pre = t < 0.45 ? lp(n(), 400 + 6000 * (t / 0.45) ** 2) * (t / 0.45) ** 2 * 0.7 : 0; const lt = t - 0.45; const hit = lt > 0 ? sin(ph(28 * k + 70 * expDecay(lt, 6))) * expDecay(lt, 1.6) * 1.2 + lp(n(), 2000) * expDecay(lt, 9) * 0.8 : ph(0) * 0; return h(pre + hit); }); } }));
+
+G(HOR({ id: 'hr-riser', grid: { len: [0, 1, 2], type: [0, 1, 2] },
+  meta: (p) => ({ title: `Horror Riser (${['3', '5', '8'][p.len]} s, ${['strings', 'metal and noise', 'choir'][p.type]})`, tags: hTags('riser', 'build up', 'tension', 'crescendo', 'suspense'),
+    desc: `A ${['3', '5', '8'][p.len]}-second build of ${['clustered strings sliding upward', 'grinding metal and rising noise', 'a choir climbing in dissonance'][p.type]} that cuts to dead silence.` }),
+  render: (p) => { const L = [3, 5, 8][p.len]; const h = hall(0.35, 0.88); const n = noise(10200 + p.len * 3 + p.type); const bp = bandpass(800, 3);
+    if (p.type === 1) { const m = [1, 1.37, 2.11, 2.9].map((r) => ({ r, ph: phasor() })); return render(L + 1.4, (t) => { if (t > L) return h(0); const x = t / L; return h((bp(n(), 300 + 6000 * x * x) * 1.2 + m.reduce((a, o) => a + sin(o.ph(300 * o.r * (1 + 2.5 * x))) * 0.08, 0)) * x ** 2); }); }
+    const base = p.type === 2 ? [57, 58, 61, 64] : [48, 49, 52, 55, 58]; const v = base.map((note, i) => ({ f: midi(note), ph: i / base.length, det: 1 + (i - 2) * 0.003 })); const lp = lowpass(3000); const fm = formants(6);
+    return render(L + 1.4, (t) => { if (t > L) return h(0); const x = t / L; let s = 0; for (const o of v) { const f = o.f * o.det * 2 ** (x * 1.5) * (1 + 0.008 * Math.sin(TAU * 6 * t)); const dt = f / SR; o.ph += dt; if (o.ph >= 1) o.ph -= 1; s += 2 * o.ph - 1 - polyblep(o.ph, dt); } s /= v.length; const tone = p.type === 2 ? fm(s, mixV(VOWELS.oo, VOWELS.ah, x)) * 1.5 : lp(s, 600 + 5000 * x); return h(tone * x ** 1.8 * 0.9); }); } }));
+
+const BOX_MELS = [[76, 79, 83, 81, 79, 78, 76, 71], [71, 76, 79, 78, 76, 75, 76, 71], [83, 81, 79, 76, 77, 76, 74, 71], [76, 76, 77, 76, 72, 71, 72, 69], [71, 72, 75, 79, 78, 75, 72, 71], [79, 78, 79, 76, 72, 74, 71, 69]];
+G(HOR({ id: 'hr-musicbox', grid: { mel: [0, 1, 2, 3, 4, 5], wind: [0, 1] },
+  meta: (p) => ({ title: `Creepy Music Box ${p.mel + 1}${p.wind ? ' (winding down)' : ''}`, tags: hTags('music box', 'lullaby', 'child', 'toy', 'melody', p.wind ? 'winding down' : 'loop'),
+    desc: `A small, tinkling music box playing a sad little minor tune${p.wind ? ' that slows down and drifts out of tune as the spring runs out' : ''}. Unsettlingly innocent.` }),
+  render: (p) => { const mel = [...BOX_MELS[p.mel], ...BOX_MELS[p.mel].slice(0, 4), BOX_MELS[p.mel][7]]; let t = 0.1; const notes = mel.map((note, i) => { const slow = p.wind ? 1 + (i / mel.length) ** 2 * 1.6 : 1; const n0 = { note, start: t, dur: 1, det: p.wind ? 1 - 0.03 * (i / mel.length) ** 2 : 1 + 0.003 * Math.sin(i * 7) }; t += 0.42 * slow; return n0; });
+    const n = noise(10300 + p.mel); const hp = highpass(5000); const f = sequence(notes, (o, lt) => { const fr = midi(o.note) * 2 * o.det; return (sin(fr * lt) * expDecay(lt, 2.4) + sin(fr * 4.1 * lt) * 0.25 * expDecay(lt, 7) + sin(fr * 9.9 * lt) * 0.08 * expDecay(lt, 14)) * Math.min(1, lt * 2000) + (lt < 0.004 ? hp(n()) * 0.4 : 0); }, 2.4);
+    const h = hall(0.32, 0.85); return render(t + 2.6, (x) => h(f(x) * 0.5)); } }));
+
+G(HOR({ id: 'hr-breath', loop: true, grid: { int: [0, 1, 2], v: [0, 1] },
+  meta: (p) => ({ title: `Breathing (${['slow and close', 'nervous', 'panicked'][p.int]}, ${p.v ? 'higher voice' : 'lower voice'})`, loop: true, tags: hTags('breathing', 'breath', 'panic', 'hiding', 'fear', 'loop'),
+    desc: `${['Slow, close breathing right behind you', 'Nervous, shaky breathing of someone hiding', 'Panicked, ragged breathing after running'][p.int]}. Seamless loop.` }),
+  render: (p) => { const per = [4.2, 2.4, 1.2][p.int]; const cnt = Math.round(8 / per); const L = cnt * per; const n = noise(10400 + p.int * 2 + p.v); const f = formants(3); const k = p.v ? 1.18 : 1; const lp = lowpass(4000);
+    return loopRender(L, (t) => { const ph = (t % per) / per; const inh = ph < 0.42; const lt = inh ? ph / 0.42 : (ph - 0.42) / 0.58; const env = inh ? Math.sin(Math.PI * lt) ** 1.4 * 0.7 : Math.sin(Math.PI * lt) ** 1.2 * (p.int === 2 ? 1 : 0.85); const shake = p.int === 1 ? 0.8 + 0.2 * Math.sin(TAU * 11 * t) : 1;
+      const F = inh ? VOWELS.ee.map((x) => x * k * 0.9) : VOWELS.ah.map((x) => x * k * 0.75); return lp(f(n(), F) * env * shake * 1.5); }, 0.6); } }));
+
+G(HOR({ id: 'hr-chains', grid: { type: [0, 1, 2], v: [0, 1, 2] },
+  meta: (p) => ({ title: `Chains ${['Rattling', 'Dragging', 'Swinging'][p.type]} ${p.v + 1}`, tags: hTags('chains', 'metal', 'dungeon', 'prisoner', 'ghost', ['rattle', 'drag', 'swing'][p.type]),
+    desc: `Heavy iron chains ${['rattling violently', 'being dragged slowly across a stone floor', 'swinging and clinking in the dark'][p.type]}.` }),
+  render: (p) => { const L = [2.5, 5, 4][p.type]; const r = rng(10500 + p.type * 3 + p.v); const times = p.type === 2 ? Array.from({ length: 10 }, (_, i) => 0.1 + i * 0.4 + r() * 0.05) : scatter(10501 + p.type * 3 + p.v, L - 0.3, [26, 12, 3][p.type]);
+    const hits = times.flatMap((s) => Array.from({ length: 1 + Math.floor(r() * 3) }, (_, j) => ({ start: s + j * 0.012, dur: 0.3, f: 1400 + r() * 2600, g: 0.4 + r() * 0.6 }))); const pg = panned();
+    const f = sequence(hits, (h0, lt) => { h0.m ??= metalTone(h0.f * (1 + p.v * 0.05), [1, 1.71, 2.53, 3.9], 14); return h0.m(lt) * h0.g; }, 0.22); const n = noise(10502); const bp = bandpass(900, 1.5); const h = hall(0.3, 0.86);
+    return render(L + 0.6, (t) => h(f(t) * 0.4 * pg(p.type === 1 ? Math.sin(t * 0.6) * 0.5 : 0) + (p.type === 1 ? bp(n(), 600 + 300 * Math.sin(TAU * 1.3 * t)) * 0.25 * Math.min(1, t * 3) * Math.min(1, (L - t) * 3) : 0))); } }));
+
+G(HOR({ id: 'hr-approach', grid: { surf: [0, 1], dir: [0, 1, 2] },
+  meta: (p) => ({ title: `Footsteps ${['Approaching', 'Walking Away', 'Pacing Upstairs'][p.dir]} (${p.surf ? 'stone' : 'wood'})`, tags: hTags('footsteps', 'steps', 'approaching', 'stalker', 'intruder', p.surf ? 'stone' : 'wood'),
+    desc: `Slow, heavy footsteps on ${p.surf ? 'a stone corridor' : 'old wooden floors'} ${['getting closer and closer', 'fading away into the dark', 'pacing back and forth in the room above'][p.dir]}.` }),
+  render: (p) => { const cnt = 12; const gap = 0.75; const r = rng(10600 + p.surf * 3 + p.dir); const pg = panned(); const n = noise(10601 + p.surf); const bp = bandpass(p.surf ? 2600 : 1600, 2); const lp0 = lowpass(400); const tone = lowpass(1200);
+    const steps = Array.from({ length: cnt }, (_, i) => { const x = i / (cnt - 1); const near = p.dir === 0 ? x : p.dir === 1 ? 1 - x : 0.35; return { start: 0.1 + i * gap + r() * 0.04, dur: 0.4, near, pan: p.dir === 2 ? Math.sin(i * 0.9) * 0.6 : (p.dir === 0 ? 0.6 - x * 0.6 : x * 0.6), g: i % 2 ? 0.85 : 1 }; });
+    const f = sequence(steps, (s, lt) => { const body = (lp0(n()) * 2.5 * expDecay(lt, 22) + sin((p.surf ? 70 : 95) * lt) * expDecay(lt, 30) * 0.7) + bp(n()) * expDecay(lt, p.surf ? 60 : 40) * 0.6; return body * s.g * (0.15 + 0.85 * s.near) * pg(s.pan); }, 0.4);
+    const h = hall(p.dir === 2 ? 0.2 : 0.45, 0.88); return render(cnt * gap + 1.2, (t) => h(p.dir === 2 ? tone(f(t), 700) * 1.6 : f(t))); } }));
+
+G(HOR({ id: 'hr-knock', grid: { pat: [0, 1, 2], far: [0, 1] },
+  meta: (p) => ({ title: `Knocking in an Empty House (${['three slow', 'insistent', 'one loud'][p.pat]}, ${p.far ? 'distant' : 'close'})`, tags: hTags('knock', 'knocking', 'door', 'empty house', 'paranormal'),
+    desc: `${['Three slow knocks', 'Insistent, repeated knocking', 'A single loud knock'][p.pat]} echoing through an empty house, ${p.far ? 'from somewhere far off' : 'right on the other side of the wall'}.` }),
+  render: (p) => { const pats = [[0, 1.1, 2.2], [0, 0.25, 0.5, 1.4, 1.65, 1.9, 2.8, 3.05], [0]][p.pat]; const n = noise(10700 + p.pat * 2 + p.far); const bp = bandpass(p.far ? 250 : 340, 3); const lp = lowpass(p.far ? 900 : 4000); const h = hall(p.far ? 0.6 : 0.35, 0.9);
+    const f = sequence(pats.map((s) => ({ start: s + 0.1, dur: 0.3 })), (k, lt) => (bp(n()) * 4 * expDecay(lt, 22) + sin(140 * lt) * expDecay(lt, 25) * 0.8) * (p.pat === 2 ? 1.6 : 1), 0.3);
+    return render(pats.at(-1) + 3.4, (t) => h(lp(f(t)) * (p.far ? 0.8 : 1))); } }));
+
+G(HOR({ id: 'hr-wind', loop: true, xfade: true, wide: true, grid: { int: [0, 1, 2], moan: [0, 1] },
+  meta: (p) => ({ title: `Haunted Wind (${['whispering', 'howling', 'storm'][p.int]}${p.moan ? ', moaning' : ''})`, loop: true, layer: true, tags: hTags('wind', 'howling', 'haunted house', 'storm', 'ambience', 'layer', 'loop'),
+    desc: `${['A thin, whispering draft', 'Wind howling through cracks in an old house', 'A storm wind battering a haunted mansion'][p.int]}${p.moan ? ', with eerie moaning tones riding on it' : ''}. Seamless loop.` }),
+  render: (p) => { const n = noise(10800 + p.int * 2 + p.moan); const bp = bandpass(600, 6); const bp2 = bandpass(1400, 10); const b = brownNoise(10801); const lp = lowpass(250); const ph = phasor(); const h = hall(0.3, 0.88);
+    return loopRender(20, (t) => { const g = 0.5 + 0.3 * Math.sin(TAU * t / 10) + 0.2 * Math.sin(TAU * t / 3.3 + 1); const whistle = bp2(n(), 900 + 900 * g) * [0.3, 0.6, 0.8][p.int] * g;
+      const moan = p.moan ? sin(ph(220 + 120 * Math.sin(TAU * t / 5) + 40 * Math.sin(TAU * t / 1.7))) * 0.12 * Math.max(0, Math.sin(TAU * t / 6.67)) ** 2 : 0; return h(bp(n(), 300 + 500 * g) * g * [0.6, 1, 1.4][p.int] + whistle + lp(b()) * [0.5, 1, 2][p.int] + moan); }, 3); } }));
+
+G(HOR({ id: 'hr-ghost', grid: { voice: [0, 1, 2], shape: [0, 1, 2] },
+  meta: (p) => ({ title: `Ghost ${['Moan', 'Wail', 'Sigh'][p.shape]} (${['low', 'mid', 'high'][p.voice]} voice)`, tags: hTags('ghost', 'moan', 'wail', 'spirit', 'phantom', 'voice', ['moan', 'wail', 'sigh'][p.shape]),
+    desc: `A ghostly ${['low, mournful moan', 'rising, desperate wail', 'long, sorrowful sigh'][p.shape]} in a ${['low', 'middle', 'high'][p.voice]} voice, echoing in a cold, empty hall.` }),
+  render: (p) => { const f0 = [130, 220, 380][p.voice]; const L = [3, 2.6, 2.2][p.shape]; const ph = phasor(); const n = noise(10900 + p.voice * 3 + p.shape); const fm = formants(7); const h = hall(0.5, 0.9);
+    return render(L + 2, (t) => { if (t > L) return h(0); const x = t / L; const curve = p.shape === 0 ? 1 - 0.25 * x : p.shape === 1 ? 0.8 + 0.6 * Math.sin(Math.PI * x * 0.8) : 1.1 - 0.4 * x; const f = f0 * curve * (1 + 0.012 * Math.sin(TAU * 5 * t));
+      const src = saw(ph(f)) * 0.5 + n() * 0.35; const V = p.shape === 2 ? mixV(VOWELS.ah, VOWELS.oo, x) : mixV(VOWELS.oo, VOWELS.oh, Math.sin(Math.PI * x)); return h(fm(src, V) * Math.sin(Math.PI * x) ** 0.8 * 1.2); }); } }));
+
+G(HOR({ id: 'hr-evp', grid: { v: [0, 1, 2, 3, 4, 5] },
+  meta: (p) => ({ title: `EVP Radio Static ${p.v + 1}`, tags: hTags('evp', 'static', 'radio', 'paranormal', 'ghost voice', 'spirit box', 'interference'),
+    desc: 'A spirit-box radio sweeping through static, with garbled voice-like fragments breaking through. Paranormal investigation in a sound.' }),
+  render: (p) => { const r = rng(11000 + p.v); const n = noise(11001 + p.v); const bp = bandpass(1500, 1.2); const fm = formants(5); const L = 5; const bursts = scatter(11002 + p.v, L - 0.6, 1.2).map((s) => ({ s, d: 0.2 + r() * 0.35, v: Object.values(VOWELS)[Math.floor(r() * 5)], f: 110 + r() * 120 })); const ph = phasor(); let c = 0;
+    return render(L, (t) => { if (r() < 0.0008) c = 1; c *= 0.98; const sweep = 0.5 + 0.5 * Math.sin(TAU * 0.7 * t); const b = bursts.find((x) => t >= x.s && t < x.s + x.d); const x = n();
+      const voice = b ? fm(saw(ph(b.f * (1 + 0.05 * Math.sin(TAU * 9 * t)))) * 0.6 + x * 0.2, b.v) * Math.sin(Math.PI * (t - b.s) / b.d) * 1.6 : (ph(0), fm(0, VOWELS.ah) * 0); return bp(x, 600 + 2500 * sweep) * 0.5 * (0.6 + 0.4 * Math.sin(TAU * 13 * t) ** 2) + voice + x * c * 0.6; }); } }));
+
+G(HOR({ id: 'hr-scrape', grid: { type: [0, 1, 2], v: [0, 1, 2] },
+  meta: (p) => ({ title: `${['Knife on Metal', 'Nails on Wood', 'Chair Dragging'][p.type]} ${p.v + 1}`, tags: hTags('scrape', 'scratch', ['knife', 'nails', 'chair'][p.type], ['metal', 'wood', 'floor'][p.type]),
+    desc: `${['A blade slowly scraping along metal', 'Fingernails scratching down a wooden door', 'A heavy chair being dragged across the floor upstairs'][p.type]}.` }),
+  render: (p) => { const L = [2.2, 2.6, 3][p.type]; const n = noise(11100 + p.type * 3 + p.v); const k = 1 + p.v * 0.1; const h = hall(0.3, 0.86);
+    if (p.type === 0) { const m = metalTone(2300 * k, [1, 1.52, 2.33, 3.1], 1.4); const bp = bandpass(4000, 4); const ph = phasor(); return render(L + 1, (t) => { const x = Math.min(1, t / L); const on = t < L ? Math.sin(Math.PI * x) : 0; return h((bp(n(), 3000 + 2500 * x) * 0.8 + sin(ph(2300 * k * (1 + 0.06 * x) * (1 + 0.004 * Math.sin(TAU * 31 * t)))) * 0.25) * on + m(t) * 0.2); }); }
+    if (p.type === 1) { const bp = bandpass(2800, 2); return render(L + 0.6, (t) => { const stroke = [0, 0.75, 1.5].find((s) => t >= s && t < s + 0.6); if (stroke == null) return h(bp(0) * 0); const lt = (t - stroke) / 0.6; return h(bp(n(), 1800 * k + 2400 * lt) * Math.sin(Math.PI * lt) * (0.5 + 0.5 * Math.max(0, Math.sin(TAU * 90 * t))) * 1.4); }); }
+    const c = creaker(11101 + p.v, [180 * k, 520 * k, 1300 * k]); const lp = lowpass(1500); return render(L + 0.6, (t) => { const x = Math.min(1, t / L); return h(lp(c(t, t < L ? 60 + 40 * Math.sin(TAU * 2 * t) : 0, Math.sin(Math.PI * x) * 0.9) + n() * 0.08 * Math.sin(Math.PI * x))); }); } }));
+
+G(HOR({ id: 'hr-bell', grid: { note: [0, 1, 2, 3], far: [0, 1] },
+  meta: (p) => ({ title: `Tolling Bell ${['C', 'D', 'F', 'G'][p.note]} (${p.far ? 'distant' : 'near'})`, key: ['C', 'D', 'F', 'G'][p.note], tags: hTags('bell', 'toll', 'church', 'funeral', 'graveyard', 'midnight'),
+    desc: `A heavy church bell tolling three times ${p.far ? 'across a foggy graveyard' : 'from the tower overhead'}, each strike ringing out slowly.` }),
+  render: (p) => { const f = midi([48, 50, 53, 55][p.note]); const m = metalTone(f, [0.5, 1, 1.2, 1.5, 2, 2.6, 3.2], 0.6); const f2 = sequence([0, 3, 6].map((s) => ({ start: s + 0.05, dur: 3 })), (o, lt) => m(lt), 4); const lp = lowpass(p.far ? 1500 : 6000); const h = hall(p.far ? 0.55 : 0.3, 0.9);
+    return render(11, (t) => h(lp(f2(t)) * 0.6)); } }));
+
+G(HOR({ id: 'hr-organ', grid: { chord: [0, 1, 2, 3, 4, 5], reg: [0, 1] },
+  meta: (p) => ({ title: `Haunted Organ: ${['Diminished', 'Minor', 'Augmented', 'Minor Add 9', 'Cluster', 'Tritone'][p.chord]} (${p.reg ? 'high' : 'low'})`, tags: hTags('organ', 'pipe organ', 'church', 'vampire', 'gothic', 'chord'),
+    desc: `A booming pipe organ holding a ${['diminished', 'minor', 'augmented', 'minor add 9', 'dissonant cluster', 'tritone'][p.chord]} chord in a cathedral. Classic gothic horror.` }),
+  render: (p) => { const r = p.reg ? 55 : 43; const C = [[0, 3, 6, 9], [0, 3, 7, 12], [0, 4, 8, 12], [0, 3, 7, 14], [0, 1, 2, 3, 6], [0, 6, 12]][p.chord].map((x) => r + x); const L = 4.5; const h = hall(0.5, 0.9);
+    const voices = C.flatMap((note) => [note - 12, note].map((n2) => ({ f: midi(n2) }))); const ph = voices.map(() => [phasor(), phasor(), phasor(), phasor()]);
+    return render(L + 3, (t) => { const env = t < L ? Math.min(1, t * 6) : expDecay(t - L, 3); let s = 0; voices.forEach((v, i) => { const [a, b, c, d] = ph[i]; const tr = 1 + 0.002 * Math.sin(TAU * 5.5 * t + i); s += (sin(a(v.f * tr)) + 0.5 * sin(b(v.f * 2 * tr)) + 0.3 * sin(c(v.f * 3 * tr)) + 0.2 * sin(d(v.f * 4 * tr))) * 0.08; }); return h(s * env); }); } }));
+
+G(HOR({ id: 'hr-reverse', grid: { type: [0, 1, 2], end: [0, 1] },
+  meta: (p) => ({ title: `Reversed ${['Piano', 'Cymbal', 'Choir'][p.type]} ${p.end ? 'into Hit' : 'Swell'}`, tags: hTags('reverse', 'reversed', 'swell', 'transition', 'unsettling', ['piano', 'cymbal', 'choir'][p.type]),
+    desc: `A ${['piano chord', 'cymbal crash', 'choir chord'][p.type]} played backwards so it sucks inward${p.end ? ', slamming into a hit at the end' : ' and cuts off'}. Instantly unsettling.` }),
+  render: (p) => { const h = hall(0.4, 0.88); let fw;
+    if (p.type === 0) { const f = sequence([45, 48, 51, 54, 57].map((note) => ({ note, start: 0, dur: 2.5 })), piano, 2); fw = render(3, (t) => h(f(t))); }
+    else if (p.type === 1) { const n = noise(11300 + p.end); const hp = highpass(4000); fw = render(3, (t) => h(hp(n()) * expDecay(t, 1.4))); }
+    else { const f = choirBus([57, 60, 63, 66].map((note) => ({ note, start: 0, dur: 1.2, att: 0.03, rel: 0.6 })), 0, 44); fw = render(3, (t) => h(f(t))); }
+    fw.reverse(); if (!p.end) return fw; const dk = bigDrum(11301, 45); const hit = render(1.8, (t) => dk(t) * 1.3); const out = new Float32Array(fw.length + hit.length); out.set(fw); out.set(hit, fw.length); return out; } }));
+
+const PLACES = ['Abandoned Hospital', 'Haunted Forest at Night', 'Crypt', 'Basement', 'Asylum Hallway'];
+G(HOR({ id: 'hr-place', loop: true, xfade: true, wide: true, grid: { place: [0, 1, 2, 3, 4], v: [0, 1] },
+  meta: (p) => ({ title: `${PLACES[p.place]} ${p.v + 1}`, loop: true, layer: true, tags: hTags('ambience', 'atmosphere', 'room tone', 'layer', 'loop', PLACES[p.place].toLowerCase()),
+    desc: `A seamless ambience of ${['an abandoned hospital: flickering fluorescent hum, distant drips and the odd rattle', 'a haunted forest at night: cold wind, sparse insects, an owl and snapping twigs', 'a crypt: low underground wind, echoing water drops and far-off chains', 'a basement: an old boiler hum, pipes ticking and creaks from above', 'an asylum hallway: a buzzing light, distant moans and a door slamming far away'][p.place]}.` }),
+  render: (p) => { const r = rng(11400 + p.place * 2 + p.v); const b = brownNoise(11401 + p.place); const pn = pinkNoise(11402 + p.place); const lp = lowpass(300); const bp = bandpass(700, 2); const pg = panned(); const h = hall(0.45, 0.9);
+    const drips = scatter(11403 + p.place * 2 + p.v, 19.5, p.place === 2 ? 1.1 : 0.5).map((s) => ({ start: s, dur: 0.1, f: 900 + r() * 1500, pan: (r() - 0.5) * 1.6 }));
+    const dr = sequence(drips, (d, lt) => sin(d.f * (1 + 2.5 * lt / 0.05) * lt) * expDecay(lt, 40) * 0.35 * pg(d.pan), 0.1);
+    const ev = scatter(11404 + p.place * 2 + p.v, 18, 0.25).map((s) => ({ start: s, dur: 2, pan: (r() - 0.5) * 1.4, kind: r() }));
+    const cr = creaker(11405 + p.v, [300, 900, 2000]); const owl = (lt) => (lt > 0 && lt < 0.9 ? Math.sin(Math.PI * lt / 0.9) * sin(380 * lt) * 0.25 : 0); const n = noise(11406 + p.place);
+    const evf = sequence(ev, (e, lt) => { const g = pg(e.pan) * 0.6; if (p.place === 1) return (e.kind < 0.5 ? owl(lt) : n() * expDecay(lt, 60) * 0.6) * g; if (p.place === 2) return (e.m ??= metalTone(1800 + e.kind * 900, [1, 1.7, 2.5], 10))(lt) * 0.2 * g; if (p.place === 3) return cr(lt, lt < 0.8 ? 120 : 0, Math.sin(Math.PI * Math.min(1, lt / 0.8))) * 0.4 * g; if (p.place === 4) return (e.kind < 0.6 ? sin((150 + e.kind * 90) * (1 - 0.1 * lt) * lt) * Math.sin(Math.PI * Math.min(1, lt / 1.6)) * 0.12 : lp(n()) * expDecay(lt, 12) * 1.5) * g; return n() * expDecay(lt, 30) * 0.2 * g; }, 0.5);
+    return loopRender(20, (t) => { let bed = lp(b()) * 1.4 + bp(pn(), 500 + 300 * Math.sin(TAU * t / 10)) * 0.3;
+      if (p.place === 0 || p.place === 4) bed += (sin(120 * t) * 0.05 + sin(240 * t) * 0.03 + sin(360 * t) * 0.015) * (r() < 0.002 ? 0 : 1);
+      if (p.place === 3) bed += sin(55 * t) * 0.08 + sin(110 * t) * 0.04;
+      if (p.place === 1) bed += bp(n(), 2500) * 0.08;
+      return h(bed + dr(t) + evf(t)); }, 3); } }));
+
 // ---------- enumeration + rendering API ----------
 function product(grid) { let out = [{}]; for (const [k, vals] of Object.entries(grid)) out = out.flatMap((o) => vals.map((v) => ({ ...o, [k]: v }))); return out; }
 function enumerate() {
