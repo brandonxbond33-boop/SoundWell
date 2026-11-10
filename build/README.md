@@ -42,6 +42,8 @@ Slugs are built from parameters (`<family>-<param values>`), so they stay stable
 
 Search with synonyms, category/type/key/tempo filters, paged list (40 at a time), Web Audio player, layer mixer with pads and WAV export, stem kits in 12 keys, song starter, sound editor with 5-variation export, scene builder and **Describe a sound** (both use the `sample` capability: Claude picks from a locally shortlisted set; keyword fallback without it). Custom sounds are recipes (`base slug + editor settings`) saved in the viewer's browser under *Your Creations*.
 
+Step sequencer (`seq*` functions): patterns are `{v, title, bpm, swing, steps, tracks:[{slug, pat, vol, pitch, mute, solo}]}`, with `pat` using `.` / `x` / `X` (off, hit, accent). Saved in localStorage (`seq-current`, `seq-saved`), as `.json` files (`format: 'soundwell-pattern'`), or rendered offline to WAV. Community sharing uses the `db` capability: each person writes only `patterns/{their id}` (`{items: [...]}`, up to 50), everyone with view access reads, the owner can delete; names come from the `user` capability's profiles. Off claude.ai the community board is hidden.
+
 ## Limits to remember
 
 Artifact: 511 files per version (≈168 MP3s used), 256 MB total, 16 MB per page. Downloads only allow certain extensions, so sounds are delivered as `.zip` (MP3 or WAV inside).

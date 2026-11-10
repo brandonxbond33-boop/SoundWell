@@ -6,12 +6,14 @@ A free, fast, accessible library of sound effects and music. **7,305 original so
 
 `site/index.html` is a single self-contained page (no server, no build step needed to run it):
 
-- **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
+- **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer, Sequencer), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
 - **Search** with synonyms, plus filters for type, category, key and tempo. Results load 40 at a time.
 - **Cinematic score collection** (1,776 sounds): string ostinatos and pulses, legato strings, brass swells, heroic horn themes, choir, piano with strings, pizzicato, harp, tension beds and orchestral percussion, in all 12 keys at 90 and 120 BPM, plus braams, orchestral hits, swells, risers, timpani, cymbals, harp glissandos, celesta, choir and brass stabs and solo strings. Rendered with band-limited oscillators, detuned ensembles, Karplus-Strong plucked strings and a concert-hall reverb.
 - **Spooky and horror collection** (202 sounds): creaks, ghostly whispers, dread drones, jump scares, horror risers, creepy music boxes, breathing, chains, footsteps in the dark, knocks, haunted wind, ghost moans, EVP static, scrapes, tolling bells, haunted organ, reversed swells and haunted-place ambiences.
 - **Describe a sound:** type "a heavy wooden door slamming in a church" and get a custom sound (on claude.ai, Claude picks and tunes it; elsewhere it uses the closest keyword match). Creations are saved in the browser.
 - **Layer mixer:** stack loops in sync, play one-shots as pads (keys 1–9), and download the mix as WAV.
+- **Step sequencer:** up to 8 tracks of any library sound, 16 or 32 steps, accents, swing, tempo 60–180, per-track volume, pitch, mute and solo. Add sounds from the picker or from any sound's detail panel. Save patterns in the browser, as a `.json` file to reopen later, or export the beat as a WAV (zipped with the pattern and license).
+- **Community patterns:** on claude.ai, share patterns to a board everyone with access can load. Sharing needs Contributor access; the owner can remove any pattern.
 - **Stem kits** (Neon Groove, Rainy Lo-fi, Epic Trailer) in all 12 keys, and a **song starter** that builds chords, bass, arpeggio, melody and drums in any key.
 - **Sound editor:** speed/pitch, reverse, trim, fades, volume, and a pack of 5 natural variations.
 - **Scene builder:** describe a scene ("cozy cabin in a thunderstorm") and get a layered soundscape.
