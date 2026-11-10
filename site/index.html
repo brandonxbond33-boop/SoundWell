@@ -1954,7 +1954,7 @@ return { enumerate, renderEntry, peaks, SR };
     if (!text) { toast('Describe a scene first, like “cozy cabin during a thunderstorm”.'); $('#scene').focus(); return; }
     ac(); const hint = $('#scenehint'); const go = $('#scenego'); go.disabled = true; hint.textContent = 'Building your mix…';
     let picks = null; let how = '';
-    if (sampleCap) { try { picks = await askClaude(text); how = 'Picked by Claude'; } catch { picks = null; } }
+    if (sampleCap) { try { picks = await askClaude(text); how = 'Picked by Helion Sound Labs'; } catch { picks = null; } }
     if (!picks || !picks.length) { picks = keywordScene(text); how = 'Matched by keywords'; }
     go.disabled = false;
     if (!picks.length) { hint.textContent = 'No matching loops. Try naming a place, the weather or a mood.'; return; }
@@ -2107,7 +2107,7 @@ return { enumerate, renderEntry, peaks, SR };
       <div style="display:grid;gap:8px"><textarea id="desc-in" aria-label="Describe a sound" placeholder="A heavy wooden door slamming in a church"></textarea>
         <div class="examples">${['robot powering down slowly', 'giant footsteps in a cave', 'magic portal closing', 'tiny bell for a cat collar', 'sci-fi door opening'].map((x) => `<button type="button" data-ex="${x}">${x}</button>`).join('')}</div>
         <div class="btnrow"><button class="btn primary" type="button" id="desc-go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Create sound</button></div></div>
-      <div id="desc-out"><p class="hint" style="margin:0;color:var(--muted);font-size:.86rem">Claude picks the closest sound from the library and tunes its pitch, speed, length, direction and fades to match. Your creations are saved in this browser under Your Creations.</p></div></article>` +
+      <div id="desc-out"><p class="hint" style="margin:0;color:var(--muted);font-size:.86rem">Helion Sound Labs picks the closest sound from the library and tunes its pitch, speed, length, direction and fades to match. Your creations are saved in this browser under Your Creations.</p></div></article>` +
       `<article class="card scene"><span class="eyebrow">Scene builder</span><h3>Describe it. Hear it.</h3><p>Type a scene and get a layered, looping soundscape you can adjust and download.</p>
       <textarea id="scene2" aria-label="Describe a scene" placeholder="Cozy cabin during a thunderstorm"></textarea><button class="btn" type="button" id="scene2go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Build the mix</button></article>` +
       `<article class="card starter"><span class="eyebrow">Song starter</span><h3>Start a song in any key</h3><p>Pick a key, progression and tempo. Chords, bass, arpeggio, melody and drums load into the mixer, all locked together.</p>
