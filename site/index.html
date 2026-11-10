@@ -5,36 +5,40 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a mixing-desk strip. Sticky search/filter console on top, one channel row per sound, transport bar docked at the bottom. */
+/* Layout: a sample-library console. Side menu of collections, generated cover art per pack, table rows with key and tempo, transport docked at the bottom. */
 :root {
-  --bg: #eef1ef;          /* studio wall, faint green-grey */
-  --panel: #f8faf9;
-  --ink: #15211d;
-  --muted: #56645f;
-  --line: #d3dbd7;
-  --wave: #b5c2bd;
-  --accent: #0b7a64;      /* signal green: playing, progress */
-  --accent-ink: #ffffff;
-  --meter: #c2610c;       /* amber meter: loops, saved */
-  --focus: #1658c7;
-  --shadow: 0 1px 0 rgba(21,33,29,.06), 0 8px 24px -16px rgba(21,33,29,.25);
+  --bg: #0d0e12;          /* control-room dark */
+  --side: #101117;
+  --panel: #16181f;
+  --panel2: #1f222b;
+  --ink: #eeeef2;
+  --muted: #9a9fad;
+  --line: #262a34;
+  --wave: #3c4252;
+  --accent: #ff6b4a;      /* ember: playing, progress, primary actions */
+  --accent-ink: #1a0802;
+  --meter: #ffc24b;       /* amber: loops, saved */
+  --focus: #8ab4ff;
+  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
   --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --f-body: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --radius: 10px;
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f1614; --panel: #16201d; --ink: #e5ece9; --muted: #98a8a2; --line: #26332f; --wave: #3b4b46;
-    --accent: #3fc6a5; --accent-ink: #06231c; --meter: #f0a04b; --focus: #7fb0ff;
-    --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-    color-scheme: dark;
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f4f1; --side: #efede8; --panel: #ffffff; --panel2: #ecebe7; --ink: #15161b; --muted: #5d6270; --line: #e0ded8; --wave: #c8cad1;
+    --accent: #e2492a; --accent-ink: #ffffff; --meter: #b26f00; --focus: #1658c7;
+    --shadow: 0 1px 0 rgba(20,20,30,.05), 0 10px 28px -18px rgba(20,20,30,.3);
+    color-scheme: light;
   }
 }
-:root[data-theme="dark"] {
-  --bg: #0f1614; --panel: #16201d; --ink: #e5ece9; --muted: #98a8a2; --line: #26332f; --wave: #3b4b46;
-  --accent: #3fc6a5; --accent-ink: #06231c; --meter: #f0a04b; --focus: #7fb0ff;
-  --shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-  color-scheme: dark;
+:root[data-theme="light"] {
+  --bg: #f5f4f1; --side: #efede8; --panel: #ffffff; --panel2: #ecebe7; --ink: #15161b; --muted: #5d6270; --line: #e0ded8; --wave: #c8cad1;
+  --accent: #e2492a; --accent-ink: #ffffff; --meter: #b26f00; --focus: #1658c7;
+  --shadow: 0 1px 0 rgba(20,20,30,.05), 0 10px 28px -18px rgba(20,20,30,.3);
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -152,7 +156,8 @@ body:not(.can-dl) .dl { display: none !important; }
 /* ---------- home: scene builder + stem kits ---------- */
 .home { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 4px 0 22px; }
 .home[hidden] { display: none; }
-@media (min-width: 900px) { .home { grid-template-columns: repeat(3, minmax(0, 1fr)); } .home .card.scene { grid-row: span 2; } }
+@media (min-width: 900px) { .home { grid-template-columns: repeat(3, minmax(0, 1fr)); } .home .card.scene { grid-row: auto; }
+@media (min-width: 900px) { .home .card.starter { grid-column: span 2; } } }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: grid; gap: 8px; align-content: start; }
 .card h3 { margin: 0; font: 700 1.05rem/1.25 var(--f-display); }
 .card .kmeta { font: 500 .74rem var(--f-mono); color: var(--muted); }
@@ -248,6 +253,135 @@ body:not(.can-dl) .dl { display: none !important; }
   .row.playing { outline: 3px solid Highlight; }
   .chip[aria-pressed="true"], .seg button[aria-pressed="true"] { outline: 2px solid Highlight; }
 }
+/* ================= Library look: side menu, pack art, table rows ================= */
+.side { display: none; }
+.mobile-brand { display: flex; }
+.hero { position: relative; border-radius: 18px; overflow: hidden; min-height: 210px; display: grid; align-items: end; background: var(--panel); border: 1px solid var(--line); }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,9,12,.82) 0%, rgba(8,9,12,.55) 45%, rgba(8,9,12,0) 80%); }
+.hero-in { position: relative; z-index: 1; padding: 26px 26px 22px; display: grid; gap: 8px; max-width: 640px; color: #f4f2ee; }
+.hero h1 { margin: 0; font: 800 clamp(1.8rem, 4.2vw, 3rem)/1.02 var(--f-display); letter-spacing: -.025em; text-wrap: balance; }
+.hero .tag { color: rgba(244,242,238,.82); }
+.hero .stats { color: rgba(244,242,238,.7); }
+.hero .stats b { color: #fff; }
+.hero .eyebrow { color: var(--accent); }
+.mast { padding-block: 16px 10px; }
+.mast.off .hero { display: none; }
+.brandname { font: 800 1.35rem/1 var(--f-display); letter-spacing: -.02em; }
+.side .brand svg, .mobile-brand svg { width: 30px; height: 30px; color: var(--accent); }
+.navlist { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
+.navlist button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 9px; color: var(--muted); font-weight: 700; font-size: .92rem; white-space: nowrap; }
+.navlist button svg { width: 18px; height: 18px; flex: none; }
+.navlist button:hover { color: var(--ink); background: var(--panel2); }
+.navlist button[aria-current="true"] { color: var(--ink); background: var(--panel2); box-shadow: inset 3px 0 0 var(--accent); }
+.navlist button:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.navlist .cnt { margin-left: auto; font: 500 .72rem var(--f-mono); color: var(--muted); }
+.mobilenav { overflow-x: auto; padding-bottom: 4px; margin-top: 10px; scrollbar-width: none; }
+.mobilenav .navlist { flex-direction: row; }
+.mobilenav .navlist button { padding: 7px 11px; border: 1px solid var(--line); background: var(--panel); }
+.mobilenav .navlist button[aria-current="true"] { box-shadow: none; border-color: var(--accent); }
+@media (min-width: 1100px) {
+  body { padding-left: 236px; }
+  .side { display: flex; flex-direction: column; gap: 18px; position: fixed; z-index: 6; top: 0; bottom: 0; left: 0; width: 236px; padding: calc(20px + env(safe-area-inset-top, 0px)) 14px calc(96px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); background: var(--side); border-right: 1px solid var(--line); overflow-y: auto; }
+  .side .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .side .navlist { flex-direction: column; }
+  .side .navlist button { width: 100%; }
+  .side .sect { font: 700 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 10px 12px 2px; }
+  .side .sidefoot { margin-top: auto; padding: 0 10px; font-size: .78rem; color: var(--muted); }
+  .mobile-brand, .mobilenav { display: none; }
+  .transport { left: 236px; }
+  .wrap { max-width: 1180px; }
+}
+
+/* section headings */
+.secth { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 26px 0 10px; grid-column: 1 / -1; }
+.secth h2 { margin: 0; font: 800 1.3rem/1.2 var(--f-display); letter-spacing: -.01em; }
+.secth .clear { font-size: .9rem; }
+
+/* pack cards */
+.packrow { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 172px); gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; grid-column: 1 / -1; }
+.packgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 18px 14px; margin-top: 4px; }
+.pcard { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 7px; align-content: start; scroll-snap-align: start; min-width: 0; }
+.pcard .cover { aspect-ratio: 1; width: 100%; max-width: 100%; border-radius: 12px; background: var(--panel2) center/cover no-repeat; box-shadow: 0 10px 24px -14px rgba(0,0,0,.7); transition: transform .18s ease; position: relative; }
+.pcard:hover .cover { transform: translateY(-3px); }
+.pcard:focus-visible .cover { outline: 3px solid var(--focus); outline-offset: 2px; }
+.pcard .pn { font: 700 .95rem/1.2 var(--f-display); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcard .pm { font: 500 .74rem var(--f-mono); color: var(--muted); }
+.packhero { display: grid; grid-template-columns: 168px minmax(0, 1fr); gap: 20px; align-items: end; margin: 6px 0 16px; }
+.packhero .cover { aspect-ratio: 1; width: 100%; border-radius: 14px; background: center/cover no-repeat; box-shadow: 0 16px 40px -18px rgba(0,0,0,.8); }
+.packhero h2 { margin: 2px 0 6px; font: 800 clamp(1.6rem, 3.6vw, 2.4rem)/1.05 var(--f-display); letter-spacing: -.02em; }
+.packhero p { margin: 0 0 8px; color: var(--muted); max-width: 62ch; }
+.packhero .pmeta { font: 500 .8rem var(--f-mono); color: var(--muted); }
+@media (max-width: 560px) { .packhero { grid-template-columns: 110px minmax(0, 1fr); gap: 14px; } }
+
+/* home cards get art */
+.card { background: var(--panel); border-color: var(--line); border-radius: 14px; }
+.card.kit { padding: 0; overflow: hidden; }
+.card.kit .kitart { height: 120px; background: center/cover no-repeat; }
+.card.kit .kitbody { padding: 14px; display: grid; gap: 8px; }
+.card.scene { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 22%, var(--panel)) 0%, var(--panel) 70%); color: var(--ink); border-color: var(--line); }
+.card.scene p, .card.scene .kmeta { color: var(--muted); }
+.card.scene textarea { background: var(--bg); color: var(--ink); border: 1px solid var(--line); }
+.card.scene .btn { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.card.describe { background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--meter) 18%, var(--panel)) 0%, var(--panel) 55%); }
+.home { margin: 6px 0 8px; }
+
+/* table-style sound rows */
+.colhead { display: none; }
+@media (min-width: 900px) {
+  .colhead { display: grid; grid-template-columns: 48px minmax(0, 1.25fr) minmax(120px, 1fr) 56px 54px 42px 128px; gap: 14px; padding: 0 12px 6px; font: 700 .68rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+  .colhead .r { text-align: right; }
+}
+ol.list { gap: 0; }
+.row { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; grid-template-columns: 48px minmax(0, 1fr) auto; grid-template-areas: "play info acts" "wave wave wave" "detail detail detail"; padding: 10px 12px; gap: 4px 14px; }
+.row:hover { background: var(--panel); }
+.row.playing { background: var(--panel); box-shadow: inset 3px 0 0 var(--accent); border-color: var(--line); }
+.row .play { width: 48px; height: 48px; border-radius: 8px; background: var(--panel2) center/cover no-repeat; color: #fff; position: relative; overflow: hidden; }
+.row .play::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); transition: background .15s; }
+.row .play:hover::before, .row.playing .play::before { background: rgba(0,0,0,.5); }
+.row .play svg { position: relative; z-index: 1; width: 18px; height: 18px; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+.row.playing .play { background-color: var(--panel2); color: #fff; }
+.row .ttl { font-size: .98rem; }
+.row .meta { gap: 4px 6px; margin-top: 3px; align-items: center; }
+.row .meta .pk { color: var(--muted); font-size: .8rem; }
+.row .meta .tg { font-size: .72rem; border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; color: var(--muted); background: none; cursor: pointer; }
+.row .meta .tg:hover { color: var(--ink); border-color: var(--muted); }
+.row .desc { display: none; }
+.row .wave { height: 34px; }
+.row .cols { display: none; }
+.row .mobilecols { font: 500 .74rem var(--f-mono); color: var(--muted); }
+@media (min-width: 900px) {
+  .row { grid-template-columns: 48px minmax(0, 1.25fr) minmax(120px, 1fr) 56px 54px 42px 128px; grid-template-areas: "play info wave dur key bpm acts" "detail detail detail detail detail detail detail"; }
+  .row .wave { height: 40px; margin: 0; }
+  .row .cols { display: contents; }
+  .row .cols span { font: 500 .8rem var(--f-mono); color: var(--muted); text-align: right; }
+  .row .c-dur { grid-area: dur; } .row .c-key { grid-area: key; } .row .c-bpm { grid-area: bpm; }
+  .row .mobilecols { display: none; }
+  .row .acts .dur { display: none; }
+  .row .acts { justify-content: flex-end; }
+}
+@media (max-width: 560px) {
+  .row { gap: 4px 10px; padding: 10px 6px; }
+  .row .play { width: 44px; height: 44px; }
+  .row .ttl { font-size: .94rem; }
+  .row .meta .tg ~ .tg { display: none; }
+  .row .acts { gap: 0; }
+  .row .acts .ib { width: 34px; height: 34px; }
+  .row .acts .dur { display: none; }
+  .row .mobilecols { flex-basis: 100%; }
+}
+.detail { border-top-color: var(--line); }
+.lic, .editor, .tags button, .similar button { background: var(--panel); }
+.btn { background: var(--panel2); border-color: var(--line); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chip { background: var(--panel); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.seg { background: var(--panel); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.search input { background: var(--panel); }
+.transport, .mixer { background: var(--side); }
+.badge { background: var(--accent); color: var(--accent-ink); }
+
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -267,13 +401,46 @@ body:not(.can-dl) .dl { display: none !important; }
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" fill="currentColor"/></symbol>
   <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></symbol>
   <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10M21 12h0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-drum" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
   <symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 </svg>
 
-<header class="wrap mast">
-  <div class="brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><h1>Soundwell</h1></div>
-  <p class="tag">Thousands of free sound effects, loops and stems. Most are generated right in your browser, so the library can keep growing without heavy downloads. Layer, tweak, download. Every sound is CC0: use it anywhere, commercial work included, no credit required.</p>
-  <ul class="stats" id="stats"></ul>
+<nav class="side" aria-label="Library">
+  <div class="brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span class="brandname">Soundwell</span></div>
+  <ul class="navlist">
+      <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
+      <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
+      <li><button type="button" data-nav="packs"><svg aria-hidden="true"><use href="#i-grid"/></svg>Packs</button></li>
+      <li><button type="button" data-nav="kits"><svg aria-hidden="true"><use href="#i-layers"/></svg>Stem kits</button></li>
+      <li><button type="button" data-nav="loops"><svg aria-hidden="true"><use href="#i-note"/></svg>Loops</button></li>
+      <li><button type="button" data-nav="oneshots"><svg aria-hidden="true"><use href="#i-drum"/></svg>One-shots</button></li>
+      <li><button type="button" data-nav="mine"><svg aria-hidden="true"><use href="#i-spark"/></svg>Your creations<span class="cnt" data-cnt="mine"></span></button></li>
+      <li><button type="button" data-nav="saved"><svg aria-hidden="true"><use href="#i-heart"/></svg>Saved<span class="cnt" data-cnt="saved"></span></button></li>
+      <li><button type="button" data-nav="mixer"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Mixer<span class="cnt" data-cnt="mix"></span></button></li>
+    </ul>
+  <p class="sidefoot">Every sound is original and CC0. Use it anywhere, no credit needed.</p>
+</nav>
+<header class="wrap mast" id="mast">
+  <div class="brand mobile-brand"><svg aria-hidden="true"><use href="#i-logo"/></svg><span class="brandname">Soundwell</span></div>
+  <nav class="mobilenav" aria-label="Library"><ul class="navlist">
+      <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
+      <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
+      <li><button type="button" data-nav="packs"><svg aria-hidden="true"><use href="#i-grid"/></svg>Packs</button></li>
+      <li><button type="button" data-nav="kits"><svg aria-hidden="true"><use href="#i-layers"/></svg>Stem kits</button></li>
+      <li><button type="button" data-nav="loops"><svg aria-hidden="true"><use href="#i-note"/></svg>Loops</button></li>
+      <li><button type="button" data-nav="oneshots"><svg aria-hidden="true"><use href="#i-drum"/></svg>One-shots</button></li>
+      <li><button type="button" data-nav="mine"><svg aria-hidden="true"><use href="#i-spark"/></svg>Your creations<span class="cnt" data-cnt="mine"></span></button></li>
+      <li><button type="button" data-nav="saved"><svg aria-hidden="true"><use href="#i-heart"/></svg>Saved<span class="cnt" data-cnt="saved"></span></button></li>
+      <li><button type="button" data-nav="mixer"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Mixer<span class="cnt" data-cnt="mix"></span></button></li>
+    </ul></nav>
+  <div class="hero" id="hero"><canvas id="heroart" aria-hidden="true"></canvas>
+    <div class="hero-in"><span class="eyebrow">Free sound library</span><h1>Sounds for anything you make.</h1>
+      <p class="tag">Effects, loops, stems and one-shots, most of them generated right in your browser. Layer them, tweak them, download them. Every sound is CC0: use it anywhere, commercial work included.</p>
+      <ul class="stats" id="stats"></ul></div></div>
 </header>
 
 <div class="console" role="search">
@@ -309,7 +476,10 @@ body:not(.can-dl) .dl { display: none !important; }
 
 <main class="wrap" id="main">
   <section class="home" id="home" aria-label="Featured"></section>
+  <div id="packhead"></div>
+  <section class="packgrid" id="packs" hidden aria-label="All packs"></section>
   <div class="reshead"><h2 id="reshead">All sounds</h2><button class="clear" id="clear" type="button" hidden>Clear filters</button></div>
+  <div class="colhead" id="colhead" aria-hidden="true"><span></span><span>Sound</span><span>Waveform</span><span class="r">Time</span><span class="r">Key</span><span class="r">BPM</span><span></span></div>
   <ol class="list" id="list"></ol>
   <footer class="foot">
     <span>Keyboard: <kbd>/</kbd> search · <kbd>Space</kbd> play or pause · <kbd>J</kbd> <kbd>K</kbd> next and previous · <kbd>←</kbd> <kbd>→</kbd> seek 5 s · <kbd>L</kbd> loop · <kbd>M</kbd> mixer · <kbd>1</kbd>–<kbd>9</kbd> trigger mixer pads</span>
@@ -1201,7 +1371,7 @@ return { enumerate, renderEntry, peaks, SR };
   }
 
   // ---------- state ----------
-  const state = { q: '', kind: 'all', cats: new Set(), loops: false, saved: false, sort: 'best', open: null, edit: null, key: '', bpm: 0 };
+  const state = { q: '', kind: 'all', cats: new Set(), loops: false, saved: false, sort: 'best', open: null, edit: null, key: '', bpm: 0, pack: '', view: 'list', browse: false, nav: 'discover' };
   let saved = new Set(store.get('saved', []));
   let results = [];
 
@@ -1215,6 +1385,7 @@ return { enumerate, renderEntry, peaks, SR };
       if (state.saved && !saved.has(s.slug)) continue;
       if (state.key && s.key !== state.key) continue;
       if (state.bpm && s.bpm !== state.bpm) continue;
+      if (state.pack && s.pack !== state.pack) continue;
       const sc = toks.length ? score(s, toks) : 1;
       if (sc) out.push([s, sc]);
     }
@@ -1257,12 +1428,13 @@ return { enumerate, renderEntry, peaks, SR };
     return bits.join('');
   }
   function rowHtml(s) {
-    const on = saved.has(s.slug);
+    const on = saved.has(s.slug); const tags = s.tags.filter((t) => !/^\d+ bpm$|^loop$/.test(t)).slice(0, 3);
     return `<li class="row${cur === s ? ' playing' : ''}" data-slug="${s.slug}" id="r-${s.slug}">
-      <button class="play" type="button" data-act="play" aria-label="${isPlaying(s) ? 'Pause' : 'Play'} ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-${isPlaying(s) ? 'pause' : 'play'}"/></svg></button>
+      <button class="play" type="button" data-act="play" style="background-image:url(${soundArt(s)})" aria-label="${isPlaying(s) ? 'Pause' : 'Play'} ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-${isPlaying(s) ? 'pause' : 'play'}"/></svg></button>
       <div class="info"><h3 style="margin:0;font-size:inherit"><button class="ttl" type="button" data-act="open" aria-expanded="${state.open === s.slug}" aria-controls="d-${s.slug}">${esc(s.title)}</button></h3>
-        <p class="meta">${metaHtml(s)}</p><p class="desc">${esc(s.desc)}</p></div>
+        <p class="meta"><span class="pk">${esc(packName(s))}</span>${tags.map((t) => `<button type="button" class="tg" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}${s.loop ? '<span class="loop">Loop</span>' : ''}<span class="mobilecols">${[fmtDur(s.dur), shortKey(s.key), s.bpm ? s.bpm + ' BPM' : ''].filter(Boolean).join(' · ')}</span></p><p class="desc">${esc(s.desc)}</p></div>
       <canvas class="wave" data-act="seek" aria-hidden="true"></canvas>
+      <span class="cols"><span class="c-dur">${fmtDur(s.dur)}</span><span class="c-key">${esc(shortKey(s.key)) || '–'}</span><span class="c-bpm">${s.bpm || '–'}</span></span>
       <div class="acts"><span class="dur">${fmtDur(s.dur)}</span>
         <button class="ib${inMix(s) ? ' inmix' : ''}" type="button" data-act="mix" aria-pressed="${inMix(s)}" aria-label="${inMix(s) ? 'Remove from mixer' : 'Add to mixer'}: ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-layers"/></svg></button>
         <button class="ib" type="button" data-act="save" aria-pressed="${on}" aria-label="${on ? 'Remove from saved' : 'Save'}: ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-heart"/></svg></button>
@@ -1280,7 +1452,7 @@ return { enumerate, renderEntry, peaks, SR };
   function detailHtml(s) {
     const sim = similar(s);
     return `<div class="detail" id="d-${s.slug}">
-      <div><p>${esc(s.desc)}</p>
+      <div><p>${esc(s.desc)}</p>${s.custom ? '' : `<p style="margin:0 0 8px;font-size:.86rem">From the pack <button class="clear" type="button" data-pack="${s.pack}">${esc(packName(s))}</button></p>`}
         <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · WAV · mono' : s.g ? 'Generated in your browser · WAV · mono' : 'MP3 · 160 kbps · mono'}</dd></dl>
         <div class="tags">${s.tags.map((t) => `<button type="button" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>
         ${s.kit ? `<p style="margin:10px 0 0;font-size:.86rem">Part of the <b>${esc(kitOf(s.kit).name)}</b> stem kit (${kitOf(s.kit).bpm} BPM, ${esc(kitOf(s.kit).key)}). Every stem lines up with the others.</p>` : ''}
@@ -1300,13 +1472,35 @@ return { enumerate, renderEntry, peaks, SR };
     </div>`;
   }
   function header() {
-    const n = results.length; const label = n === 1 ? 'sound' : 'sounds';
-    const what = state.q ? `Results for “${esc(state.q)}”` : state.saved ? 'Saved sounds' : state.kind === 'music' ? 'Music' : state.kind === 'sfx' ? 'Sound effects' : 'All sounds';
+    const n = results.length; const label = n === 1 ? 'sound' : 'sounds'; const p = state.pack ? PACKS.get(state.pack) : null;
+    const what = state.q ? `Results for “${esc(state.q)}”` : p ? 'In this pack' : state.saved ? 'Saved sounds' : state.cats.has('Your Creations') ? 'Your creations' : state.kind === 'music' ? 'Music' : state.kind === 'sfx' ? 'Sound effects' : state.browse ? 'All sounds' : 'New and notable';
     $('#reshead').innerHTML = `${what}<span>${n.toLocaleString('en-US')} ${label}</span>`;
-    $('#clear').hidden = !(state.q || state.cats.size || state.loops || state.saved || state.kind !== 'all' || state.key || state.bpm);
+    $('#clear').hidden = !(state.q || state.cats.size || state.loops || state.saved || state.kind !== 'all' || state.key || state.bpm || state.pack);
+    $('#packhead').innerHTML = p ? `<div class="packhero"><span class="cover" style="background-image:url(${packArt(p, 360, false)})"></span><div><span class="eyebrow">Pack · ${esc(p.cat)}</span><h2>${esc(p.name)}</h2><p>${esc(p.desc)}</p><span class="pmeta">${p.count.toLocaleString('en-US')} sounds · CC0</span></div></div>` : '';
+    const discover = isDiscover(); $('#mast').classList.toggle('off', !discover); if (discover) requestAnimationFrame(drawHero);
+    for (const b2 of document.querySelectorAll('[data-nav]')) b2.setAttribute('aria-current', String(b2.dataset.nav === navKey()));
+    const set = (k, v) => { for (const el of document.querySelectorAll(`[data-cnt="${k}"]`)) el.textContent = v || ''; };
+    set('mine', SOUNDS.filter((x) => x.custom).length); set('saved', saved.size); set('mix', mix.length);
   }
+  const isDiscover = () => !state.q && !state.cats.size && !state.loops && !state.saved && state.kind === 'all' && !state.pack && !state.browse && state.view === 'list' && !state.key && !state.bpm;
+  function navKey() {
+    if (state.view === 'packs') return 'packs'; if (state.saved) return 'saved'; if (state.cats.has('Your Creations')) return 'mine'; if (state.cats.has('Stem Kits') && state.cats.size === 1) return 'kits';
+    if (state.cats.has('Drum Hits') && state.cats.has('Musical FX')) return 'oneshots'; if (state.kind === 'music' && state.loops) return 'loops'; if (isDiscover()) return 'discover'; if (state.browse && !state.q && !state.cats.size && !state.pack) return 'all'; return '';
+  }
+  function resetFilters() { state.q = ''; $('#q').value = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; state.pack = ''; state.browse = false; state.view = 'list'; state.open = null; syncSeg(); }
+  function nav(key) {
+    if (key === 'mixer') { $('#mixbtn').click(); return; }
+    resetFilters();
+    if (key === 'all') state.browse = true; else if (key === 'packs') state.view = 'packs'; else if (key === 'kits') state.cats.add('Stem Kits');
+    else if (key === 'loops') { state.kind = 'music'; state.loops = true; syncSeg(); } else if (key === 'oneshots') { state.cats.add('Drum Hits'); state.cats.add('Musical FX'); }
+    else if (key === 'mine') state.cats.add('Your Creations'); else if (key === 'saved') state.saved = true;
+    render(); window.scrollTo({ top: 0 });
+  }
+  function openPack(id) { resetFilters(); state.pack = id; render(); window.scrollTo({ top: 0 }); }
   function render() {
     compute(); chips(); header(); renderHome(); musicFilters(); $('#keyf').value = state.key; $('#bpmf').value = state.bpm || '';
+    const packsView = state.view === 'packs'; $('#packs').hidden = !packsView; $('#colhead').hidden = packsView; document.querySelector('.reshead').hidden = packsView;
+    if (packsView) { list.innerHTML = ''; const all = [...PACKS.values()].sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name)); $('#packs').innerHTML = `<div class="secth"><h2>All packs</h2><span class="pmeta" style="font:500 .8rem var(--f-mono);color:var(--muted)">${all.length} packs</span></div>` + all.map(pcardHtml).join(''); return; }
     if (!results.length) {
       list.innerHTML = `<li class="empty"><h3>No sounds match${state.q ? ` “${esc(state.q)}”` : ''}</h3><p>Try fewer words, or one of these:</p>
         <div class="tags">${['whistle', 'rain', 'laser', 'lofi', 'footsteps', 'crowd', 'retro', 'horror'].map((t) => `<button type="button" data-tag="${t}">${t}</button>`).join('')}</div></li>`;
@@ -1348,6 +1542,85 @@ return { enumerate, renderEntry, peaks, SR };
   }
   function drawAll() { for (const c of list.querySelectorAll('canvas.wave')) { const s = bySlug[c.closest('.row').dataset.slug]; draw(c, s, cur === s ? progressOf() : 0); } }
   const bySlug = Object.fromEntries(SOUNDS.map((s) => [s.slug, s]));
+  // ---------- packs ----------
+  const PACK_NAMES = { laser: 'Laser Arsenal', pickup: 'Pixel Pickups', jump: 'Platform Jumps', bitboom: '8-Bit Blasts', click: 'Interface Clicks', chime: 'Notification Chimes', deny: 'Error Tones', whoosh: 'Whoosh Library', riser: 'Risers', boom: 'Cinematic Impacts', punch: 'Fight Hits', strike: 'Metal Strikes', steps: 'Footsteps', knock: 'Door Knocks', drip: 'Water Drops', toon: 'Cartoon Classics', siren: 'Alarms and Sirens', beep: 'Beeps and Timers', bell: 'Tuned Bells', bleep: 'Computer Bleeps', magic: 'Spellbook', stinger: 'Horror Stingers', heart: 'Heartbeats', typing: 'Typing', glass: 'Glass Breaks', coins: 'Coins and Treasure', rain: 'Rain Layers', wind: 'Wind Layers', ocean: 'Ocean Layers', night: 'Night Insects', birds: 'Birdsong', fire: 'Fire Layers', stream: 'Rivers and Streams', crowd: 'Crowds', drone: 'Drones', roomtone: 'Room Tones', clock: 'Clocks', drumloop: 'Drum Loops', chords: 'Chord Loops', bass: 'Bass Loops', arp: 'Arpeggios', melody: 'Melodies', kitstem: 'Stem Kits in Every Key', sting: 'Musical Stings', gunshot: 'Gunshots', reload: 'Reloads', blade: 'Blades', frog: 'Frogs', buzz: 'Buzzing Insects', owl: 'Owls', howl: 'Wolf Howls', whale: 'Whale Song', engine: 'Engines', passby: 'Pass-Bys', horn: 'Horns', flyby: 'Spaceship Flybys', thunder: 'Thunder', hail: 'Hail', hud: 'HUD Interface', servo: 'Servos', power: 'Power Up and Down', forcefield: 'Force Fields', bonk: 'Cartoon Bonks', phonering: 'Phone Rings', doorbell: 'Doorbells', alarmclock: 'Alarm Clocks', appliance: 'Appliance Hums', toggle: 'Toggles', swipe: 'Swipes', downlifter: 'Downlifters', drumhit: 'Drum Hits', note808: '808 Notes', notebass: 'Bass Notes', notepiano: 'Piano Notes', notepluck: 'Pluck Notes', stab: 'Chord Stabs', padtex: 'Pad Textures' };
+  const packIdOf = (s) => (s.custom ? 'mine' : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+  for (const s of SOUNDS) s.pack = packIdOf(s);
+  const PACKS = new Map();
+  for (const s of SOUNDS) {
+    if (s.custom) continue;
+    let p = PACKS.get(s.pack);
+    if (!p) { p = { id: s.pack, name: s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
+    p.count++; for (const t of s.tags.slice(0, 6)) p.tags.set(t, (p.tags.get(t) || 0) + 1);
+  }
+  for (const p of PACKS.values()) { p.top = [...p.tags.entries()].sort((a, b) => b[1] - a[1]).map((x) => x[0]).filter((t) => t !== 'loop').slice(0, 4); p.desc = `${p.count.toLocaleString('en-US')} ${p.kind === 'music' ? 'music loops and one-shots' : 'sound effects'} in ${p.cat}. ${p.top.length ? 'Tagged ' + p.top.join(', ') + '.' : ''}`; }
+  const FEATURED = ['chords', 'drumloop', 'kitstem', 'magic', 'rain', 'laser', 'drumhit', 'padtex', 'gunshot', 'birds', 'hud', 'toon', 'whoosh', 'melody'].filter((id) => PACKS.has(id));
+  const packName = (s) => (s.custom ? 'Your Creations' : PACKS.get(s.pack)?.name || s.cat);
+
+  // ---------- generative cover art ----------
+  const PALETTES = [
+    ['#ff6b4a', '#ffb347', '#2b1d4e', '#ff3d7f', '#ffe0b5'], ['#00c2a8', '#0f4c75', '#7ae7ff', '#1b1b3a', '#e7fffb'], ['#8a5cff', '#ff5ca8', '#16112b', '#ffd36e', '#c9b8ff'],
+    ['#ffd23f', '#ee4266', '#540d6e', '#3bceac', '#fff1c1'], ['#2d3047', '#93b7be', '#e0ca3c', '#a799b7', '#048a81'], ['#f25f5c', '#ffe066', '#247ba0', '#70c1b3', '#1f2933'],
+    ['#0b132b', '#3a506b', '#5bc0be', '#6fffe9', '#1c2541'], ['#3d0c02', '#c1440e', '#f2a65a', '#ffdd99', '#5b2a86'], ['#14213d', '#fca311', '#e5e5e5', '#ff006e', '#8338ec'],
+    ['#1a1423', '#8661c1', '#3d1e6d', '#efbcd5', '#be97c6'], ['#073b4c', '#118ab2', '#06d6a0', '#ffd166', '#ef476f'], ['#22223b', '#c9ada7', '#4a4e69', '#f2e9e4', '#9a8c98'],
+  ];
+  const STYLE_BY_CAT = { 'Ambience Layers': 'waves', Nature: 'waves', Weather: 'waves', Animals: 'waves', 'Pad Textures': 'waves', 'Sci-Fi': 'orbits', Interface: 'orbits', Alarms: 'orbits',
+    'Drum Loops': 'bars', 'Drum Hits': 'bars', 'Bass Loops': 'bars', Weapons: 'bars', Impacts: 'bars', 'Chord Loops': 'blobs', 'Melody Loops': 'blobs', 'Arpeggio Loops': 'blobs', Jingles: 'blobs',
+    'Stem Kits': 'blobs', 'Musical FX': 'blobs', Fantasy: 'blobs', Game: 'grid', Cartoon: 'grid', Household: 'grid', Foley: 'grid', Vehicles: 'grid', Horror: 'sunset', Transitions: 'sunset', Sports: 'sunset' };
+  function hashStr(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function paint(ctx, W, H, id, style, pal) {
+    const r = rng(hashStr(id)); const [a, b, c, d, e] = pal;
+    const lg = ctx.createLinearGradient(0, 0, W, H); lg.addColorStop(0, c); lg.addColorStop(1, style === 'grid' ? a : d === '#e5e5e5' ? a : c); ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H);
+    if (style === 'waves') {
+      const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, e); sky.addColorStop(1, c); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+      const cols = [b, a, d, c]; for (let k = 0; k < 6; k++) { const y0 = H * (0.3 + k * 0.12); const amp = H * (0.03 + r() * 0.06); const fr = 1 + r() * 2.5; const ph = r() * 6.28;
+        ctx.beginPath(); ctx.moveTo(0, H); for (let x = 0; x <= W; x += W / 60) ctx.lineTo(x, y0 + Math.sin(x / W * Math.PI * 2 * fr + ph) * amp); ctx.lineTo(W, H); ctx.closePath(); ctx.globalAlpha = 0.55 + k * 0.07; ctx.fillStyle = cols[k % 4]; ctx.fill(); }
+      ctx.globalAlpha = 1;
+    } else if (style === 'orbits') {
+      ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); const cx = W * (0.35 + r() * 0.3), cy = H * (0.35 + r() * 0.3);
+      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.6); glow.addColorStop(0, a); glow.addColorStop(0.35, b + '55'); glow.addColorStop(1, c + '00'); ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+      ctx.lineWidth = Math.max(1, W / 120); for (let k = 1; k < 8; k++) { ctx.strokeStyle = k % 2 ? e + 'aa' : b + '88'; ctx.beginPath(); ctx.arc(cx, cy, W * 0.07 * k, 0, Math.PI * 2); ctx.stroke(); const t = r() * 6.28; ctx.fillStyle = k % 3 ? d : a; ctx.beginPath(); ctx.arc(cx + Math.cos(t) * W * 0.07 * k, cy + Math.sin(t) * W * 0.07 * k, W * 0.018, 0, Math.PI * 2); ctx.fill(); }
+    } else if (style === 'bars') {
+      ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); const n = 22; const bw = W / n; const g = ctx.createLinearGradient(0, H * 0.15, 0, H * 0.85); g.addColorStop(0, a); g.addColorStop(0.5, b); g.addColorStop(1, d);
+      ctx.fillStyle = g; for (let i = 0; i < n; i++) { const env = Math.sin(Math.PI * (i + 0.5) / n); const hgt = H * (0.08 + 0.7 * env * (0.35 + 0.65 * r())); ctx.fillRect(i * bw + bw * 0.18, (H - hgt) / 2, bw * 0.64, hgt); }
+      ctx.fillStyle = e + '33'; ctx.fillRect(0, H / 2 - Math.max(1, H / 160), W, Math.max(2, H / 80));
+    } else if (style === 'blobs') {
+      ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); for (let k = 0; k < 6; k++) { const x = r() * W, y = r() * H, rad = W * (0.25 + r() * 0.45); const col = [a, b, d, e][k % 4]; const g = ctx.createRadialGradient(x, y, 0, x, y, rad); g.addColorStop(0, col + 'ee'); g.addColorStop(1, col + '00'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+      ctx.strokeStyle = e + '55'; ctx.lineWidth = Math.max(1, W / 160); for (let k = 0; k < 3; k++) { ctx.beginPath(); const y = H * (0.3 + k * 0.2); ctx.moveTo(0, y); for (let x = 0; x <= W; x += W / 40) ctx.lineTo(x, y + Math.sin(x / W * 9 + k) * H * 0.04); ctx.stroke(); }
+    } else if (style === 'grid') {
+      ctx.fillStyle = a; ctx.fillRect(0, 0, W, H); const n = 8; const s = W / n; const ph = r() * 6.28;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const v = 0.5 + 0.5 * Math.sin(i * 0.9 + j * 0.6 + ph); ctx.fillStyle = (i + j) % 3 === 0 ? c : (i + j) % 3 === 1 ? d : b; const sz = s * (0.2 + 0.55 * v); if ((i * 7 + j) % 4 === 0) ctx.fillRect(i * s + (s - sz) / 2, j * s + (s - sz) / 2, sz, sz); else { ctx.beginPath(); ctx.arc(i * s + s / 2, j * s + s / 2, sz / 2, 0, Math.PI * 2); ctx.fill(); } }
+    } else {
+      const n = 7; for (let k = 0; k < n; k++) { ctx.fillStyle = [c, d, a, b, e, a, c][k]; ctx.fillRect(0, H * k / n, W, H / n + 1); }
+      ctx.save(); ctx.beginPath(); ctx.arc(W * (0.3 + r() * 0.4), H * 0.55, W * 0.3, 0, Math.PI * 2); ctx.clip(); const g = ctx.createLinearGradient(0, H * 0.25, 0, H * 0.85); g.addColorStop(0, e); g.addColorStop(1, a); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = c; for (let k = 0; k < 6; k++) ctx.fillRect(0, H * (0.55 + k * 0.06), W, H * 0.012 * (k + 1)); ctx.restore();
+    }
+  }
+  const ART = new Map();
+  function artFor(id, cat, size, label) {
+    const key = `${id}|${size}|${label ? 1 : 0}`; if (ART.has(key)) return ART.get(key);
+    const cv = document.createElement('canvas'); cv.width = cv.height = size; const ctx = cv.getContext('2d'); const h = hashStr(id);
+    const style = STYLE_BY_CAT[cat] || ['waves', 'orbits', 'bars', 'blobs', 'grid', 'sunset'][h % 6]; const pal = PALETTES[h % PALETTES.length];
+    paint(ctx, size, size, id, style, pal);
+    if (label) { const g = ctx.createLinearGradient(0, size * 0.55, 0, size); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = g; ctx.fillRect(0, size * 0.5, size, size * 0.5);
+      ctx.fillStyle = '#fff'; ctx.font = `700 ${Math.round(size * 0.05)}px "JetBrains Mono", monospace`; ctx.fillText('SOUNDWELL', size * 0.07, size * 0.9);
+      ctx.font = `800 ${Math.round(size * 0.085)}px "Bricolage Grotesque", sans-serif`; const words2 = String(label).split(' '); let line = '', y = size * 0.78, lines = []; for (const w of words2) { if (ctx.measureText(line + w).width > size * 0.86 && line) { lines.push(line.trim()); line = ''; } line += w + ' '; } lines.push(line.trim()); lines = lines.slice(-2);
+      lines.reverse().forEach((ln, i) => ctx.fillText(ln, size * 0.07, y - i * size * 0.095)); }
+    let url = ''; try { url = cv.toDataURL('image/png'); } catch {} ART.set(key, url); return url;
+  }
+  const packArt = (p, size, label) => artFor(p.id, p.cat, size, label ? p.name : '');
+  const soundArt = (s) => (s.custom ? artFor('mine', 'Fantasy', 96) : artFor(s.pack, PACKS.get(s.pack)?.cat || s.cat, 96));
+  const kitArt = (k, w) => artFor('kit-' + k.id, 'Stem Kits', w);
+  function drawHero() {
+    const cv = $('#heroart'); if (!cv || !cv.clientWidth) return; const dpr = Math.min(2, window.devicePixelRatio || 1); const W = Math.round(cv.clientWidth * dpr), H = Math.round(cv.clientHeight * dpr); cv.width = W; cv.height = H; const ctx = cv.getContext('2d');
+    paint(ctx, W, H, 'hero-soundwell', 'waves', PALETTES[0]);
+    const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0)'); const n = 70; const bw = W / n; const r = rng(7);
+    for (let i = 0; i < n; i++) { const x = i * bw; const env = 0.3 + 0.7 * Math.abs(Math.sin(i / n * Math.PI * 3)); const hgt = H * 0.5 * env * (0.4 + 0.6 * r()); ctx.fillStyle = `rgba(255,255,255,${0.10 + 0.1 * (i / n)})`; ctx.fillRect(x + bw * 0.25, H * 0.42 - hgt / 2, bw * 0.5, hgt); }
+  }
+  const shortKey = (k) => (k ? k.replace(' minor', 'm').replace(' major', '') : '');
+  function pcardHtml(p) { return `<button type="button" class="pcard" data-pack="${p.id}"><span class="cover" style="background-image:url(${packArt(p, 320, true)})"></span><span class="pn">${esc(p.name)}</span><span class="pm">${p.count.toLocaleString('en-US')} sounds · ${esc(p.cat)}</span></button>`; }
+
+
   new ResizeObserver(() => drawAll()).observe(list);
   const themeChanged = () => { readColors(); drawAll(); };
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeChanged);
@@ -1499,7 +1772,7 @@ return { enumerate, renderEntry, peaks, SR };
     for (const other of list.querySelectorAll('.detail')) { const row = other.closest('.row'); if (row.dataset.slug !== state.open) { other.remove(); row.querySelector('.ttl').setAttribute('aria-expanded', 'false'); } }
   }
   function goto(slug) {
-    if (!results.includes(bySlug[slug])) { state.q = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; $('#q').value = ''; syncSeg(); state.open = null; render(); }
+    if (!results.includes(bySlug[slug])) { state.q = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; state.pack = ''; state.view = 'list'; state.browse = true; $('#q').value = ''; syncSeg(); state.open = null; render(); }
     state.open = null; open(slug, { scroll: true });
   }
   function syncSeg() { for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-pressed', String(b.dataset.kind === state.kind)); }
@@ -1784,7 +2057,7 @@ return { enumerate, renderEntry, peaks, SR };
     const plain = !o.rev && !o.fin && !o.fout && o.start <= 0 && o.end >= 1;
     const pk = o.rev ? [...base.peaks].reverse() : base.peaks;
     const s = { slug: c.slug, title: c.title, desc: c.desc, kind: base.kind, cat: 'Your Creations', tags: [...new Set([...words(c.text).filter((w) => w.length > 2).slice(0, 6), ...base.tags.slice(0, 4), 'custom'])],
-      mood: base.mood || '', bpm: 0, key: '', loop: !!base.loop && plain, dur: Math.max(0.05, Math.round(base.dur * (o.end - o.start) / o.speed * 100) / 100), peaks: pk, custom: c, kit: '', stem: '' };
+      mood: base.mood || '', bpm: 0, key: '', loop: !!base.loop && plain, dur: Math.max(0.05, Math.round(base.dur * (o.end - o.start) / o.speed * 100) / 100), peaks: pk, custom: c, kit: '', stem: '', pack: 'mine' };
     buildIx(s); return s;
   }
   function addCustom(c, { front = true } = {}) { const s = customEntry(c); if (!s) return null; if (front) SOUNDS.unshift(s); else SOUNDS.push(s); bySlug[s.slug] = s; return s; }
@@ -1826,25 +2099,28 @@ return { enumerate, renderEntry, peaks, SR };
   // ---------- home: scene builder + kits ----------
   const home = $('#home');
   function renderHome() {
-    const show = !state.q && !state.cats.size && !state.loops && !state.saved && state.kind === 'all'; home.hidden = !show;
+    const show = isDiscover(); home.hidden = !show;
     if (!show || home.dataset.built) return; home.dataset.built = '1';
-    home.innerHTML = `<article class="card describe"><div class="dhead"><span class="eyebrow">Describe a sound</span><h3>Type any sound. Get a custom one.</h3></div>
+    home.innerHTML = `<div class="secth"><h2>Featured packs</h2><button class="clear" type="button" data-nav="packs">See all ${PACKS.size} packs</button></div><div class="packrow">${FEATURED.map((id) => pcardHtml(PACKS.get(id))).join('')}</div>` +
+      `<div class="secth"><h2>Make something new</h2></div>` +
+      `<article class="card describe"><div class="dhead"><span class="eyebrow">Describe a sound</span><h3>Type any sound. Get a custom one.</h3></div>
       <div style="display:grid;gap:8px"><textarea id="desc-in" aria-label="Describe a sound" placeholder="A heavy wooden door slamming in a church"></textarea>
         <div class="examples">${['robot powering down slowly', 'giant footsteps in a cave', 'magic portal closing', 'tiny bell for a cat collar', 'sci-fi door opening'].map((x) => `<button type="button" data-ex="${x}">${x}</button>`).join('')}</div>
         <div class="btnrow"><button class="btn primary" type="button" id="desc-go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Create sound</button></div></div>
       <div id="desc-out"><p class="hint" style="margin:0;color:var(--muted);font-size:.86rem">Claude picks the closest sound from the library and tunes its pitch, speed, length, direction and fades to match. Your creations are saved in this browser under Your Creations.</p></div></article>` +
       `<article class="card scene"><span class="eyebrow">Scene builder</span><h3>Describe it. Hear it.</h3><p>Type a scene and get a layered, looping soundscape you can adjust and download.</p>
       <textarea id="scene2" aria-label="Describe a scene" placeholder="Cozy cabin during a thunderstorm"></textarea><button class="btn" type="button" id="scene2go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Build the mix</button></article>` +
-      `<article class="card"><span class="eyebrow">Song starter</span><h3>Start a song in any key</h3><p>Pick a key, progression and tempo. Chords, bass, arpeggio, melody and drums load into the mixer, all locked together.</p>
+      `<article class="card starter"><span class="eyebrow">Song starter</span><h3>Start a song in any key</h3><p>Pick a key, progression and tempo. Chords, bass, arpeggio, melody and drums load into the mixer, all locked together.</p>
         <div class="selrow"><select id="ss-key" aria-label="Key">${NOTE_NAMES.map((n, i) => `<option value="${i}">${n}</option>`).join('')}</select>
         <select id="ss-prog" aria-label="Chord progression">${PROG_NAMES.map((n, i) => `<option value="${i}">${n}</option>`).join('')}</select>
-        <select id="ss-bpm" aria-label="Tempo"><option value="90">90 BPM</option><option value="120">120 BPM</option></select>
+        <select id="ss-bpm" aria-label="Tempo"><option value="90">90 BPM</option><option value="100">100 BPM</option><option value="120">120 BPM</option></select>
         <select id="ss-inst" aria-label="Chord instrument"><option value="1">Piano</option><option value="0">Pad</option><option value="2">Guitar</option><option value="3">Strings</option></select></div>
         <button class="btn primary" type="button" id="ss-go"><svg aria-hidden="true"><use href="#i-layers"/></svg>Build song starter</button></article>` +
-      KITS.map((k) => { const stems = SOUNDS.filter((s) => s.kit === k.id && !s.g); const keys = kitKeys(k.id); return `<article class="card"><span class="eyebrow">Stem kit</span><h3>${esc(k.name)}</h3><span class="kmeta">${k.bpm} BPM · ${stems.length} stems · ${keys.length} keys</span><p>${esc(k.desc)}</p>
+      `<div class="secth"><h2>Stem kits</h2><button class="clear" type="button" data-nav="kits">Browse stems</button></div>` +
+      KITS.map((k) => { const stems = SOUNDS.filter((s) => s.kit === k.id && !s.g); const keys = kitKeys(k.id); return `<article class="card kit"><div class="kitart" style="background-image:url(${kitArt(k, 480)})"></div><div class="kitbody"><span class="eyebrow">Stem kit</span><h3>${esc(k.name)}</h3><span class="kmeta">${k.bpm} BPM · ${stems.length} stems · ${keys.length} keys</span><p>${esc(k.desc)}</p>
         <div class="stemdots">${stems.map((s) => `<span>${esc(s.stem)}</span>`).join('')}</div>
         <label class="sortwrap">Key <select data-kitkey="${k.id}">${keys.map((key) => `<option${key === k.key ? ' selected' : ''}>${esc(key)}</option>`).join('')}</select></label>
-        <div class="btnrow"><button class="btn primary" type="button" data-kit="${k.id}"><svg aria-hidden="true"><use href="#i-layers"/></svg>Open in mixer</button><button class="btn" type="button" data-kitq="${esc(k.name)}">See stems</button></div></article>`; }).join('');
+        <div class="btnrow"><button class="btn primary" type="button" data-kit="${k.id}"><svg aria-hidden="true"><use href="#i-layers"/></svg>Open in mixer</button><button class="btn" type="button" data-kitq="${esc(k.name)}">See stems</button></div></div></article>`; }).join('');
   }
 
   // ---------- events ----------
@@ -1894,6 +2170,11 @@ return { enumerate, renderEntry, peaks, SR };
     if (e.target.closest('#scene2go')) { const t = $('#scene2').value; $('#scene').value = t; openMixer(); buildScene(t); }
   });
   $('#mixbtn').addEventListener('click', () => ($('#mixer').hidden ? openMixer() : closeMixer()));
+  document.addEventListener('click', (e) => {
+    const nb = e.target.closest('[data-nav]'); if (nb) { e.preventDefault(); nav(nb.dataset.nav); return; }
+    const pb = e.target.closest('[data-pack]'); if (pb) { e.preventDefault(); openPack(pb.dataset.pack); }
+  });
+  let heroT = 0; window.addEventListener('resize', () => { clearTimeout(heroT); heroT = setTimeout(drawHero, 150); });
   $('#mixclose').addEventListener('click', closeMixer);
   $('#mixplay').addEventListener('click', () => (mixOn ? mixStop() : mixStart()));
   $('#mixclear').addEventListener('click', () => { mixStop(); mix = []; saveMix(); renderMixer(); syncMixButtons(); });
@@ -1912,7 +2193,7 @@ return { enumerate, renderEntry, peaks, SR };
     l.vol = e.target.value / 100; saveMix(); const x = live.get(slug); if (x && !l.mute) x.g.gain.setTargetAtTime(l.vol, actx.currentTime, 0.02);
   });
   let qT = 0;
-  $('#q').addEventListener('input', (e) => { clearTimeout(qT); qT = setTimeout(() => { state.q = e.target.value.trim(); state.open = null; if (state.q && state.sort !== 'best') { /* keep user's sort */ } render(); }, 120); });
+  $('#q').addEventListener('input', (e) => { clearTimeout(qT); qT = setTimeout(() => { state.q = e.target.value.trim(); state.open = null; if (state.view === 'packs') state.view = 'list'; if (state.q && state.sort !== 'best') { /* keep user's sort */ } render(); }, 120); });
   $('#q').addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.target.value = ''; state.q = ''; render(); } if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
   document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.kind = b.dataset.kind; state.cats.clear(); state.open = null; syncSeg(); render(); });
   $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });
@@ -1924,7 +2205,7 @@ return { enumerate, renderEntry, peaks, SR };
     else { const c = b.dataset.cat; state.cats.has(c) ? state.cats.delete(c) : state.cats.add(c); }
     render();
   });
-  $('#clear').addEventListener('click', () => { state.q = ''; $('#q').value = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; state.open = null; syncSeg(); render(); });
+  $('#clear').addEventListener('click', () => { resetFilters(); state.browse = true; render(); });
   document.addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName) && document.activeElement.type !== 'range';

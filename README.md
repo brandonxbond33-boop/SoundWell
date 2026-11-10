@@ -6,6 +6,7 @@ A free, fast, accessible library of sound effects and music. **5,360 original so
 
 `site/index.html` is a single self-contained page (no server, no build step needed to run it):
 
+- **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
 - **Search** with synonyms, plus filters for type, category, key and tempo. Results load 40 at a time.
 - **Describe a sound:** type "a heavy wooden door slamming in a church" and get a custom sound (on claude.ai, Claude picks and tunes it; elsewhere it uses the closest keyword match). Creations are saved in the browser.
 - **Layer mixer:** stack loops in sync, play one-shots as pads (keys 1–9), and download the mix as WAV.
