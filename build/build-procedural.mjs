@@ -16,7 +16,7 @@ if (isMainThread) {
 } else {
   const { w, W } = workerData; const list = E.enumerate();
   for (let i = w; i < list.length; i += W) {
-    const e = list[i]; const buf = E.renderEntry(e.g, e.p); let bad = 0, sq = 0; for (const v of buf) { if (!Number.isFinite(v)) bad++; sq += v * v; }
+    const e = list[i]; const out = E.renderEntry(e.g, e.p); const buf = new Float32Array(out.l.length); for (let k = 0; k < buf.length; k++) buf[k] = (out.l[k] + out.r[k]) / 2; let bad = 0, sq = 0; for (let k = 0; k < buf.length; k++) { const a = out.l[k], b = out.r[k]; if (!Number.isFinite(a) || !Number.isFinite(b)) bad++; sq += (a * a + b * b) / 2; }
     const pk = E.peaks(buf, 40).map((v) => B64[Math.min(63, Math.round(v / 100 * 63))]).join('');
     parentPort.postMessage({ i, n: buf.length, pk, bad, rms: Math.sqrt(sq / buf.length) });
   }

@@ -1643,7 +1643,7 @@ return { enumerate, renderEntry, peaks, SR };
     const sim = similar(s);
     return `<div class="detail" id="d-${s.slug}">
       <div><p>${esc(s.desc)}</p>${s.custom ? '' : `<p style="margin:0 0 8px;font-size:.86rem">From the pack <button class="clear" type="button" data-pack="${s.pack}">${esc(packName(s))}</button></p>`}
-        <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · WAV · mono' : s.g ? 'Generated in your browser · WAV · mono' : 'MP3 · 160 kbps · mono'}</dd></dl>
+        <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · 16-bit WAV' : s.g ? 'Generated in your browser · 16-bit WAV · 44.1 kHz' : 'MP3 · 192 kbps · 44.1 kHz'}</dd></dl>
         <div class="tags">${s.tags.map((t) => `<button type="button" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>
         ${s.kit ? `<p style="margin:10px 0 0;font-size:.86rem">Part of the <b>${esc(kitOf(s.kit).name)}</b> stem kit (${kitOf(s.kit).bpm} BPM, ${esc(kitOf(s.kit).key)}). Every stem lines up with the others.</p>` : ''}
         <div class="btnrow" style="margin-top:10px">
@@ -1892,9 +1892,9 @@ return { enumerate, renderEntry, peaks, SR };
   function getWorker() {
     if (worker || workerFailed) return worker;
     try {
-      const src = SoundwellEngine.toString() + '\nconst E = SoundwellEngine();\nonmessage = (e) => { const { id, g, p } = e.data; try { const b = E.renderEntry(g, p); postMessage({ id, b }, [b.buffer]); } catch (err) { postMessage({ id, err: String(err) }); } };';
+      const src = SoundwellEngine.toString() + '\nconst E = SoundwellEngine();\nonmessage = (e) => { const { id, g, p } = e.data; try { const o = E.renderEntry(g, p); if (o.stereo) postMessage({ id, l: o.l, r: o.r }, [o.l.buffer, o.r.buffer]); else postMessage({ id, l: o.l, r: null }, [o.l.buffer]); } catch (err) { postMessage({ id, err: String(err) }); } };';
       worker = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
-      worker.onmessage = (e) => { const r = pending.get(e.data.id); if (!r) return; pending.delete(e.data.id); e.data.err ? r.rej(new Error(e.data.err)) : r.res(e.data.b); };
+      worker.onmessage = (e) => { const r = pending.get(e.data.id); if (!r) return; pending.delete(e.data.id); e.data.err ? r.rej(new Error(e.data.err)) : r.res(e.data); };
       worker.onerror = () => { workerFailed = true; worker = null; for (const [, r] of pending) r.rej(new Error('worker')); pending.clear(); };
     } catch { workerFailed = true; worker = null; }
     return worker;
@@ -1994,7 +1994,7 @@ return { enumerate, renderEntry, peaks, SR };
     const p = s.custom
       ? (bySlug[s.custom.base] ? processBuf(bySlug[s.custom.base], s.custom.o) : Promise.reject(new Error('missing')))
       : s.g
-      ? renderProc(s).then((f) => { const b = ac().createBuffer(1, f.length, 44100); b.copyToChannel(f, 0); return b; })
+      ? renderProc(s).then((o) => { const b = ac().createBuffer(2, o.l.length, 44100); b.copyToChannel(o.l, 0); b.copyToChannel(o.r || o.l, 1); return b; })
       : fetch(`media/${s.slug}.mp3`).then((r) => { if (!r.ok) throw new Error('fetch'); return r.arrayBuffer(); }).then((ab) => new Promise((res, rej) => ac().decodeAudioData(ab, res, rej)));
     p.catch(() => bufs.delete(s.slug)); bufs.set(s.slug, p);
     // keep memory bounded: drop the oldest buffers that aren't in the mix or playing
@@ -2007,13 +2007,15 @@ return { enumerate, renderEntry, peaks, SR };
     const extra = buf.length - n; const st = extra > 500 ? Math.min(Math.round(1105 * buf.sampleRate / 44100), extra) / buf.sampleRate : 0;
     return [st, st + Math.min(n, buf.length) / buf.sampleRate];
   }
+  /** 16-bit WAV (stereo when the buffer has two channels) with TPDF dither. */
   function toWav(buf) {
-    const n = buf.length; const ch = buf.numberOfChannels; const out = new DataView(new ArrayBuffer(44 + n * 2)); const sr = buf.sampleRate;
+    const n = buf.length; const ch = Math.min(2, buf.numberOfChannels); const sr = buf.sampleRate; const bytes = n * ch * 2; const out = new DataView(new ArrayBuffer(44 + bytes));
     const w = (o, str) => { for (let i = 0; i < str.length; i++) out.setUint8(o + i, str.charCodeAt(i)); };
-    w(0, 'RIFF'); out.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, 1, true);
-    out.setUint32(24, sr, true); out.setUint32(28, sr * 2, true); out.setUint16(32, 2, true); out.setUint16(34, 16, true); w(36, 'data'); out.setUint32(40, n * 2, true);
-    const data = []; for (let c = 0; c < ch; c++) data.push(buf.getChannelData(c));
-    for (let i = 0; i < n; i++) { let v = 0; for (let c = 0; c < ch; c++) v += data[c][i]; v /= ch; v = Math.max(-1, Math.min(1, v)); out.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7fff, true); }
+    w(0, 'RIFF'); out.setUint32(4, 36 + bytes, true); w(8, 'WAVE'); w(12, 'fmt '); out.setUint32(16, 16, true); out.setUint16(20, 1, true); out.setUint16(22, ch, true);
+    out.setUint32(24, sr, true); out.setUint32(28, sr * ch * 2, true); out.setUint16(32, ch * 2, true); out.setUint16(34, 16, true); w(36, 'data'); out.setUint32(40, bytes, true);
+    const data = []; for (let c = 0; c < ch; c++) data.push(buf.getChannelData(c)); let seed = 22222;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    for (let i = 0, o = 44; i < n; i++) for (let c = 0; c < ch; c++, o += 2) { let v = data[c][i] * 32767 + (rnd() - rnd()); v = Math.max(-32768, Math.min(32767, Math.round(v))); out.setInt16(o, v, true); }
     return new Uint8Array(out.buffer);
   }
   const enc = (str) => new TextEncoder().encode(str);
@@ -2103,7 +2105,7 @@ return { enumerate, renderEntry, peaks, SR };
     if (!loops.length) { toast('Add at least one unmuted loop to download a mix.'); return; }
     const btn = $('#mixexport'); btn.disabled = true; const old = btn.innerHTML; btn.textContent = 'Rendering…';
     try {
-      const secs = +$('#mixlen').value; const sr = 44100; const oc = new OfflineAudioContext(1, sr * secs, sr);
+      const secs = +$('#mixlen').value; const sr = 44100; const oc = new OfflineAudioContext(2, sr * secs, sr);
       const cp = oc.createDynamicsCompressor(); cp.threshold.value = -14; cp.knee.value = 6; cp.ratio.value = 8; const mg = oc.createGain(); mg.gain.value = mixVol; mg.connect(cp); cp.connect(oc.destination);
       for (const l of loops) {
         const s = bySlug[l.slug]; const buf = await getBuf(s); const g = oc.createGain(); g.gain.value = l.vol; g.connect(mg);
@@ -2111,7 +2113,7 @@ return { enumerate, renderEntry, peaks, SR };
       }
       mg.gain.setValueAtTime(mixVol, secs - 1.5); mg.gain.linearRampToValueAtTime(0, secs);
       const out = await oc.startRendering();
-      const d = out.getChannelData(0); let pk = 0; for (let i = 0; i < d.length; i++) pk = Math.max(pk, Math.abs(d[i])); if (pk > 0.95) { const g = 0.95 / pk; for (let i = 0; i < d.length; i++) d[i] *= g; }
+      const chs = [out.getChannelData(0), out.getChannelData(1)]; let pk = 0; for (const d of chs) for (let i = 0; i < d.length; i++) pk = Math.max(pk, Math.abs(d[i])); if (pk > 0.95) { const g = 0.95 / pk; for (const d of chs) for (let i = 0; i < d.length; i++) d[i] *= g; }
       const names = loops.map((l) => `- ${bySlug[l.slug].title} (volume ${Math.round(l.vol * 100)}%)`).join('\n');
       const note = `SoundWell mix, ${secs} seconds\n\nLayers:\n${names}\n\nEvery layer is CC0 1.0 (public domain). Use this mix for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`;
       await saveZip('soundwell-mix.zip', [{ name: 'soundwell-mix.wav', data: toWav(out) }, { name: 'LICENSE.txt', data: enc(note) }]);
@@ -2203,11 +2205,11 @@ return { enumerate, renderEntry, peaks, SR };
     ctx.globalAlpha = 1;
   }
   async function processBuf(s, o) {
-    const src = await getBuf(s); const sr = src.sampleRate; const d0 = src.getChannelData(0);
-    const a = Math.floor(Math.min(o.start, o.end) * d0.length); const b = Math.max(a + 256, Math.floor(Math.max(o.start, o.end) * d0.length));
-    const seg = d0.slice(a, Math.min(b, d0.length)); if (o.rev) seg.reverse();
-    const inB = ac().createBuffer(1, seg.length, sr); inB.copyToChannel(seg, 0);
-    const outLen = Math.max(256, Math.ceil(seg.length / o.speed)); const oc = new OfflineAudioContext(1, outLen, sr);
+    const src = await getBuf(s); const sr = src.sampleRate; const nch = src.numberOfChannels; const len = src.length;
+    const a = Math.floor(Math.min(o.start, o.end) * len); const b = Math.max(a + 256, Math.floor(Math.max(o.start, o.end) * len)); const segLen = Math.min(b, len) - a;
+    const inB = ac().createBuffer(nch, segLen, sr);
+    for (let c = 0; c < nch; c++) { const seg = src.getChannelData(c).slice(a, a + segLen); if (o.rev) seg.reverse(); inB.copyToChannel(seg, c); }
+    const outLen = Math.max(256, Math.ceil(segLen / o.speed)); const oc = new OfflineAudioContext(nch, outLen, sr);
     const node = oc.createBufferSource(); node.buffer = inB; node.playbackRate.value = o.speed; const g = oc.createGain(); const lin = 10 ** (o.gain / 20); const dur = outLen / sr;
     g.gain.setValueAtTime(o.fin > 0 ? 0 : lin, 0); if (o.fin > 0) g.gain.linearRampToValueAtTime(lin, Math.min(o.fin, dur * 0.5));
     if (o.fout > 0) { g.gain.setValueAtTime(lin, Math.max(Math.min(o.fin, dur * 0.5), dur - o.fout)); g.gain.linearRampToValueAtTime(0, dur); }

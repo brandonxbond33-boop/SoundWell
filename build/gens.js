@@ -99,8 +99,8 @@ G({ id: 'whoosh', cat: 'Transitions', kind: 'sfx', grid: { len: [0, 1, 2, 3], c:
   meta: (p) => ({ title: `${['Quick', 'Swift', 'Slow', 'Long'][p.len]} Whoosh (${['deep', 'warm', 'airy', 'bright'][p.c]}, ${['pass-by', 'rising', 'falling'][p.dir]})`,
     tags: ['whoosh', 'swoosh', 'swish', 'transition', 'pass by', 'air', 'motion', ['deep', 'warm', 'airy', 'bright'][p.c]],
     desc: `A ${['quick', 'swift', 'slow', 'long'][p.len]}, ${['deep', 'warm', 'airy', 'bright'][p.c]} whoosh that ${['passes by', 'sweeps upward', 'sweeps downward'][p.dir]}. Good for transitions and fast motion.` }),
-  render: (p) => { const L = [0.35, 0.7, 1.3, 2.2][p.len]; const c = [300, 700, 1500, 3000][p.c]; const n = noise(4300 + p.len * 13 + p.c * 3 + p.dir); const bp = bandpass(c, 1.5);
-    return render(L, (t) => { const x = t / L; const env = p.dir === 1 ? x ** 2 * Math.min(1, (1 - x) * 12) : p.dir === 2 ? (1 - x) ** 2 * Math.min(1, x * 12) : Math.sin(Math.PI * x) ** 2; const fc = c * (p.dir === 1 ? 0.5 + x : p.dir === 2 ? 1.5 - x : 0.6 + 0.8 * Math.sin(Math.PI * x)); return bp(n(), fc) * env * 2; }); } });
+  render: (p) => { const L = [0.35, 0.7, 1.3, 2.2][p.len]; const c = [300, 700, 1500, 3000][p.c]; const n = noise(4300 + p.len * 13 + p.c * 3 + p.dir); const bp = bandpass(c, 1.5); const pg = p.dir === 0 ? panned() : null;
+    return render(L, (t) => { const x = t / L; const env = p.dir === 1 ? x ** 2 * Math.min(1, (1 - x) * 12) : p.dir === 2 ? (1 - x) ** 2 * Math.min(1, x * 12) : Math.sin(Math.PI * x) ** 2; const fc = c * (p.dir === 1 ? 0.5 + x : p.dir === 2 ? 1.5 - x : 0.6 + 0.8 * Math.sin(Math.PI * x)); return bp(n(), fc) * env * 2 * (p.dir === 0 ? pg((x - 0.5) * 1.6) : 1); }); } });
 
 G({ id: 'riser', cat: 'Transitions', kind: 'sfx', grid: { len: [0, 1, 2], type: [0, 1, 2], range: [0, 1, 2] },
   meta: (p) => ({ title: `${['Noise', 'Tone', 'Hybrid'][p.type]} Riser (${['2', '4', '8'][p.len]} s, ${['low', 'mid', 'high'][p.range]})`,
@@ -225,7 +225,7 @@ G({ id: 'coins', cat: 'Game', kind: 'sfx', grid: { cnt: [0, 1, 2], f: [0, 1, 2] 
     const f = sequence(cs, (c, lt) => c.g * metalTone(c.f, [1, 1.47, 2.09], 10)(lt), 0.3); const rv = reverb(0.2); return render(L, (t) => rv(f(t) * 0.4)); } });
 
 // ---------- ambience beds (seamless 20 s loops) ----------
-const amb = (id, cat, grid, meta, render) => G({ id, cat, kind: 'sfx', loop: true, layer: true, xfade: true, grid, meta: (p) => ({ ...meta(p), loop: true, layer: true }), render });
+const amb = (id, cat, grid, meta, render) => G({ id, cat, kind: 'sfx', loop: true, layer: true, xfade: true, wide: true, grid, meta: (p) => ({ ...meta(p), loop: true, layer: true }), render });
 amb('rain', 'Ambience Layers', { int: [0, 1, 2, 3], tone: [0, 1, 2] }, (p) => ({ title: `${['Drizzle', 'Steady Rain', 'Heavy Rain', 'Downpour'][p.int]} (${['on leaves', 'on a roof', 'on pavement'][p.tone]})`, tags: ['rain', 'weather', 'storm', 'ambience', 'layer', 'loop', ['drizzle', 'steady', 'heavy', 'downpour'][p.int], ['leaves', 'roof', 'pavement'][p.tone]],
   desc: `${['A light drizzle', 'Steady rain', 'Heavy rain', 'A pounding downpour'][p.int]} falling ${['on leaves', 'on a roof', 'on pavement'][p.tone]}. Seamless loop for layering.` }),
   (p) => { const pn = pinkNoise(6000 + p.int * 3 + p.tone); const n = noise(6001 + p.int); const hp = highpass([1800, 700, 400][p.tone]); const lp = lowpass([7000, 5000, 9000][p.tone]); const r = rng(6002 + p.int * 3 + p.tone); let d = 0; const rate = [0.0012, 0.002, 0.003, 0.004][p.int];
@@ -240,11 +240,11 @@ amb('ocean', 'Ambience Layers', { per: [0, 1, 2], dist: [0, 1] }, (p) => ({ titl
     return loopRender(20, (t) => { const sw = 0.5 - 0.5 * Math.cos(TAU * t / per); return b() * (0.2 + 0.8 * sw) * 0.8 + lp(pn(), 300 + (p.dist ? 800 : 2500) * sw) * sw * [0.6, 0.9, 1.3][p.per]; }); });
 amb('night', 'Ambience Layers', { dens: [0, 1, 2], f: [0, 1] }, (p) => ({ title: `Night Insects (${['sparse', 'chorus', 'dense'][p.dens]}, ${p.f ? 'high' : 'low'})`, tags: ['crickets', 'insects', 'night', 'summer', 'countryside', 'ambience', 'layer', 'loop'],
   desc: `A summer night with ${['a few crickets', 'a chorus of crickets', 'a dense field of insects'][p.dens]} chirping. Seamless loop.` }),
-  (p) => { const vc = [2, 4, 7][p.dens]; const r = rng(6300 + p.dens * 3 + p.f); const voices = Array.from({ length: vc }, () => [(p.f ? 4800 : 3800) + r() * 900, r() * 0.9, [1, 0.9, 1.25][Math.floor(r() * 3)]]); const pn = pinkNoise(6301); const lp = lowpass(500);
-    return loopRender(20, (t) => { let s = 0; for (const [f, off, per] of voices) { const cyc = ((t + off) % (0.8 * per)); s += (cyc < 0.22 ? 1 : 0) * Math.max(0, Math.sin(TAU * 30 * cyc)) ** 3 * sin(f * t) * 0.22; } return s + lp(pn()) * 0.1; }); });
+  (p) => { const vc = [2, 4, 7][p.dens]; const r = rng(6300 + p.dens * 3 + p.f); const pg = panned(); const voices = Array.from({ length: vc }, () => [(p.f ? 4800 : 3800) + r() * 900, r() * 0.9, [1, 0.9, 1.25][Math.floor(r() * 3)], pg((r() - 0.5) * 1.6)]); const pn = pinkNoise(6301); const lp = lowpass(500);
+    return loopRender(20, (t) => { let s = 0; for (const [f, off, per, g] of voices) { const cyc = ((t + off) % (0.8 * per)); s += (cyc < 0.22 ? 1 : 0) * Math.max(0, Math.sin(TAU * 30 * cyc)) ** 3 * sin(f * t) * 0.22 * g; } return s + lp(pn()) * 0.1; }); });
 amb('birds', 'Ambience Layers', { dens: [0, 1, 2, 3], tone: [0, 1] }, (p) => ({ title: `Birdsong (${['quiet', 'lively', 'busy', 'dawn chorus'][p.dens]}, ${p.tone ? 'meadow' : 'forest'})`, tags: ['birds', 'birdsong', 'forest', 'morning', 'spring', 'nature', 'ambience', 'layer', 'loop'],
   desc: `${['A few birds', 'Lively birdsong', 'Busy birdsong', 'A full dawn chorus'][p.dens]} in a ${p.tone ? 'sunny meadow' : 'leafy forest'}. Seamless loop.` }),
-  (p) => { const r = rng(6400 + p.dens * 3 + p.tone); const calls = []; for (const t of scatter(6401 + p.dens * 3 + p.tone, 19, [0.6, 1.4, 2.4, 4][p.dens])) { const base = 2400 + r() * 2600; const kind = Math.floor(r() * 3); const cnt = 2 + Math.floor(r() * 5); for (let k = 0; k < cnt; k++) calls.push({ start: t + k * (0.07 + r() * 0.05), dur: 0.06, base, kind, g: 0.5 + r() * 0.5 }); }
+  (p) => { const r = rng(6400 + p.dens * 3 + p.tone); const calls = []; const pg = panned(); for (const t of scatter(6401 + p.dens * 3 + p.tone, 19, [0.6, 1.4, 2.4, 4][p.dens])) { const base = 2400 + r() * 2600; const pan = (r() - 0.5) * 1.6; const kind = Math.floor(r() * 3); const cnt = 2 + Math.floor(r() * 5); for (let k = 0; k < cnt; k++) calls.push({ start: t + k * (0.07 + r() * 0.05), dur: 0.06, base, kind, g: (0.5 + r() * 0.5) * pg(pan) }); }
     const f = sequence(calls, (c, lt) => { const x = lt / c.dur; if (x > 1) return 0; const sw = c.kind === 0 ? 1 + 0.5 * x : c.kind === 1 ? 1.4 - 0.5 * x : 1 + 0.15 * Math.sin(TAU * 3 * x); return c.g * Math.sin(Math.PI * x) ** 2 * sin(c.base * sw * lt); }, 0); const pn = pinkNoise(6402); const lp = lowpass(p.tone ? 1500 : 800); const rv = reverb(p.tone ? 0.1 : 0.3, 1.2);
     return loopRender(20, (t) => rv(f(t) * 0.35) + lp(pn()) * 0.12); });
 amb('fire', 'Ambience Layers', { size: [0, 1, 2] }, (p) => ({ title: `${['Candle and Small Fire', 'Fireplace', 'Roaring Bonfire'][p.size]}`, tags: ['fire', 'fireplace', 'crackle', 'campfire', 'cozy', 'ambience', 'layer', 'loop'],
@@ -387,9 +387,9 @@ G({ id: 'frog', cat: 'Animals', kind: 'sfx', grid: { sp: [0, 1, 2], cnt: [0, 1, 
 G({ id: 'buzz', cat: 'Animals', kind: 'sfx', grid: { sp: [0, 1, 2], d: [0, 1, 2] },
   meta: (p) => ({ title: `${L3(['Bee', 'Fly', 'Mosquito'], p.sp)} Buzzing ${L3(['Past', 'Around', 'Close By'], p.d)}`, tags: ['insect', 'buzz', 'buzzing', 'bug', 'animal', 'summer', L3(['bee', 'fly', 'mosquito'], p.sp)],
     desc: `A ${L3(['bee', 'housefly', 'mosquito'], p.sp)} buzzing ${L3(['past your ear', 'around the room', 'right next to you'], p.d)}.` }),
-  render: (p) => { const f0 = [210, 170, 600][p.sp]; const ph = phasor(); const lp = lowpass(4000); const L = [2, 4, 3][p.d];
+  render: (p) => { const f0 = [210, 170, 600][p.sp]; const ph = phasor(); const lp = lowpass(4000); const pg = panned(); const L = [2, 4, 3][p.d];
     return render(L, (t) => { const x = t / L; const near = p.d === 0 ? Math.exp(-((x - 0.5) ** 2) / 0.03) : p.d === 1 ? 0.4 + 0.4 * Math.sin(TAU * 0.7 * t) ** 2 : 0.8 + 0.2 * Math.sin(TAU * 3 * t); const dop = p.d === 0 ? 1 + 0.06 * Math.tanh((0.5 - x) * 8) : 1 + 0.03 * Math.sin(TAU * 0.9 * t);
-      return lp(saw(ph(f0 * dop * (1 + 0.02 * Math.sin(TAU * 13 * t))))) * near * 0.6 * Math.min(1, t * 10) * Math.min(1, (L - t) * 10); }); } });
+      return lp(saw(ph(f0 * dop * (1 + 0.02 * Math.sin(TAU * 13 * t))))) * near * 0.6 * Math.min(1, t * 10) * Math.min(1, (L - t) * 10) * pg(p.d === 0 ? Math.tanh((x - 0.5) * 5) * 0.9 : 0.8 * Math.sin(TAU * 0.35 * t + p.sp)); }); } });
 G({ id: 'owl', cat: 'Animals', kind: 'sfx', grid: { pat: [0, 1], f: [0, 1, 2, 3] },
   meta: (p) => ({ title: `Owl ${p.pat ? 'Hoot Series' : 'Hoot'} ${p.f + 1}`, tags: ['owl', 'hoot', 'night', 'forest', 'bird', 'animal', 'spooky'],
     desc: `${p.pat ? 'A rhythmic series of soft owl hoots' : 'Two breathy owl hoots'} in a quiet night forest, ${['deep', 'low', 'mid', 'high'][p.f]} pitch.` }),
@@ -417,7 +417,7 @@ G({ id: 'passby', cat: 'Vehicles', kind: 'sfx', grid: { size: [0, 1, 2], sp: [0,
   meta: (p) => ({ title: `${L3(['Motorbike', 'Car', 'Truck'], p.size)} Passing By (${L3(['slow', 'fast', 'very fast'], p.sp)})`, tags: ['pass by', 'drive by', 'vehicle', 'traffic', 'road', 'doppler', L3(['motorbike', 'car', 'truck'], p.size)],
     desc: `A ${L3(['motorbike', 'car', 'truck'], p.size)} driving past ${L3(['slowly', 'quickly', 'at high speed'], p.sp)}, with the pitch dropping as it goes by.` }),
   render: (p) => { const base = [40, 28, 16][p.size] * [1.4, 2, 3][p.sp]; const n = noise(8800 + p.size * 3 + p.sp); const pn = pinkNoise(8801); const lp = lowpass(2000); const ph = phasor(); const L = [6, 4, 3][p.sp]; const sh = [0.04, 0.08, 0.12][p.sp];
-    return render(L, (t) => { const x = (t / L - 0.5) * 2; const near = 1 / (1 + 12 * x * x); const dop = 1 + sh * Math.tanh(-x * 6); const fire = Math.max(0, Math.sin(TAU * ph(base * dop))) ** 3; return lp(fire * 0.9 + n() * 0.3 + pn() * 0.6, 500 + 3000 * near) * near * 1.4; }); } });
+    const pg = panned(); return render(L, (t) => { const x = (t / L - 0.5) * 2; const near = 1 / (1 + 12 * x * x); const dop = 1 + sh * Math.tanh(-x * 6); const fire = Math.max(0, Math.sin(TAU * ph(base * dop))) ** 3; return lp(fire * 0.9 + n() * 0.3 + pn() * 0.6, 500 + 3000 * near) * near * 1.4 * pg(Math.tanh(x * 2.5) * 0.85); }); } });
 G({ id: 'horn', cat: 'Vehicles', kind: 'sfx', grid: { type: [0, 1, 2, 3], f: [0, 1, 2] },
   meta: (p) => ({ title: `${L3(['Car Horn', 'Truck Air Horn', 'Bicycle Bell', 'Train Horn'], p.type)} ${p.f + 1}`, tags: ['horn', 'honk', 'vehicle', 'traffic', 'warning', L3(['car', 'truck', 'bicycle bell', 'train'], p.type)],
     desc: `A ${L3(['car horn honking twice', 'big truck air horn blast', 'bicycle bell ringing', 'train horn sounding in the distance'], p.type)}, ${['low', 'mid', 'high'][p.f]} pitch.` }),
@@ -428,8 +428,8 @@ G({ id: 'horn', cat: 'Vehicles', kind: 'sfx', grid: { type: [0, 1, 2, 3], f: [0,
 G({ id: 'flyby', cat: 'Sci-Fi', kind: 'sfx', grid: { size: [0, 1, 2], sp: [0, 1, 2] },
   meta: (p) => ({ title: `Spaceship Flyby (${L3(['fighter', 'shuttle', 'cruiser'], p.size)}, ${L3(['slow', 'fast', 'very fast'], p.sp)})`, tags: ['spaceship', 'flyby', 'sci-fi', 'whoosh', 'space', 'starfighter', 'jet'],
     desc: `A ${L3(['small starfighter', 'shuttle', 'huge cruiser'], p.size)} streaking past ${L3(['slowly', 'fast', 'at incredible speed'], p.sp)}, with a whining engine and a Doppler swoop.` }),
-  render: (p) => { const f0 = [900, 400, 120][p.size]; const n = noise(8900 + p.size * 3 + p.sp); const bp = bandpass(800, 1.5); const ph = phasor(); const ph2 = phasor(); const L = [5, 3, 2][p.sp]; const sh = [0.08, 0.15, 0.25][p.sp];
-    return render(L, (t) => { const x = (t / L - 0.5) * 2; const near = 1 / (1 + 15 * x * x); const dop = 1 + sh * Math.tanh(-x * 5); return (saw(ph(f0 * dop)) * 0.25 + saw(ph2(f0 * 1.01 * dop)) * 0.25 + bp(n(), 300 + 4000 * near) * 1.2) * near; }); } });
+  render: (p) => { const f0 = [900, 400, 120][p.size]; const n = noise(8900 + p.size * 3 + p.sp); const bp = bandpass(800, 1.5); const ph = phasor(); const ph2 = phasor(); const pg = panned(); const L = [5, 3, 2][p.sp]; const sh = [0.08, 0.15, 0.25][p.sp];
+    return render(L, (t) => { const x = (t / L - 0.5) * 2; const near = 1 / (1 + 15 * x * x); const dop = 1 + sh * Math.tanh(-x * 5); return (saw(ph(f0 * dop)) * 0.25 + saw(ph2(f0 * 1.01 * dop)) * 0.25 + bp(n(), 300 + 4000 * near) * 1.2) * near * pg(Math.tanh(x * 2.5) * 0.9); }); } });
 
 // ---------- weather ----------
 G({ id: 'thunder', cat: 'Weather', kind: 'sfx', grid: { dist: [0, 1, 2], size: [0, 1, 2] },
@@ -437,7 +437,7 @@ G({ id: 'thunder', cat: 'Weather', kind: 'sfx', grid: { dist: [0, 1, 2], size: [
     desc: `A ${L3(['sharp thunder clap', 'rolling peal of thunder', 'long low rumble'], p.size)} ${L3(['right overhead', 'nearby', 'far in the distance'], p.dist)}.` }),
   render: (p) => { const b = brownNoise(9000 + p.dist * 3 + p.size); const n = noise(9001 + p.size); const lp = lowpass(250); const lp2 = lowpass([4000, 1500, 500][p.dist]); const L = [3, 6, 9][p.size];
     return render(L, (t) => { const crack = p.dist < 2 ? lp2(n()) * expDecay(t, [8, 5, 3][p.dist]) * [1.4, 0.8, 0][p.dist] : 0; const roll = lp(b(), 120 + 200 * expDecay(t, 0.8)) * 3 * Math.min(1, t * [6, 3, 1.5][p.dist]) * expDecay(t, [1.2, 0.5, 0.35][p.size]) * (0.7 + 0.3 * Math.sin(TAU * 1.3 * t) * Math.sin(TAU * 0.37 * t)); return crack + roll; }); } });
-G({ id: 'hail', cat: 'Weather', kind: 'sfx', loop: true, xfade: true, layer: true, grid: { int: [0, 1, 2] },
+G({ id: 'hail', cat: 'Weather', kind: 'sfx', loop: true, xfade: true, wide: true, layer: true, grid: { int: [0, 1, 2] },
   meta: (p) => ({ title: `Hail on a Roof (${L3(['light', 'heavy', 'pounding'], p.int)})`, loop: true, layer: true, tags: ['hail', 'storm', 'weather', 'roof', 'ice', 'ambience', 'layer', 'loop'],
     desc: `${L3(['Light', 'Heavy', 'Pounding'], p.int)} hail hammering on a roof, hundreds of hard little ticks. Seamless loop.` }),
   render: (p) => { const r = rng(9100 + p.int); const hits = scatter(9101 + p.int, 19.8, [40, 120, 300][p.int]).map((s) => ({ start: s, dur: 0.03, f: 2000 + r() * 4000, g: 0.3 + r() * 0.7 })); const n = noise(9102); const bp = bandpass(3000, 2); const f = sequence(hits, (h, lt) => h.g * (sin(h.f * lt) * 0.5 + bp(n()) * 0.8) * expDecay(lt, 150), 0.03); const pn = pinkNoise(9103); const hp = highpass(800);
@@ -571,26 +571,25 @@ G({ id: 'padtex', cat: 'Pad Textures', kind: 'music', loop: true, xfade: true, g
 // natural vibrato, Karplus-Strong plucked strings and a Freeverb-style concert hall.
 
 function polyblep(t, dt) { if (t < dt) { t /= dt; return t + t - t * t - 1; } if (t > 1 - dt) { t = (t - 1) / dt; return t * t + t + t + 1; } return 0; }
-/** Concert hall: 8 damped combs + 4 allpasses (Freeverb tunings), pre-delay and a high cut on the tail. */
+/** Concert hall: stereo Freeverb tank (see synth.js stereoTank), pre-delay and a high cut on the tail. */
 function hall(mix = 0.3, size = 0.86, damp = 0.3, pre = 0.025, hc = 7000) {
-  const combs = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617].map((n) => ({ b: new Float32Array(n), i: 0, s: 0 }));
-  const aps = [556, 441, 341, 225].map((n) => ({ b: new Float32Array(n), i: 0 }));
-  const pd = new Float32Array(Math.max(1, Math.round(pre * SR))); let pi = 0; const lp = lowpass(hc);
-  return (x) => {
-    const xin = pd[pi]; pd[pi] = x; pi = (pi + 1) % pd.length; const inp = xin * 0.12; let out = 0;
-    for (const c of combs) { const y = c.b[c.i]; c.s = y * (1 - damp) + c.s * damp; c.b[c.i] = inp + c.s * size; c.i = (c.i + 1) % c.b.length; out += y; }
-    for (const a of aps) { const y = a.b[a.i]; const o = y - out; a.b[a.i] = out + y * 0.5; a.i = (a.i + 1) % a.b.length; out = o; }
-    return x * (1 - mix) + lp(out) * mix * 1.6;
-  };
+  const tank = stereoTank({ fb: size, damp }); const pd = new Float32Array(Math.max(1, Math.round(pre * SR))); let pi = 0; const lp = lowpass(hc);
+  return (x) => { const xin = pd[pi]; pd[pi] = x; pi = (pi + 1) % pd.length; return x * (1 - mix) + lp(tank(xin * 0.12)) * mix * 1.6; };
 }
 /** Bowed/blown ensemble: N detuned band-limited saws per note, delayed vibrato, 12 dB/oct dynamic low-pass. */
-function section({ voices = 5, detune = 9, vib = 0.004, att = 0.08, rel = 0.35, sus = 0.85, bright = 3200, dyn = 0.65, seed = 1 } = {}) {
+function section({ voices = 5, detune = 9, vib = 0.004, att = 0.08, rel = 0.35, sus = 0.85, bright = 3200, dyn = 0.65, seed = 1, width = 0.9 } = {}) {
+  markSpatial(); const ch = channel();
   return (n, lt) => {
-    if (!n.st) { const r = rng(seed + n.note * 7 + Math.round(n.start * 997)); n.st = { o: Array.from({ length: voices }, () => ({ ph: r(), det: 1 + (r() - 0.5) * 2 * detune / 1200, vr: 4.8 + r() * 1.3, vp: r() * 6.28 })), a: lowpass(bright), b: lowpass(bright) }; }
+    if (!n.st) { const r = rng(seed + n.note * 7 + Math.round(n.start * 997)); n.st = { o: Array.from({ length: voices }, (_, k) => { const pan = voices > 1 ? (k / (voices - 1) - 0.5) * width : 0; const ang = (pan + 1) * Math.PI / 4; return { ph: r(), det: 1 + (r() - 0.5) * 2 * detune / 1200, vr: 4.8 + r() * 1.3, vp: r() * 6.28, g: Math.SQRT2 * (ch ? Math.sin(ang) : Math.cos(ang)) }; }), a: lowpass(bright), b: lowpass(bright) }; }
     const env = adsr(lt, n.att ?? att, 0.25, n.sus ?? sus, n.rel ?? rel, n.dur) * (n.vel ?? 1); if (env < 1e-5 && lt > n.dur) return 0;
-    const f = midi(n.note); const va = vib * Math.min(1, Math.max(0, lt - 0.12) * 2.5); let s = 0;
-    for (const o of n.st.o) { const ff = f * o.det * (1 + va * Math.sin(TAU * o.vr * lt + o.vp)); const dt = ff / SR; o.ph += dt; if (o.ph >= 1) o.ph -= 1; s += 2 * o.ph - 1 - polyblep(o.ph, dt); }
-    const cut = (n.cut ?? bright) * ((1 - dyn) + dyn * env); return n.st.b(n.st.a(s / voices, cut), cut) * env;
+    const st = n.st; let s = 0;
+    if ((st.k = (st.k || 0) + 1) % 16 === 1) { // control rate: vibrato and filter update every 16 samples
+      const f = midi(n.note); const va = vib * Math.min(1, Math.max(0, lt - 0.12) * 2.5);
+      for (const o of st.o) o.dt = f * o.det * (1 + va * Math.sin(TAU * o.vr * lt + o.vp)) / SR;
+      st.cut = (n.cut ?? bright) * ((1 - dyn) + dyn * env);
+    }
+    for (const o of st.o) { const dt = o.dt; o.ph += dt; if (o.ph >= 1) o.ph -= 1; s += (2 * o.ph - 1 - polyblep(o.ph, dt)) * o.g; }
+    return st.b(st.a(s / voices, st.cut), st.cut) * env;
   };
 }
 const STRINGS = (o = {}) => section({ voices: 6, detune: 10, vib: 0.0045, att: 0.12, rel: 0.45, bright: 3600, ...o });
@@ -598,10 +597,19 @@ const SPICC = (o = {}) => section({ voices: 5, detune: 8, vib: 0, att: 0.006, re
 const BRASS = (o = {}) => section({ voices: 3, detune: 5, vib: 0.002, att: 0.09, rel: 0.4, bright: 2600, dyn: 0.92, ...o });
 /** Karplus-Strong plucked string (harp, pizzicato). */
 function ks({ damp = 0.996, tone = 0.5, seed = 1 } = {}) {
+  markSpatial(); const ch = channel();
   return (n, lt) => {
-    if (!n.ks) { const N = Math.max(2, Math.round(SR / midi(n.note))); const r = rng(seed + n.note * 13 + Math.round(n.start * 991)); const b = new Float32Array(N); let p = 0; for (let i = 0; i < N; i++) { p += (n.tone ?? tone) * ((r() * 2 - 1) - p); b[i] = p; } n.ks = { b, i: 0 }; }
-    const k = n.ks; const y = k.b[k.i]; const j = (k.i + 1) % k.b.length; k.b[k.i] = (n.damp ?? damp) * 0.5 * (y + k.b[j]); k.i = j; return y * (n.vel ?? 1) * (lt < n.dur ? 1 : Math.exp(-(lt - n.dur) * 10));
+    if (!n.ks) { const N = Math.max(2, Math.round(SR / midi(n.note))); const r = rng(seed + n.note * 13 + Math.round(n.start * 991)); const b = new Float32Array(N); let p = 0; for (let i = 0; i < N; i++) { p += (n.tone ?? tone) * ((r() * 2 - 1) - p); b[i] = p; } const pan = Math.max(-0.6, Math.min(0.6, (n.note - 64) / 30)); const ang = (pan + 1) * Math.PI / 4; n.ks = { b, i: 0, g: Math.SQRT2 * (ch ? Math.sin(ang) : Math.cos(ang)) }; }
+    const k = n.ks; const y = k.b[k.i]; const j = (k.i + 1) % k.b.length; k.b[k.i] = (n.damp ?? damp) * 0.5 * (y + k.b[j]); k.i = j; return y * k.g * (n.vel ?? 1) * (lt < n.dur ? 1 : Math.exp(-(lt - n.dur) * 10));
   };
+}
+/** Same tone as catalog.js piano(), computed with recursive oscillators and decays (no per-sample sin/exp). */
+function pianoFast(n, lt) {
+  let st = n.pf;
+  if (!st) { const f = midi(n.note); const T = 1 / SR; st = n.pf = { o: [1, 2, 3].map((k) => { const w = TAU * f * k; return { c: 2 * Math.cos(w * T), y1: Math.sin(w * lt), y2: Math.sin(w * (lt - T)) }; }), d0: Math.exp(-1.6 * lt), d2: Math.exp(-4.6 * lt), d3: Math.exp(-7.6 * lt), m0: Math.exp(-1.6 * T), m2: Math.exp(-4.6 * T), m3: Math.exp(-7.6 * T) }; }
+  const [a, b, c] = st.o; const v = a.y1 * st.d0 + 0.4 * b.y1 * st.d2 + 0.15 * c.y1 * st.d3;
+  for (const o of st.o) { const y = o.c * o.y1 - o.y2; o.y2 = o.y1; o.y1 = y; }
+  st.d0 *= st.m0; st.d2 *= st.m2; st.d3 *= st.m3; return v * Math.min(1, lt * 400);
 }
 /** Choir: ensemble saws through vowel formants. */
 function choirBus(notes, vowel = 0, seed = 1) {
@@ -645,7 +653,7 @@ G({ id: 'sc-choir', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGr
   render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) for (const note of scCh(p, bar, 57)) notes.push({ note, start: bar * 4 * B, dur: 4 * B * 0.98 }); const f = choirBus(notes, p.vow, 17); const h = hall(0.45, 0.89); return loopRender(16 * B, (t) => h(f(t)), 3); } });
 G({ id: 'sc-piano', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...CINE, ...BRIGHT]), meta: scoreMeta('Piano and Strings'),
   render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); const seq = [c[0] - 12, c[0], c[1], c[2], c[1], c[0] + 12, c[2], c[1]]; seq.forEach((note, k) => notes.push({ note, start: (bar * 8 + k) * B / 2, dur: B * 1.2 })); }
-    const pn = sequence(notes, piano, 2); const str = sequence([0, 1, 2, 3].flatMap((bar) => scCh(p, bar, 60).map((note) => ({ note, start: bar * 4 * B, dur: 4 * B, att: 0.8, vel: 0.4 }))), STRINGS({ seed: 18 }), 1); const h = hall(0.32, 0.87);
+    const pn = sequence(notes, pianoFast, 2); const str = sequence([0, 1, 2, 3].flatMap((bar) => scCh(p, bar, 60).map((note) => ({ note, start: bar * 4 * B, dur: 4 * B, att: 0.8, vel: 0.4 }))), STRINGS({ seed: 18 }), 1); const h = hall(0.32, 0.87);
     return loopRender(16 * B, (t) => h(pn(t) * 0.55 + str(t) * 0.45), 3); } });
 G({ id: 'sc-pizz', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...BRIGHT, ...CINE]), meta: scoreMeta('Pizzicato'),
   render: (p) => { const B = beat(p.bpm); const notes = []; const pat = [0, null, 2, 1, 0, 2, null, 1]; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); pat.forEach((k, j) => { if (k != null) notes.push({ note: c[k] + (j === 5 ? 12 : 0), start: (bar * 8 + j) * B / 2, dur: B / 2, vel: j % 4 === 0 ? 1 : 0.7 }); }); notes.push({ note: c[0] - 12, start: bar * 4 * B, dur: B, vel: 1 }); }
@@ -728,5 +736,7 @@ function enumerate() {
   return list;
 }
 const BY_ID = Object.fromEntries(GENS.map((g) => [g.id, g]));
-function renderEntry(gid, p) { const g = BY_ID[gid]; const m = g.meta(p); XF = !!g.xfade; const raw = g.render(p); XF = false; return finalize(raw, { loop: !!(m.loop ?? g.loop), maxRms: 0.3 }); }
+function renderEntry(gid, p) { const g = BY_ID[gid]; const m = g.meta(p); return renderStereo(() => { XF = !!g.xfade; try { return g.render(p); } finally { XF = false; } }, { loop: !!(m.loop ?? g.loop), os: OS.has(gid) ? 2 : 1, maxRms: 0.3, wide: !!g.wide }); }
+/** Bright, lightly filtered oscillators render at 88.2 kHz to remove aliasing (families without sample-count logic only). */
+const OS = new Set(['laser', 'pickup', 'jump', 'deny', 'siren', 'bleep', 'hud', 'toggle', 'alarmclock', 'bonk', 'phonering', 'horn', 'flyby', 'servo', 'power', 'downlifter', 'riser', 'stab', 'kitstem', 'sting', 'doorbell']);
 return { enumerate, renderEntry, peaks, SR };
