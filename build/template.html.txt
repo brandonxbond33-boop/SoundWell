@@ -415,37 +415,78 @@ body { font-family: var(--f-body); letter-spacing: .005em; }
 .secth h2, .packhero h2, .reshead h2, .card h3 { letter-spacing: -.015em; }
 .pcard .pn { font-weight: 700; }
 /* ---------- sequencer ---------- */
-.seq { display: grid; gap: 14px; margin: 6px 0 20px; }
+.seq { display: grid; gap: 12px; margin: 6px 0 20px; }
 .seqhead { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
 .seqhead h2 { margin: 0; font: 800 1.5rem/1.1 var(--f-display); letter-spacing: -.02em; margin-right: auto; }
-.seqbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.seqhead select { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); font-weight: 600; }
+.seqhead .ib, .seqtools .ib { font: 800 1.05rem/1 var(--f-display); }
+.seqhead .ib:disabled { opacity: .35; }
+.seqbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
 .seqbar label { display: inline-flex; align-items: center; gap: 8px; font-size: .86rem; color: var(--muted); }
+.seqbar .lbl { font: 700 .78rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .seqbar input[type=number] { width: 66px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font: 500 .9rem var(--f-mono); }
-.seqbar input[type=range] { width: 110px; accent-color: var(--accent); }
+.seqbar input[type=range] { width: 100px; accent-color: var(--accent); }
 .seqbar select, .seqbar input[type=text] { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
-.seqbar input[type=text] { min-width: 0; width: 200px; max-width: 100%; }
+.seqbar input#seq-title { min-width: 0; width: 190px; max-width: 100%; }
+.seqbar input#seq-chain { width: 110px; font: 600 .9rem var(--f-mono); letter-spacing: .12em; text-transform: uppercase; }
+.seqbar .btn { padding: 6px 11px; font-size: .84rem; }
+.seqbar .btn.tog[aria-pressed="true"] { background: var(--grad); color: #fff; border-color: transparent; }
+.seqbar .btn.rec[aria-pressed="true"] { background: #e5484d; }
+.seqbar .pos { margin-left: auto; font: 600 .8rem var(--f-mono); color: var(--accent2); min-width: 9ch; text-align: right; }
+.seqbar .hint, .lanes .hint, .seqtools .hint { font-size: .8rem; color: var(--muted); }
+.seqbar .songctl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-left: auto; }
 .seqplay { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--grad); color: #fff; display: grid; place-items: center; flex: none; }
 .seqplay svg { width: 20px; height: 20px; }
+.bankbtns { display: inline-flex; gap: 4px; }
+.bankbtns button { width: 40px; height: 36px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); font: 800 .95rem var(--f-display); color: var(--muted); position: relative; }
+.bankbtns button.used { color: var(--ink); }
+.bankbtns button.used::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--accent); }
+.bankbtns button[aria-pressed="true"] { background: var(--grad); color: #fff; border-color: transparent; }
+.bankbtns button.queued { animation: seqblink .5s steps(2) infinite; border-color: var(--accent2); }
+@keyframes seqblink { 50% { background: color-mix(in srgb, var(--accent2) 35%, var(--bg)); } }
+.lanes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.lanes [role=tab] { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: .84rem; color: var(--muted); }
+.lanes [role=tab][aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.lanes .hint { flex-basis: 100%; margin-top: 2px; }
 .seqgrid { display: grid; gap: 6px; overflow-x: auto; padding-bottom: 6px; }
 .trk { display: grid; grid-template-columns: minmax(150px, 200px) auto auto 1fr auto; align-items: center; gap: 8px; min-width: max-content; }
-.trk .tname { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 9px; background: var(--panel); border: 1px solid var(--line); min-width: 0; width: 100%; }
+.trk .tname { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 9px; background: var(--panel); border: 1px solid var(--line); min-width: 0; width: 100%; transition: background .1s; }
+.trk .tname.hitflash { background: color-mix(in srgb, var(--accent) 40%, var(--panel)); }
 .trk .tname:focus-visible { outline: 3px solid var(--focus); }
 .trk .tname .art { width: 28px; height: 28px; border-radius: 6px; background: center/cover no-repeat; flex: none; }
-.trk .tname span { font: 600 .82rem/1.2 var(--f-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trk .tname span:not(.art) { font: 600 .82rem/1.2 var(--f-display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.trk .tname kbd { font: 500 .68rem var(--f-mono); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
 .trk .tctl { display: flex; align-items: center; gap: 4px; }
 .trk .tctl .ib { width: 30px; height: 30px; }
+.trk .ib.txt { font: 800 .76rem var(--f-mono); }
 .trk .tctl .ib[aria-pressed="true"] { color: var(--accent2); }
 .trk .tctl input[type=range] { width: 64px; accent-color: var(--accent); }
-.trk .tctl select { padding: 3px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font: 500 .74rem var(--f-mono); }
+.trk .tctl select { width: 52px; padding: 3px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font: 500 .74rem var(--f-mono); }
 .steps { display: grid; grid-auto-flow: column; grid-auto-columns: 30px; gap: 4px; }
-.steps button { width: 30px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); padding: 0; }
+.steps button { width: 30px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); padding: 0; position: relative; overflow: hidden; font: 800 .66rem var(--f-mono); color: var(--ink); }
 .steps button:nth-child(4n+1) { border-color: color-mix(in srgb, var(--muted) 45%, var(--line)); }
 .steps button[data-v="x"] { background: color-mix(in srgb, var(--accent) 55%, var(--panel2)); border-color: var(--accent); }
-.steps button[data-v="X"] { background: var(--grad); border-color: var(--accent2); box-shadow: 0 0 10px -2px var(--accent2); }
+.steps button[data-v="X"] { background: var(--grad); border-color: var(--accent2); box-shadow: 0 0 10px -2px var(--accent2); color: #fff; }
+.steps button.lk::before { content: ""; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--ink); opacity: .7; }
+.steps button.out { opacity: .28; }
 .steps button.now { outline: 2px solid var(--ink); outline-offset: 1px; }
 .steps button:focus-visible { outline: 3px solid var(--focus); }
-.steps .gap { width: 6px; }
-.seqtools { display: flex; flex-wrap: wrap; gap: 8px; }
+.steps.lanemode button { height: 64px; touch-action: none; cursor: ns-resize; background: var(--panel2); box-shadow: none; }
+.steps.lanemode button[data-v="."] { cursor: default; opacity: .4; }
+.steps.lanemode button[data-v="X"], .steps.lanemode button[data-v="x"] { background: color-mix(in srgb, var(--accent) 12%, var(--panel2)); color: var(--ink); }
+.steps.lanemode button i { position: absolute; left: 3px; right: 3px; bottom: 3px; height: calc((100% - 6px) * var(--h)); border-radius: 3px; background: var(--grad); }
+.steps.lanemode button i.bi { height: auto; top: calc(3px + (100% - 6px) * (1 - var(--b))); bottom: calc(3px + (100% - 6px) * var(--a)); min-height: 2px; }
+.steps.lanemode button i.bi::after { content: ""; position: absolute; left: -3px; right: -3px; top: 50%; border-top: 1px dashed var(--muted); }
+.steps.lanemode button b { position: absolute; inset: 0; display: grid; place-items: center; font: 800 .64rem var(--f-mono); }
+.steps button b { position: absolute; inset: 0; display: grid; place-items: center; }
+.tmore { width: 0; min-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 12px; margin: 0 0 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; font-size: .84rem; color: var(--muted); }
+.tmore label, .tmore .eu { display: inline-flex; align-items: center; gap: 6px; }
+.tmore input[type=range] { width: 90px; accent-color: var(--accent); }
+.tmore output { font: 500 .74rem var(--f-mono); min-width: 7ch; }
+.tmore select { padding: 4px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); }
+.tmore .tools { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.tmore .btn { padding: 5px 9px; font-size: .78rem; }
+.seqtools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .picker { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 8px; }
 .picker input { width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); }
 .picker ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 320px; overflow-y: auto; }
@@ -464,7 +505,11 @@ body { font-family: var(--f-body); letter-spacing: .005em; }
 .plist li .pm { grid-column: 1; font: 500 .72rem var(--f-mono); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .plist li .pa { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 4px; }
 .plist li .pa .btn { padding: 5px 9px; font-size: .78rem; }
-@media (max-width: 720px) { .trk { grid-template-columns: minmax(120px, 150px) auto 1fr auto; } .trk .tctl.vol { display: none; } .seqbar input[type=text] { width: 100%; } }
+@media (max-width: 720px) {
+  .trk { grid-template-columns: minmax(120px, 150px) auto 1fr auto; } .trk .tctl.vol { display: none; } .trk .tname kbd { display: none; }
+  .seqbar input#seq-title { width: 100%; } .seqbar .songctl, .seqbar .pos { margin-left: 0; }
+  .seqbar .seqplay { order: -1; }
+}
 
 </style>
 
@@ -2660,75 +2705,319 @@ return { enumerate, renderEntry, peaks, SR };
   }
 
   // ---------- sequencer ----------
+  // Modeled on the most-used step sequencers: pattern banks and song chains (Roland TR, Elektron, Maschine), per-step
+  // velocity, chance, conditions, ratchets, micro-timing and pitch (Elektron parameter locks, Logic edit modes, FL graph editor),
+  // per-track length for polymeter (Logic, Elektron), choke groups (808 hats), track pan/filter/reverb (Drum Rack, Maschine),
+  // Euclidean and randomize tools, live pad recording (MPC, Maschine), and stem and MIDI export (Splice Beatmaker, FL Studio).
   const SEQ_MAX_TRACKS = 8; const SEQ_SAVED_KEY = 'seq-saved'; const SEQ_CUR_KEY = 'seq-current';
-  const DEFAULT_TRACKS = [['drumhit-kick-0-0', 'X...x...x...x..x'], ['drumhit-snare-0-0', '....X.......X...'], ['drumhit-hat-0-0', 'x.x.x.x.x.x.x.x.'], ['drumhit-hat-1-0', '..............x.'], ['drumhit-clap-1-0', '............x...'], ['note808-0-1', 'x.........x.....']];
+  const BANKS = ['A', 'B', 'C', 'D']; const STEP_OPTS = [16, 32, 64];
+  const CONDS = ['', '1:2', '2:2', '1:4', '2:4', '3:4', '4:4', 'fill', '!fill', 'first', '!first'];
+  const condLabel = (c) => ({ '': 'Always', fill: 'Fill', '!fill': 'No fill', first: '1st', '!first': 'Not 1st' })[c] ?? c;
+  const LANES = {
+    steps: { name: 'Steps', help: 'Tap a step once for a hit, twice for an accent, three times to clear.' },
+    vel: { name: 'Velocity', min: 5, max: 100, step: 5, help: 'Drag up or down on a step to set how hard it hits.', fmt: (v) => v + '%' },
+    chance: { name: 'Chance', min: 0, max: 100, step: 5, def: 100, help: 'Drag to set the odds a step plays each time round. Keeps loops from sounding stiff.', fmt: (v) => v + '%' },
+    cond: { name: 'Condition', help: 'Tap to cycle: 1:2 plays on the first of every 2 loops, 2:4 on the second of every 4, Fill only while Fill is on, 1st only on the first loop.' },
+    rep: { name: 'Repeat', min: 1, max: 4, step: 1, def: 1, help: 'Drag for rolls: up to 4 hits squeezed into one step, like trap hi-hats.', fmt: (v) => v + '×' },
+    nudge: { name: 'Nudge', min: -50, max: 50, step: 5, def: 0, bi: true, help: 'Drag to push a step early (down) or late (up) for a looser, human groove.', fmt: (v) => (v > 0 ? '+' : '') + v + '%' },
+    tune: { name: 'Pitch', min: -12, max: 12, step: 1, def: 0, bi: true, help: 'Drag to change the pitch of a single step, in semitones. Great for 808 bass lines.', fmt: (v) => (v > 0 ? '+' : '') + v },
+  };
   const blankPat = (n) => '.'.repeat(n);
-  function defaultPattern() { return { v: 1, title: 'My first beat', bpm: 100, swing: 0, steps: 16, tracks: DEFAULT_TRACKS.filter(([slug]) => bySlug[slug]).map(([slug, pat]) => ({ slug, pat, vol: 0.8, pitch: 0, mute: false, solo: false })) }; }
-  /** Validate any pattern (from a file, the browser or the community board): unknown sounds are dropped, numbers clamped. */
+  const num = (v, lo, hi, d) => { v = Number(v); return Number.isFinite(v) ? Math.max(lo, Math.min(hi, Math.round(v))) : d; };
+  const DEFAULT_TRACKS = [['drumhit-kick-0-0', 'X...x...x...x..x'], ['drumhit-snare-0-0', '....X.......X...'], ['drumhit-hat-0-0', 'x.x.x.x.x.x.x.x.'], ['drumhit-hat-1-0', '..............x.'], ['drumhit-clap-1-0', '............x...'], ['note808-0-1', 'x.........x.....']];
+  const newTrack = (slug, steps, o = {}) => ({ slug, vol: 0.8, pitch: 0, pan: 0, tone: 0, send: 0, choke: 0, len: steps, mute: false, solo: false, pats: {}, ...o });
+  function defaultPattern() { return cleanPattern({ title: 'My first beat', bpm: 100, swing: 0, steps: 16, tracks: DEFAULT_TRACKS.map(([slug, s]) => ({ slug, pats: { A: { s } }, choke: slug.startsWith('drumhit-hat') ? 1 : 0 })) }); }
+
+  // Genre starting points. Each track: [slug, {A: steps or {s, p}}, track options].
+  const H = (s, p) => ({ s, p });
+  const TEMPLATES = [
+    { name: 'Boom bap', bpm: 90, swing: 28, chain: 'AAAB', tracks: [
+      ['drumhit-kick-1-1', { A: 'X......x..X.....', B: 'X......x..X...x.' }],
+      ['drumhit-snare-1-0', { A: '....X.......X...', B: H('....X.......X..x', { 15: { vel: 40 } }) }],
+      ['drumhit-hat-0-0', { A: H('x.x.x.x.x.x.x.x.', { 2: { vel: 45 }, 6: { vel: 45 }, 10: { vel: 45 }, 14: { vel: 45 } }), B: H('x.x.x.x.x.x.xxx.', { 2: { vel: 45 }, 6: { vel: 45 }, 10: { vel: 45 }, 13: { vel: 40 } }) }, { choke: 1 }],
+      ['drumhit-hat-1-0', { A: '..............x.', B: '..............x.' }, { choke: 1, vol: 0.6 }],
+      ['stab-9-1', { A: '..........x.....', B: 'x.........x.....' }, { send: 45, vol: 0.55 }]] },
+    { name: 'Trap', bpm: 140, swing: 0, chain: 'AAAB', tracks: [
+      ['drumhit-kick-1-0', { A: 'X.....x...x.....', B: 'X.....x..x..x...' }],
+      ['drumhit-clap-2-0', { A: '........X.......', B: '........X.......' }, { send: 20 }],
+      ['drumhit-hat-0-1', { A: H('xxxxxxxxxxxxxxxx', { 1: { vel: 55 }, 3: { vel: 55 }, 6: { rep: 2 }, 7: { rep: 3, vel: 70 }, 9: { vel: 55 }, 11: { vel: 55 }, 14: { rep: 2 }, 15: { rep: 4, vel: 60 } }), B: H('xxxxxxxxxxxxxxxx', { 1: { vel: 55 }, 3: { rep: 3 }, 9: { vel: 55 }, 11: { rep: 2 }, 12: { rep: 4, vel: 65 }, 13: { rep: 3, vel: 60 } }) }, { choke: 1, pan: -15 }],
+      ['drumhit-hat-1-1', { A: '...x............', B: '...x.......x....' }, { choke: 1, vol: 0.5, pan: -15 }],
+      ['note808-0-1', { A: H('X.....x...x.....', { 10: { tune: -2 } }), B: H('X.....x..x..x...', { 9: { tune: 3 }, 12: { tune: -2 } }) }, { vol: 0.85 }]] },
+    { name: 'House', bpm: 124, swing: 8, chain: 'AAAB', tracks: [
+      ['drumhit-kick-0-0', { A: 'X...X...X...X...', B: 'X...X...X...X...' }],
+      ['drumhit-clap-1-0', { A: '....X.......X...', B: '....X.......X.x.' }, { send: 25 }],
+      ['drumhit-hat-1-0', { A: '..x...x...x...x.', B: '..x...x...x...x.' }, { choke: 1, vol: 0.55, pan: 12 }],
+      ['drumhit-hat-0-2', { A: 'x...x...x...x...', B: 'x...x...x...x...' }, { choke: 1, vol: 0.45, pan: 12 }],
+      ['drumhit-perc-1-0', { A: H('xxxxxxxxxxxxxxxx', { 1: { vel: 40, chance: 70 }, 3: { vel: 40 }, 5: { vel: 40, chance: 70 }, 7: { vel: 40 }, 9: { vel: 40, chance: 70 }, 11: { vel: 40 }, 13: { vel: 40, chance: 70 }, 15: { vel: 40 } }) }, { vol: 0.4, pan: -25 }],
+      ['drumhit-perc-4-0', { B: '...x..x....x.x..' }, { send: 30, pan: 20, vol: 0.6 }],
+      ['stab-0-1', { A: '...x......x.....', B: '...x......x...x.' }, { send: 40, vol: 0.45, tone: -25 }]] },
+    { name: 'Techno', bpm: 130, swing: 0, chain: 'AB', tracks: [
+      ['drumhit-kick-3-0', { A: 'X...X...X...X...', B: 'X...X...X...X...' }],
+      ['drumhit-snare-2-0', { A: '..x..x....x..x..', B: H('..x..x....x..x.x', { 15: { cond: 'fill' } }) }, { send: 35, pan: -20, vol: 0.55 }],
+      ['drumhit-hat-1-2', { A: '..x...x...x...x.', B: '..x...x...x...x.' }, { vol: 0.5, tone: 20 }],
+      ['drumhit-perc-0-0', { A: 'x..x..x', B: 'x..x..x' }, { len: 7, vol: 0.35, pan: 30, send: 30 }],
+      ['drumhit-cymbal-1-0', { A: H('x.x.x.x.x.x.x.x.', { 2: { chance: 60 }, 6: { chance: 60 }, 10: { chance: 60 }, 14: { chance: 60 } }) }, { vol: 0.3, len: 12 }],
+      ['drumhit-clap-2-0', { A: H('....X.......X...', { 12: { cond: '2:2' } }), B: '....X.......X...' }, { send: 45 }]] },
+    { name: 'Lo-fi', bpm: 82, swing: 45, chain: 'AAAB', tracks: [
+      ['drumhit-kick-1-2', { A: 'X.....x...X.....', B: 'X.....x...X..x..' }, { tone: -35 }],
+      ['drumhit-snare-3-0', { A: H('....X.......X...', { 4: { nudge: 10 }, 12: { nudge: 10 } }), B: H('....X.......X...', { 4: { nudge: 10 }, 12: { nudge: 10 } }) }, { tone: -30, send: 25 }],
+      ['drumhit-hat-2-0', { A: H('x.xxx.x.x.xxx.x.', { 2: { vel: 45 }, 3: { vel: 60, chance: 80 }, 10: { vel: 45 }, 11: { vel: 60, chance: 80 } }) }, { tone: -20, vol: 0.55 }],
+      ['drumhit-perc-2-1', { A: '......x.......x.' }, { send: 30, vol: 0.4, pan: 30 }],
+      ['notepiano-1-9', { A: 'x.......x.......', B: H('x.......x...x...', { 12: { tune: -2 } }) }, { send: 60, tone: -40, vol: 0.5 }]] },
+    { name: 'Reggaeton', bpm: 95, swing: 0, chain: 'A', tracks: [
+      ['drumhit-kick-0-1', { A: 'X...X...X...X...' }],
+      ['drumhit-snare-2-1', { A: '...x..x....x..x.' }, { send: 15 }],
+      ['drumhit-hat-0-0', { A: H('x.x.x.x.x.x.x.x.', { 2: { vel: 50 }, 6: { vel: 50 }, 10: { vel: 50 }, 14: { vel: 50 } }) }, { vol: 0.5 }],
+      ['drumhit-perc-2-0', { A: '..x...x...x...x.' }, { vol: 0.45, pan: 25 }],
+      ['note808-7-0', { A: H('X......xX.......', { 7: { tune: -2 } }) }]] },
+    { name: 'Drum & bass', bpm: 172, swing: 0, chain: 'AAAB', tracks: [
+      ['drumhit-kick-2-0', { A: 'X.........X.....', B: 'X.........X..x..' }],
+      ['drumhit-snare-0-1', { A: H('....X.......X..x', { 15: { vel: 35 } }), B: H('....X..x....X.xx', { 7: { vel: 35 }, 14: { rep: 2, vel: 60 }, 15: { rep: 3, vel: 70 } }) }, { send: 20 }],
+      ['drumhit-hat-0-1', { A: H('x.xxx.x.x.xxx.x.', { 2: { vel: 50 }, 3: { vel: 60 }, 10: { vel: 50 }, 11: { vel: 60 } }) }, { vol: 0.5, pan: 15 }],
+      ['drumhit-cymbal-1-0', { A: 'x.x.x.x.x.x.x.x.' }, { vol: 0.25, pan: -20 }],
+      ['notebass-0-1', { A: 'X.........x.....', B: H('X.........x..x..', { 13: { tune: 3 } }) }]] },
+    { name: 'Afrobeats', bpm: 105, swing: 15, chain: 'A', tracks: [
+      ['drumhit-kick-0-1', { A: 'X.....x.X.....x.' }],
+      ['drumhit-snare-2-0', { A: '...x..x...x..x..' }, { vol: 0.55, send: 20 }],
+      ['drumhit-perc-1-1', { A: H('x.xxx.xxx.xxx.xx', { 2: { vel: 50 }, 3: { vel: 60 }, 6: { vel: 50 }, 7: { vel: 60 }, 10: { vel: 50 }, 11: { vel: 60 }, 14: { vel: 50 } }) }, { vol: 0.45, pan: -25 }],
+      ['drumhit-perc-4-1', { A: '......x.x.....x.' }, { pan: 25, send: 20 }],
+      ['drumhit-perc-5-0', { A: '..x.......x.x...' }, { pan: 35, vol: 0.6 }],
+      ['drumhit-clap-1-0', { A: '....X.......X...' }, { send: 25, vol: 0.7 }]] },
+    { name: 'Cinematic drums', bpm: 90, swing: 0, steps: 32, chain: 'AAAB', tracks: [
+      ['drumhit-tom-3-2', { A: 'X.....X.X.....X.X.....X.X.x.x.x.', B: 'X.....X.X.....X.X.x.x.x.x.x.X.X.' }, { send: 45 }],
+      ['drumhit-tom-1-1', { A: '...x......x......x......x..x..x.', B: H('...x......x......x....xxxxxxxxxx', { 22: { vel: 40 }, 23: { vel: 45 }, 24: { vel: 50 }, 25: { vel: 55 }, 26: { vel: 60 }, 27: { vel: 65 }, 28: { vel: 72 }, 29: { vel: 80 }, 30: { vel: 90 }, 31: { vel: 100 } }) }, { send: 40, pan: -20 }],
+      ['sc-timpani-2-0', { A: 'X...............X...............', B: 'X...............X...............' }, { send: 30 }],
+      ['drumhit-cymbal-0-1', { B: 'X...............................' }, { send: 35, vol: 0.6 }],
+      ['sc-hit-2-1', { A: 'X...............................', B: H('X...............................', { 0: { cond: 'first' } }) }, { vol: 0.7 }]] },
+  ];
+  function templatePattern(tp) {
+    const steps = tp.steps || 16;
+    return cleanPattern({ title: tp.name + ' beat', bpm: tp.bpm, swing: tp.swing, steps, chain: tp.chain, song: tp.chain.length > 1 && /B/.test(tp.chain), cur: 'A',
+      tracks: tp.tracks.map(([slug, pats, o = {}]) => ({ slug, ...o, len: o.len || steps, pats: Object.fromEntries(Object.entries(pats).map(([b, v]) => [b, typeof v === 'string' ? { s: v } : v])) })) });
+  }
+
+  /** Validate any pattern (from a file, the browser, a template or the community board), version 1 or 2: unknown sounds are dropped, numbers clamped. */
   function cleanPattern(p, { allowCustom = true } = {}) {
-    if (!p || typeof p !== 'object') return null; const steps = +p.steps === 32 ? 32 : 16;
+    if (!p || typeof p !== 'object') return null; const steps = STEP_OPTS.includes(+p.steps) ? +p.steps : 16;
+    const cleanSteps = (src) => {
+      let s = String((src && typeof src === 'object' ? src.s : src) || '').replace(/[^.xX]/g, '.').slice(0, steps); s += blankPat(steps - s.length);
+      const pp = {}; const raw = src && typeof src === 'object' && src.p && typeof src.p === 'object' ? src.p : {};
+      for (const [k, v] of Object.entries(raw)) {
+        const i = +k; if (!(i >= 0 && i < steps) || s[i] === '.' || !v || typeof v !== 'object') continue; const o = {};
+        if (v.vel != null) o.vel = num(v.vel, 5, 100, 100); if (v.chance != null && +v.chance < 100) o.chance = num(v.chance, 0, 100, 100);
+        if (v.cond && CONDS.includes(v.cond)) o.cond = v.cond; if (+v.rep > 1) o.rep = num(v.rep, 1, 4, 1);
+        if (+v.nudge) o.nudge = num(v.nudge, -50, 50, 0); if (+v.tune) o.tune = num(v.tune, -12, 12, 0);
+        if (Object.keys(o).length) pp[i] = o;
+      }
+      return { s, p: pp };
+    };
     const tracks = (Array.isArray(p.tracks) ? p.tracks : []).slice(0, SEQ_MAX_TRACKS).filter((t) => t && typeof t.slug === 'string' && bySlug[t.slug] && (allowCustom || !bySlug[t.slug].custom)).map((t) => {
-      let pat = String(t.pat || '').replace(/[^.xX]/g, '.').slice(0, steps); pat = pat + blankPat(steps - pat.length);
-      return { slug: t.slug, pat, vol: Math.min(1, Math.max(0, Number(t.vol) || 0.8)), pitch: Math.max(-12, Math.min(12, Math.round(Number(t.pitch) || 0))), mute: !!t.mute, solo: !!t.solo };
+      const pats = {}; if (t.pats && typeof t.pats === 'object') { for (const b of BANKS) if (t.pats[b]) pats[b] = cleanSteps(t.pats[b]); } else pats.A = cleanSteps({ s: t.pat });
+      return { slug: t.slug, vol: Math.min(1, Math.max(0, Number.isFinite(Number(t.vol)) && t.vol !== '' && t.vol != null ? Number(t.vol) : 0.8)), pitch: num(t.pitch, -12, 12, 0), pan: num(t.pan, -100, 100, 0), tone: num(t.tone, -100, 100, 0),
+        send: num(t.send, 0, 100, 0), choke: num(t.choke, 0, 2, 0), len: num(t.len, 1, steps, steps), mute: !!t.mute, solo: !!t.solo, pats };
     });
-    return { v: 1, title: String(p.title || 'Untitled pattern').replace(/\s+/g, ' ').trim().slice(0, 60) || 'Untitled pattern', bpm: Math.max(60, Math.min(180, Math.round(Number(p.bpm) || 100))), swing: Math.max(0, Math.min(60, Math.round(Number(p.swing) || 0))), steps, tracks };
+    const chain = String(p.chain || 'A').toUpperCase().replace(/[^ABCD]/g, '').slice(0, 16) || 'A';
+    return { v: 2, title: String(p.title || 'Untitled pattern').replace(/\s+/g, ' ').trim().slice(0, 60) || 'Untitled pattern', bpm: num(p.bpm, 60, 200, 100), swing: num(p.swing, 0, 60, 0), steps,
+      cur: BANKS.includes(p.cur) ? p.cur : 'A', chain, song: !!p.song, tracks };
   }
   let pat = cleanPattern(store.get(SEQ_CUR_KEY, null)) || defaultPattern(); if (!pat.tracks.length) pat = defaultPattern();
   let seqSaveT = 0; const seqPersist = () => { clearTimeout(seqSaveT); seqSaveT = setTimeout(() => store.set(SEQ_CUR_KEY, pat), 300); };
+  const laneOf = (t, b = pat.cur) => t.pats[b] || (t.pats[b] = { s: blankPat(pat.steps), p: {} });
+  const bankUsed = (b) => pat.tracks.some((t) => t.pats[b] && /[xX]/.test(t.pats[b].s));
   const seqBufs = new Map();
   function seqLoad(slug) { const s = bySlug[slug]; if (!s || seqBufs.has(slug)) return; seqBufs.set(slug, null); getBuf(s).then((b) => seqBufs.set(slug, b)).catch(() => { seqBufs.delete(slug); toast(`Couldn't load “${s.title}”.`); }); }
-  const SEQ = { playing: false, step: 0, next: 0, timer: 0, out: null, voices: new Map(), marks: [], raf: 0, picker: null };
-  function seqOut() { const c = ac(); if (!SEQ.out) { SEQ.out = c.createGain(); const comp = c.createDynamicsCompressor(); comp.threshold.value = -8; comp.ratio.value = 6; SEQ.out.connect(comp); comp.connect(c.destination); } return SEQ.out; }
-  const stepLen = (i) => { const d = 60 / pat.bpm / 4; const sw = pat.swing / 100 * 0.5; return d * (i % 2 === 0 ? 1 + sw : 1 - sw); };
-  function seqHit(ctx, dest, t, when, vel, chokeMap) {
-    const buf = seqBufs.get(t.slug); if (!buf) return;
-    const prev = chokeMap.get(t); if (prev) { try { prev.g.gain.setTargetAtTime(0, when, 0.006); prev.src.stop(when + 0.06); } catch {} }
-    const g = ctx.createGain(); g.gain.value = t.vol * vel; g.connect(dest); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = 2 ** (t.pitch / 12); src.connect(g); src.start(when); chokeMap.set(t, { src, g });
+  const SEQ = { playing: false, next: 0, timer: 0, G: null, marks: [], raf: 0, picker: null, slot: 0, a: 0, abs: {}, bank: 'A', queued: null, fill: false, rec: false, last: null,
+    lane: 'steps', menu: -1, undo: [], redo: [], burst: 0, clip: null, taps: [] };
+
+  // undo / redo: snapshots of the whole project
+  function snap() { SEQ.undo.push(JSON.stringify(pat)); if (SEQ.undo.length > 80) SEQ.undo.shift(); SEQ.redo = []; }
+  function snapSoon() { if (!SEQ.burst) snap(); clearTimeout(SEQ.burst); SEQ.burst = setTimeout(() => { SEQ.burst = 0; }, 700); }
+  function seqUndo(redo) { const from = redo ? SEQ.redo : SEQ.undo; if (!from.length) { toast(redo ? 'Nothing to redo' : 'Nothing to undo'); return; } (redo ? SEQ.undo : SEQ.redo).push(JSON.stringify(pat)); pat = JSON.parse(from.pop()); seqPersist(); renderSeq(); }
+
+  // audio graph: tracks → filter → pan → volume → (reverb send) → glue compressor
+  function seqIR(ctx) { const sr = ctx.sampleRate, n = Math.floor(sr * 2.2); const b = ctx.createBuffer(2, n, sr); let seed = 7; for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < n; i++) { seed = (seed * 16807) % 2147483647; const t = i / sr; d[i] = (seed / 2147483647 * 2 - 1) * Math.exp(-t * 3.2) * Math.min(1, t / 0.012) * 0.5; } } return b; }
+  function seqGraph(ctx, comp = true) {
+    const out = ctx.createGain(); let end = ctx.destination;
+    if (comp) { const c = ctx.createDynamicsCompressor(); c.threshold.value = -8; c.ratio.value = 6; c.connect(ctx.destination); end = c; }
+    out.connect(end); const rev = ctx.createConvolver(); rev.buffer = seqIR(ctx); const rg = ctx.createGain(); rg.gain.value = 0.8; rev.connect(rg); rg.connect(end);
+    return { ctx, out, rev, buses: new Map(), voices: new Map() };
   }
-  function seqStep(i, when) { const anySolo = pat.tracks.some((t) => t.solo); for (const t of pat.tracks) { const c = t.pat[i]; if (c === '.' || !c || t.mute || (anySolo && !t.solo)) continue; seqHit(actx, seqOut(), t, when, c === 'X' ? 1 : 0.62, SEQ.voices); } }
-  function seqTick() { while (SEQ.next < actx.currentTime + 0.12) { seqStep(SEQ.step, SEQ.next); SEQ.marks.push([SEQ.step, SEQ.next]); SEQ.next += stepLen(SEQ.step); SEQ.step = (SEQ.step + 1) % pat.steps; } }
-  function seqDraw() { const now = actx.currentTime; let cur = -1; while (SEQ.marks.length && SEQ.marks[0][1] <= now) cur = SEQ.marks.shift()[0]; if (cur >= 0) for (const col of document.querySelectorAll('.steps')) { col.querySelector('.now')?.classList.remove('now'); col.querySelectorAll('button')[cur]?.classList.add('now'); } if (SEQ.playing) SEQ.raf = requestAnimationFrame(seqDraw); }
-  function seqPlay() { ac(); seqOut(); for (const t of pat.tracks) seqLoad(t.slug); if (P.playing) pPause(); SEQ.playing = true; SEQ.step = 0; SEQ.marks = []; SEQ.next = actx.currentTime + 0.08; clearInterval(SEQ.timer); SEQ.timer = setInterval(seqTick, 25); seqTick(); cancelAnimationFrame(SEQ.raf); SEQ.raf = requestAnimationFrame(seqDraw); seqSyncPlay(); }
-  function seqStop() { SEQ.playing = false; clearInterval(SEQ.timer); cancelAnimationFrame(SEQ.raf); for (const v of SEQ.voices.values()) { try { v.g.gain.setTargetAtTime(0, actx.currentTime, 0.01); v.src.stop(actx.currentTime + 0.1); } catch {} } SEQ.voices.clear(); document.querySelectorAll('.steps .now').forEach((b) => b.classList.remove('now')); seqSyncPlay(); }
+  function setBus(b, t, ctx) {
+    const ny = ctx.sampleRate / 2 - 100; b.f.Q.value = 0.7;
+    if (t.tone < 0) { b.f.type = 'lowpass'; b.f.frequency.value = Math.min(ny, 20000 * Math.pow(250 / 20000, -t.tone / 100)); }
+    else if (t.tone > 0) { b.f.type = 'highpass'; b.f.frequency.value = 20 * Math.pow(100, t.tone / 100); }
+    else { b.f.type = 'lowpass'; b.f.frequency.value = ny; }
+    b.p.pan.value = t.pan / 100; b.v.gain.value = t.vol; b.s.gain.value = t.send / 100 * 0.6;
+  }
+  function seqBus(G, t) {
+    let b = G.buses.get(t);
+    if (!b) { const c = G.ctx; b = { in: c.createGain(), f: c.createBiquadFilter(), p: c.createStereoPanner(), v: c.createGain(), s: c.createGain() }; b.in.connect(b.f); b.f.connect(b.p); b.p.connect(b.v); b.v.connect(G.out); b.v.connect(b.s); b.s.connect(G.rev); G.buses.set(t, b); setBus(b, t, c); }
+    return b;
+  }
+  function seqLive() { const c = ac(); if (!SEQ.G) SEQ.G = seqGraph(c); for (const [t, b] of SEQ.G.buses) if (!pat.tracks.includes(t)) { b.v.disconnect(); SEQ.G.buses.delete(t); } return SEQ.G; }
+  const liveBus = (t) => { if (SEQ.G && SEQ.G.buses.has(t)) setBus(SEQ.G.buses.get(t), t, SEQ.G.ctx); };
+  function seqHit(G, t, when, vel, tune = 0) {
+    const buf = seqBufs.get(t.slug); if (!buf) return; const key = t.choke ? 'choke' + t.choke : t; const ctx = G.ctx;
+    const prev = G.voices.get(key); if (prev) { try { prev.g.gain.setTargetAtTime(0, when, 0.006); prev.src.stop(when + 0.06); } catch {} }
+    const g = ctx.createGain(); g.gain.value = vel; g.connect(seqBus(G, t).in); const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = 2 ** ((t.pitch + tune) / 12); src.connect(g); src.start(when); G.voices.set(key, { src, g });
+  }
+  const audition = (t, tune = 0, vel = 1) => { const G = seqLive(); seqLoad(t.slug); seqHit(G, t, G.ctx.currentTime + 0.005, vel, tune); };
+  const stepLen = (i) => { const d = 60 / pat.bpm / 4; const sw = pat.swing / 100 * 0.5; return d * (i % 2 === 0 ? 1 + sw : 1 - sw); };
+  function condOk(c, loop, fill) { if (!c) return true; if (c === 'fill') return fill; if (c === '!fill') return !fill; if (c === 'first') return loop === 0; if (c === '!first') return loop > 0; const [a, b] = c.split(':').map(Number); return loop % b === a - 1; }
+  /** The hits one track plays on one step: applies condition, chance, velocity, ratchets, nudge and step pitch. */
+  function stepHits(t, bank, a, t0, dur, rng, fill) {
+    const L = t.pats[bank]; if (!L) return []; const len = Math.min(t.len, pat.steps); const k = a % len; const c = L.s[k]; if (!c || c === '.') return [];
+    const o = L.p[k] || {}; if (!condOk(o.cond, Math.floor(a / len), fill)) return []; if (o.chance != null && rng() * 100 >= o.chance) return [];
+    const vel = (o.vel ?? (c === 'X' ? 100 : 62)) / 100; const rep = o.rep || 1; const start = t0 + (o.nudge || 0) / 100 * dur;
+    return Array.from({ length: rep }, (_, r) => ({ when: start + r * dur / rep, vel: vel * 0.85 ** r, tune: o.tune || 0, len: dur / rep }));
+  }
+  const audible = (t) => !t.mute && !(pat.tracks.some((x) => x.solo) && !t.solo);
+  function seqTick() {
+    const G = SEQ.G;
+    while (SEQ.next < actx.currentTime + 0.12) {
+      const bank = SEQ.bank; const a = SEQ.abs[bank] || 0; const dur = stepLen(SEQ.a);
+      for (const t of pat.tracks) if (audible(t)) for (const h of stepHits(t, bank, a, SEQ.next, dur, Math.random, SEQ.fill)) seqHit(G, t, Math.max(h.when, actx.currentTime), h.vel, h.tune);
+      SEQ.marks.push({ bank, a, t: SEQ.next, dur, slot: SEQ.slot }); SEQ.abs[bank] = a + 1; SEQ.next += dur;
+      if (++SEQ.a >= pat.steps) { SEQ.a = 0; if (pat.song) { SEQ.slot = (SEQ.slot + 1) % pat.chain.length; SEQ.bank = pat.chain[SEQ.slot]; } else if (SEQ.queued) { SEQ.bank = SEQ.queued; SEQ.queued = null; } }
+    }
+  }
+  function seqDraw() {
+    const now = actx.currentTime; let m = null; while (SEQ.marks.length && SEQ.marks[0].t <= now) m = SEQ.marks.shift();
+    if (m) {
+      SEQ.last = m; if (m.bank !== pat.cur) { pat.cur = m.bank; renderSeq(); }
+      for (const row of document.querySelectorAll('#seqview .trk')) { const t = pat.tracks[+row.dataset.t]; if (!t) continue; const k = m.a % Math.min(t.len, pat.steps); row.querySelector('.steps .now')?.classList.remove('now'); row.querySelectorAll('.steps button')[k]?.classList.add('now'); }
+      const pos = $('#seq-pos'); if (pos) pos.textContent = pat.song ? `Song ${m.slot + 1}/${pat.chain.length} · ${m.bank}` : `Pattern ${m.bank}${SEQ.queued ? ` → ${SEQ.queued}` : ''}`;
+    }
+    if (SEQ.playing) SEQ.raf = requestAnimationFrame(seqDraw);
+  }
+  function seqPlay() {
+    const G = seqLive(); for (const t of pat.tracks) seqLoad(t.slug); if (P.playing) pPause();
+    if (pat.song && !pat.chain.length) pat.chain = 'A';
+    Object.assign(SEQ, { playing: true, slot: 0, a: 0, abs: {}, queued: null, marks: [], bank: pat.song ? pat.chain[0] : pat.cur, next: G.ctx.currentTime + 0.08 });
+    clearInterval(SEQ.timer); SEQ.timer = setInterval(seqTick, 25); seqTick(); cancelAnimationFrame(SEQ.raf); SEQ.raf = requestAnimationFrame(seqDraw); seqSyncPlay();
+  }
+  function seqStop() {
+    SEQ.playing = false; SEQ.last = null; clearInterval(SEQ.timer); cancelAnimationFrame(SEQ.raf);
+    if (SEQ.G) { for (const v of SEQ.G.voices.values()) { try { v.g.gain.setTargetAtTime(0, actx.currentTime, 0.01); v.src.stop(actx.currentTime + 0.1); } catch {} } SEQ.G.voices.clear(); }
+    document.querySelectorAll('.steps .now').forEach((b) => b.classList.remove('now')); const pos = $('#seq-pos'); if (pos) pos.textContent = ''; seqSyncPlay();
+  }
   function seqSyncPlay() { const b = $('#seqplay'); if (!b) return; b.setAttribute('aria-label', SEQ.playing ? 'Stop pattern' : 'Play pattern'); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${SEQ.playing ? 'stop' : 'play'}"/></svg>`; }
+
+  // pads: keys 1–8 play tracks; with Record on they write hits into the playing pattern, quantized to the nearest step
+  function seqPad(i, accent) {
+    const t = pat.tracks[i]; if (!t) return; audition(t, 0, accent ? 1 : 0.75);
+    const row = document.querySelector(`#seqview .trk[data-t="${i}"] .tname`); if (row) { row.classList.add('hitflash'); setTimeout(() => row.classList.remove('hitflash'), 120); }
+    if (!SEQ.rec || !SEQ.playing || !SEQ.last) return;
+    const m = SEQ.last; const late = actx.currentTime - m.t; const a = m.a + (late > m.dur / 2 ? 1 : 0); const k = a % Math.min(t.len, pat.steps);
+    snapSoon(); const L = laneOf(t, m.bank); if (L.s[k] === '.') { L.s = L.s.slice(0, k) + (accent ? 'X' : 'x') + L.s.slice(k + 1); seqPersist(); const cell = document.querySelector(`#seqview .trk[data-t="${i}"] [data-step="${k}"]`); if (cell) seqCell(cell, t, k); }
+  }
+
   function addToSeq(s) {
     if (pat.tracks.some((t) => t.slug === s.slug)) { toast(`“${s.title}” is already in the sequencer.`); return; }
     if (pat.tracks.length >= SEQ_MAX_TRACKS) { toast('The sequencer holds 8 tracks. Remove one first.'); return; }
-    pat.tracks.push({ slug: s.slug, pat: blankPat(pat.steps), vol: 0.8, pitch: 0, mute: false, solo: false }); seqLoad(s.slug); seqPersist();
+    snap(); pat.tracks.push(newTrack(s.slug, pat.steps)); seqLoad(s.slug); seqPersist();
     toast(`Added “${s.title}” to the sequencer`); if (state.view === 'seq') renderSeq();
   }
+  // Swap a track for the next similar sound (same family and part), like a sample-swap button.
+  function seqSimilar(s) {
+    if (s.g) { const k0 = Object.keys(s.p || {})[0]; return SOUNDS.filter((x) => x.g === s.g && !x.custom && (k0 == null || typeof s.p[k0] !== 'string' || x.p[k0] === s.p[k0])); }
+    return SOUNDS.filter((x) => !x.g && !x.custom && x.cat === s.cat && !x.loop);
+  }
+  function seqSwap(i, dir) { const t = pat.tracks[i]; const pool = seqSimilar(bySlug[t.slug]); if (pool.length < 2) { toast('No similar sounds to swap in.'); return; } const j = pool.findIndex((x) => x.slug === t.slug); snap(); t.slug = pool[(j + dir + pool.length) % pool.length].slug; seqLoad(t.slug); seqPersist(); renderSeq(); const ready = () => { if (seqBufs.get(t.slug)) audition(t); else setTimeout(ready, 60); }; setTimeout(ready, 0); }
+
+  // step-editing tools
+  function euclid(k, n, rot) { const s = Array.from({ length: n }, (_, i) => ((i * k) % n) < k && k > 0 ? 'x' : '.'); return s.map((_, i) => s[(i - rot + n * 4) % n]).join(''); }
+  function setRow(t, s, keepP = false) { const L = laneOf(t); const full = (s + blankPat(pat.steps)).slice(0, pat.steps); if (!keepP) L.p = {}; else for (const k of Object.keys(L.p)) if (full[k] === '.') delete L.p[k]; L.s = full; }
+  function shiftRow(t, dir) {
+    const L = laneOf(t); const len = Math.min(t.len, pat.steps); const head = [...L.s.slice(0, len)]; const p2 = {};
+    const s2 = head.map((_, i) => head[(i - dir + len) % len]).join(''); for (const [k, v] of Object.entries(L.p)) if (+k < len) p2[(+k + dir + len) % len] = v; else p2[k] = v;
+    L.s = s2 + L.s.slice(len); L.p = p2;
+  }
+  function randomRow(t) {
+    const s = bySlug[t.slug]; const part = (s.p && s.p.part) || ''; const len = Math.min(t.len, pat.steps);
+    const prob = (i) => part === 'kick' ? (i % 8 === 0 ? 0.9 : i % 4 === 0 ? 0.35 : i % 2 === 0 ? 0.18 : 0.08) : part === 'snare' || part === 'clap' ? (i % 8 === 4 ? 0.95 : 0.07) : part === 'hat' ? (i % 2 === 0 ? 0.85 : 0.35) : (i % 4 === 0 ? 0.3 : 0.2);
+    let out = ''; for (let i = 0; i < len; i++) { const r = Math.random(); out += r < prob(i) ? (r < prob(i) * 0.25 ? 'X' : 'x') : '.'; } setRow(t, out);
+  }
+  function humanize() { snap(); for (const t of pat.tracks) { const L = laneOf(t); for (let k = 0; k < pat.steps; k++) if (L.s[k] !== '.') { const o = L.p[k] || (L.p[k] = {}); o.vel = num((L.s[k] === 'X' ? 100 : 72) - Math.random() * 22, 5, 100, 80); const n = Math.round((Math.random() - 0.5) * 8); if (n) o.nudge = n; else delete o.nudge; } } seqPersist(); renderSeq(); toast('Humanized: small changes to timing and velocity. Undo to go back.'); }
+  function setSteps(n) {
+    snap(); const old = pat.steps;
+    for (const t of pat.tracks) { for (const L of Object.values(t.pats)) { let s = L.s; const p = { ...L.p }; while (s.length < n) { const l = s.length; for (const [k, v] of Object.entries(L.p)) if (+k + l < n) p[+k + l] = { ...v }; s += s; } L.s = s.slice(0, n); for (const k of Object.keys(p)) if (+k >= n) delete p[k]; L.p = p; } t.len = t.len === old ? n : Math.min(t.len, n); }
+    pat.steps = n; seqPersist(); renderSeq();
+  }
+
+  function laneVal(t, k, lane) {
+    const L = laneOf(t); const c = L.s[k]; const o = L.p[k] || {}; if (lane === 'vel') return o.vel ?? (c === 'X' ? 100 : 62);
+    if (lane === 'cond') return o.cond || ''; return o[lane] ?? LANES[lane].def;
+  }
+  function setLane(t, k, lane, v) { const L = laneOf(t); if (L.s[k] === '.') return; const o = L.p[k] || {}; const d = LANES[lane]; if (lane === 'cond') { if (v) o.cond = v; else delete o.cond; } else { v = Math.max(d.min, Math.min(d.max, Math.round(v / d.step) * d.step)); if (lane !== 'vel' && v === d.def) delete o[lane]; else o[lane] = v; } if (Object.keys(o).length) L.p[k] = o; else delete L.p[k]; }
+  function seqCell(btn, t, k) {
+    const s = bySlug[t.slug]; const L = laneOf(t); const c = L.s[k]; const lane = SEQ.lane; const o = L.p[k] || {};
+    btn.dataset.v = c; btn.classList.toggle('out', k >= t.len); btn.classList.toggle('lk', !!(o.chance != null || o.cond || o.rep || o.nudge || o.tune || o.vel != null));
+    if (lane === 'steps') { btn.innerHTML = o.rep ? `<b>${o.rep}</b>` : ''; btn.setAttribute('aria-pressed', String(c !== '.')); btn.setAttribute('aria-label', `${s.title}, step ${k + 1}: ${c === '.' ? 'off' : c === 'X' ? 'accent' : 'on'}`); return; }
+    btn.removeAttribute('aria-pressed');
+    if (c === '.') { btn.innerHTML = ''; btn.setAttribute('aria-label', `${s.title}, step ${k + 1}: off`); return; }
+    const d = LANES[lane]; const v = laneVal(t, k, lane);
+    if (lane === 'cond') { btn.innerHTML = `<b>${v ? esc(condLabel(v)) : '·'}</b>`; btn.setAttribute('aria-label', `${s.title}, step ${k + 1} condition: ${condLabel(v)}`); return; }
+    const f = (v - d.min) / (d.max - d.min);
+    btn.innerHTML = d.bi ? `<i class="bi" style="--a:${Math.min(f, 0.5)};--b:${Math.max(f, 0.5)}"></i>` : `<i style="--h:${Math.max(0.04, f)}"></i>`;
+    btn.setAttribute('aria-label', `${s.title}, step ${k + 1} ${d.name.toLowerCase()}: ${d.fmt(v)}`); btn.title = d.fmt(v);
+  }
+
   function seqTrackHtml(t, i) {
-    const s = bySlug[t.slug]; const cells = [...t.pat].map((c, k) => `<button type="button" data-step="${k}" data-v="${c}" aria-label="${esc(s.title)}, step ${k + 1}: ${c === '.' ? 'off' : c === 'X' ? 'accent' : 'on'}" aria-pressed="${c !== '.'}"></button>`).join('');
-    return `<div class="trk" data-t="${i}">
-      <button class="tname" type="button" data-seq="pick" title="Change sound"><span class="art" style="background-image:url(${soundArt(s)})"></span><span>${esc(s.title)}</span></button>
-      <div class="tctl"><button class="ib" type="button" data-seq="mute" aria-pressed="${t.mute}" aria-label="Mute ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-${t.mute ? 'mute' : 'vol'}"/></svg></button><button class="ib" type="button" data-seq="solo" aria-pressed="${t.solo}" aria-label="Solo ${esc(s.title)}" style="font:800 .72rem var(--f-mono)">S</button></div>
-      <div class="tctl vol"><input type="range" min="0" max="100" value="${Math.round(t.vol * 100)}" data-seq="vol" aria-label="Volume: ${esc(s.title)}"><select data-seq="pitch" aria-label="Pitch: ${esc(s.title)}">${Array.from({ length: 25 }, (_, k) => k - 12).map((v) => `<option value="${v}"${v === t.pitch ? ' selected' : ''}>${v > 0 ? '+' : ''}${v}</option>`).join('')}</select></div>
-      <div class="steps" role="group" aria-label="Steps for ${esc(s.title)}">${cells}</div>
-      <button class="ib" type="button" data-seq="rm" aria-label="Remove ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>`;
+    const s = bySlug[t.slug]; const len = Math.min(t.len, pat.steps); const lane = SEQ.lane; const open = SEQ.menu === i;
+    const cells = Array.from({ length: pat.steps }, (_, k) => `<button type="button" data-step="${k}"></button>`).join('');
+    const opt = (v, cur, label) => `<option value="${v}"${v === cur ? ' selected' : ''}>${label}</option>`;
+    return `<div class="trk${open ? ' open' : ''}" data-t="${i}">
+      <button class="tname" type="button" data-seq="pick" title="Change sound (key ${i + 1} plays it)"><span class="art" style="background-image:url(${soundArt(s)})"></span><span>${esc(s.title)}</span><kbd>${i + 1}</kbd></button>
+      <div class="tctl"><button class="ib" type="button" data-seq="mute" aria-pressed="${t.mute}" aria-label="Mute ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-${t.mute ? 'mute' : 'vol'}"/></svg></button><button class="ib txt" type="button" data-seq="solo" aria-pressed="${t.solo}" aria-label="Solo ${esc(s.title)}">S</button><button class="ib txt" type="button" data-seq="swap" aria-label="Swap ${esc(s.title)} for a similar sound" title="Swap for a similar sound">⇄</button></div>
+      <div class="tctl vol"><input type="range" min="0" max="100" value="${Math.round(t.vol * 100)}" data-seq="vol" aria-label="Volume: ${esc(s.title)}"><select data-seq="pitch" aria-label="Pitch: ${esc(s.title)}">${Array.from({ length: 25 }, (_, k) => k - 12).map((v) => opt(v, t.pitch, (v > 0 ? '+' : '') + v)).join('')}</select></div>
+      <div class="steps${lane !== 'steps' ? ' lanemode' : ''}" role="group" aria-label="Steps for ${esc(s.title)}${len < pat.steps ? `, loops every ${len}` : ''}" style="--n:${pat.steps}">${cells}</div>
+      <button class="ib" type="button" data-seq="more" aria-expanded="${open}" aria-label="More for ${esc(s.title)}"><svg aria-hidden="true"><use href="#i-${open ? 'x' : 'layers'}"/></svg></button></div>
+      ${open ? `<div class="tmore" data-t="${i}" role="group" aria-label="Settings for ${esc(s.title)}">
+        <label>Pan <input type="range" min="-100" max="100" value="${t.pan}" data-seq="pan"><output>${t.pan === 0 ? 'C' : t.pan < 0 ? 'L' + -t.pan : 'R' + t.pan}</output></label>
+        <label>Filter <input type="range" min="-100" max="100" value="${t.tone}" data-seq="tone"><output>${t.tone === 0 ? 'Off' : t.tone < 0 ? 'Low-pass' : 'High-pass'}</output></label>
+        <label>Reverb <input type="range" min="0" max="100" value="${t.send}" data-seq="send"><output>${t.send}%</output></label>
+        <label>Choke <select data-seq="choke">${opt(0, t.choke, 'None')}${opt(1, t.choke, 'Group 1')}${opt(2, t.choke, 'Group 2')}</select></label>
+        <label>Length <select data-seq="len">${Array.from({ length: pat.steps }, (_, k) => k + 1).map((v) => opt(v, len, v + (v === pat.steps ? ' (full)' : ''))).join('')}</select></label>
+        <span class="eu">Euclid <select data-seq="eu-k" aria-label="Hits">${Array.from({ length: len + 1 }, (_, k) => opt(k, Math.min(4, len), k + ' hits')).join('')}</select><select data-seq="eu-r" aria-label="Rotate">${Array.from({ length: len }, (_, k) => opt(k, 0, 'rotate ' + k)).join('')}</select><button class="btn" type="button" data-seq="euclid">Apply</button></span>
+        <span class="tools"><button class="btn" type="button" data-seq="shl" aria-label="Shift steps left">← Shift</button><button class="btn" type="button" data-seq="shr" aria-label="Shift steps right">Shift →</button><button class="btn" type="button" data-seq="rand">Randomize</button><button class="btn" type="button" data-seq="copy">Copy</button><button class="btn" type="button" data-seq="paste" ${SEQ.clip ? '' : 'disabled'}>Paste</button><button class="btn" type="button" data-seq="dup" ${pat.tracks.length >= SEQ_MAX_TRACKS ? 'disabled' : ''}>Duplicate</button><button class="btn" type="button" data-seq="clrrow">Clear</button><button class="btn" type="button" data-seq="rm">Remove track</button></span>
+      </div>` : ''}`;
   }
   function renderSeq() {
-    const v = $('#seqview'); const saved = store.get(SEQ_SAVED_KEY, []);
+    const v = $('#seqview'); if (!v) return; const saved = store.get(SEQ_SAVED_KEY, []); const lane = SEQ.lane;
+    const focus = document.activeElement && v.contains(document.activeElement) ? document.activeElement.id : '';
     v.innerHTML = `<div class="seqhead"><h2>Sequencer</h2><div class="seqtools">
-        <button class="btn" type="button" data-seq="new">New</button><button class="btn" type="button" data-seq="save">Save in browser</button>
-        <button class="btn dl" type="button" data-seq="file">Save pattern file</button><button class="btn" type="button" data-seq="open">Open file</button>
-        <button class="btn primary dl" type="button" data-seq="wav"><svg aria-hidden="true"><use href="#i-down"/></svg>Export audio</button></div></div>
+        <select data-seq="tpl" aria-label="Start from a template"><option value="">Templates…</option>${TEMPLATES.map((tp, i) => `<option value="${i}">${esc(tp.name)} · ${tp.bpm}</option>`).join('')}</select>
+        <button class="btn" type="button" data-seq="new">New</button><button class="ib" type="button" data-seq="undo" aria-label="Undo" title="Undo (Ctrl+Z)" ${SEQ.undo.length ? '' : 'disabled'}>↶</button><button class="ib" type="button" data-seq="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)" ${SEQ.redo.length ? '' : 'disabled'}>↷</button>
+        <button class="btn" type="button" data-seq="save">Save in browser</button><button class="btn dl" type="button" data-seq="file">Save pattern file</button><button class="btn" type="button" data-seq="open">Open file</button></div></div>
       <div class="seqbar"><button class="seqplay" id="seqplay" type="button" data-seq="play"></button>
         <label for="seq-title" class="sr">Pattern name</label><input id="seq-title" type="text" maxlength="60" value="${esc(pat.title)}" data-seq="title">
-        <label>Tempo <input id="seq-bpm" type="number" min="60" max="180" value="${pat.bpm}" data-seq="bpm"> BPM</label>
+        <label>Tempo <input id="seq-bpm" type="number" min="60" max="200" value="${pat.bpm}" data-seq="bpm"></label><button class="btn" type="button" data-seq="tap" title="Tap along to set the tempo">Tap</button>
         <label>Swing <input id="seq-swing" type="range" min="0" max="60" value="${pat.swing}" data-seq="swing"><output>${pat.swing}%</output></label>
-        <label>Steps <select id="seq-steps" data-seq="steps"><option${pat.steps === 16 ? ' selected' : ''}>16</option><option${pat.steps === 32 ? ' selected' : ''}>32</option></select></label>
-        <label class="dl">Export <select id="seq-reps"><option value="1">1 pass</option><option value="2" selected>2 passes</option><option value="4">4 passes</option></select></label></div>
+        <label>Steps <select id="seq-steps" data-seq="steps">${STEP_OPTS.map((n) => `<option${pat.steps === n ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
+        <button class="btn tog rec" type="button" data-seq="rec" aria-pressed="${SEQ.rec}" title="Record: play keys 1–8 while the pattern runs">● Rec</button>
+        <button class="btn tog" type="button" data-seq="fill" aria-pressed="${SEQ.fill}" title="Fill: plays steps set to the Fill condition (key F)">Fill</button>
+        <button class="btn" type="button" data-seq="human" title="Small random changes to timing and velocity">Humanize</button>
+        <span class="pos" id="seq-pos" aria-live="off"></span></div>
+      <div class="seqbar banks"><span class="lbl">Pattern</span><div class="bankbtns" role="group" aria-label="Pattern bank">${BANKS.map((b) => `<button type="button" data-bank="${b}" aria-pressed="${pat.cur === b}" class="${bankUsed(b) ? 'used' : ''}${SEQ.queued === b ? ' queued' : ''}">${b}</button>`).join('')}</div>
+        <label>Copy to <select data-seq="copyto"><option value="">—</option>${BANKS.filter((b) => b !== pat.cur).map((b) => `<option>${b}</option>`).join('')}</select></label><button class="btn" type="button" data-seq="clrbank">Clear ${pat.cur}</button>
+        <span class="songctl"><button class="btn tog" type="button" data-seq="song" aria-pressed="${pat.song}">Song mode</button><label>Chain <input id="seq-chain" type="text" maxlength="16" value="${pat.chain}" data-seq="chain" spellcheck="false" autocomplete="off" aria-describedby="chainhelp"></label><span id="chainhelp" class="hint">e.g. AABA</span></span></div>
+      <div class="lanes" role="tablist" aria-label="Edit">${Object.entries(LANES).map(([k, d]) => `<button type="button" role="tab" data-lane="${k}" aria-selected="${lane === k}">${d.name}</button>`).join('')}<span class="hint">${LANES[lane].help}</span></div>
       <div class="seqgrid">${pat.tracks.map(seqTrackHtml).join('')}</div>
       <div class="seqtools"><button class="btn" type="button" data-seq="add" ${pat.tracks.length >= SEQ_MAX_TRACKS ? 'disabled' : ''}><svg aria-hidden="true"><use href="#i-layers"/></svg>Add a track</button>
-        <button class="btn" type="button" data-seq="clear">Clear steps</button><span class="note" style="font-size:.82rem;color:var(--muted);align-self:center">Tap a step once for a hit, twice for an accent, three times to clear. Tip: use “Add to sequencer” on any sound.</span></div>
+        <span class="hint">Keys 1–8 play each track (Shift for accent) · Space plays · Ctrl+Z undoes · use “Add to sequencer” on any sound.</span></div>
       <div class="picker" id="seqpicker" hidden><label for="seq-q" style="font-weight:700">Choose a sound</label><input id="seq-q" type="search" placeholder="Search kick, snare, 808, braam, glass…" autocomplete="off"><ul id="seq-results"></ul></div>
+      <div class="seqbar export dl"><span class="lbl">Export</span><select id="seq-exp" aria-label="Export format"><option value="mix">Mix (WAV)</option><option value="stems">Stems (a WAV per track + mix)</option><option value="midi">MIDI (for any DAW)</option></select>
+        <select id="seq-reps" aria-label="Length">${pat.song ? '<option value="1">Song once</option><option value="2" selected>Song twice</option>' : '<option value="1">1 pass</option><option value="2" selected>2 passes</option><option value="4">4 passes</option><option value="8">8 passes</option>'}</select>
+        <button class="btn primary" type="button" data-seq="export"><svg aria-hidden="true"><use href="#i-down"/></svg>Export</button></div>
       <div class="seqcols">
         <section class="plist" aria-label="Community patterns"><h3>Community patterns</h3><p class="note" id="comm-note">${dbCap ? 'Loading…' : 'Community sharing works when SoundWell is opened on claude.ai.'}</p>
           ${dbCap ? `<div class="seqtools"><button class="btn primary" type="button" data-seq="share" id="seq-share">Share this pattern</button></div>` : ''}<ul id="comm-list"></ul></section>
         <section class="plist" aria-label="Saved in this browser"><h3>Saved in this browser</h3>${saved.length ? `<ul>${saved.map((p2, i) => `<li><span class="pt">${esc(p2.title)}</span><span class="pm">${p2.bpm} BPM · ${p2.tracks.length} tracks · ${p2.steps} steps</span><span class="pa"><button class="btn" type="button" data-seq="loadmine" data-i="${i}">Load</button><button class="btn" type="button" data-seq="delmine" data-i="${i}" aria-label="Delete ${esc(p2.title)}">Delete</button></span></li>`).join('')}</ul>` : '<p class="note">Nothing saved yet. “Save in browser” keeps patterns on this device.</p>'}</section>
       </div>
       <input type="file" id="seq-file" accept=".json,application/json" hidden>`;
-    seqSyncPlay(); renderCommunity(); for (const t of pat.tracks) seqLoad(t.slug);
+    for (const row of v.querySelectorAll('.trk')) { const t = pat.tracks[+row.dataset.t]; row.querySelectorAll('[data-step]').forEach((b, k) => seqCell(b, t, k)); }
+    seqSyncPlay(); renderCommunity(); for (const t of pat.tracks) seqLoad(t.slug); if (focus) document.getElementById(focus)?.focus();
   }
   function seqPick(trackIndex) { SEQ.picker = trackIndex; const box = $('#seqpicker'); box.hidden = false; const q = $('#seq-q'); q.value = ''; seqResults(''); q.focus(); box.scrollIntoView({ block: 'nearest' }); }
   function seqResults(q) {
@@ -2737,31 +3026,80 @@ return { enumerate, renderEntry, peaks, SR };
     $('#seq-results').innerHTML = res.length ? res.map((s) => `<li><button type="button" data-pickslug="${s.slug}"><span class="art" style="background-image:url(${soundArt(s)})"></span><span class="pt">${esc(s.title)}</span><span class="pm">${fmtDur(s.dur)}</span></button></li>`).join('') : '<li class="pm" style="padding:6px">No matching sounds.</li>';
   }
   function seqApplyPick(slug) {
-    const s = bySlug[slug]; if (!s) return; if (SEQ.picker == null || SEQ.picker >= pat.tracks.length) { if (pat.tracks.length >= SEQ_MAX_TRACKS) { toast('The sequencer holds 8 tracks.'); return; } pat.tracks.push({ slug, pat: blankPat(pat.steps), vol: 0.8, pitch: 0, mute: false, solo: false }); }
-    else pat.tracks[SEQ.picker].slug = slug;
-    seqLoad(slug); seqPersist(); SEQ.picker = null; renderSeq(); const b = seqBufs.get(slug); if (b) seqHit(ac(), seqOut(), { slug, vol: 0.8, pitch: 0 }, actx.currentTime + 0.01, 1, new Map());
+    const s = bySlug[slug]; if (!s) return; snap(); let t;
+    if (SEQ.picker == null || SEQ.picker >= pat.tracks.length) { if (pat.tracks.length >= SEQ_MAX_TRACKS) { toast('The sequencer holds 8 tracks.'); return; } t = newTrack(slug, pat.steps); pat.tracks.push(t); }
+    else { t = pat.tracks[SEQ.picker]; t.slug = slug; }
+    seqLoad(slug); seqPersist(); SEQ.picker = null; renderSeq(); const ready = (n) => { if (seqBufs.get(slug)) audition(t); else if (n < 40) setTimeout(() => ready(n + 1), 60); }; ready(0);
   }
+
+  // ---------- export: mix, stems, MIDI ----------
   const patFilename = () => (pat.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'pattern');
   const patJson = () => JSON.stringify({ format: 'soundwell-pattern', ...pat }, null, 2);
+  function seqRng(seed) { let a = seed >>> 0 || 1; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  /** One fixed "performance" of the pattern or song, so the mix, every stem and the MIDI file agree hit for hit. */
+  function seqEvents(reps) {
+    const rng = seqRng([...pat.title].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261) ^ pat.bpm);
+    const slots = pat.song ? Array.from({ length: reps }, () => [...pat.chain]).flat() : Array(reps).fill(pat.cur); const abs = {}; const ev = []; let when = 0;
+    for (const bank of slots) for (let i = 0; i < pat.steps; i++) {
+      const a = abs[bank] || 0; const dur = stepLen(i);
+      pat.tracks.forEach((t, ti) => { if (audible(t)) for (const h of stepHits(t, bank, a, when, dur, rng, false)) ev.push({ ti, ...h, when: Math.max(0, h.when) }); });
+      abs[bank] = a + 1; when += dur;
+    }
+    return { ev, total: when };
+  }
+  async function seqRender({ ev, total }, only = null, comp = true) {
+    const sr = 44100; const oc = new OfflineAudioContext(2, Math.ceil(sr * (total + 2.5)), sr); const G = seqGraph(oc, comp);
+    for (const e of ev) seqHit(G, pat.tracks[e.ti], e.when, only == null || e.ti === only ? e.vel : 0, e.tune);
+    return oc.startRendering();
+  }
+  const peakOf = (audio) => { let pk = 0; for (let c = 0; c < audio.numberOfChannels; c++) { const d = audio.getChannelData(c); for (let i = 0; i < d.length; i++) pk = Math.max(pk, Math.abs(d[i])); } return pk; };
+  const scaleBuf = (audio, g) => { if (g !== 1) for (let c = 0; c < audio.numberOfChannels; c++) { const d = audio.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] *= g; } return audio; };
+  function gmNote(t) {
+    const s = bySlug[t.slug]; const ttl = s.title.toLowerCase(); const m = /^(note808|notebass|notepiano|notepluck|stab|sc-timpani|sc-hit)-(\d+)-(\d+)/.exec(s.slug);
+    if (m) { const a = +m[2], b = +m[3]; const base = { note808: 36 + a, notebass: 36 + a, notepiano: 48 + 12 * a + b, notepluck: 60 + 12 * a + b, stab: 60 + a, 'sc-timpani': 36 + a, 'sc-hit': 48 + a }[m[1]]; return { ch: 0, note: base + t.pitch }; }
+    const map = [[/kick/, 36], [/rim/, 37], [/snare/, 38], [/clap/, 39], [/open hi-hat|open hat/, 46], [/pedal/, 44], [/hi-hat|hat/, 42], [/floor tom/, 41], [/low tom/, 45], [/mid tom/, 47], [/high tom|tom/, 50], [/crash/, 49], [/ride/, 51], [/splash/, 55], [/cowbell/, 56], [/shaker/, 70], [/tambourine/, 54], [/woodblock/, 76], [/conga/, 63], [/bongo/, 60], [/cymbal/, 49]];
+    for (const [re, n] of map) if (re.test(ttl)) return { ch: 9, note: n }; return { ch: 0, note: 60 + t.pitch };
+  }
+  function midiFile({ ev }) {
+    const PPQ = 96; const beat = 60 / pat.bpm; const u32 = (n) => [n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255]; const u16 = (n) => [n >> 8 & 255, n & 255];
+    const vlq = (n) => { const o = [n & 127]; while ((n >>>= 7)) o.unshift((n & 127) | 128); return o; }; const chunk = (id, d) => [...[...id].map((c) => c.charCodeAt(0)), ...u32(d.length), ...d];
+    const tempo = Math.round(60000000 / pat.bpm); const head = [0, 0xFF, 0x51, 3, tempo >> 16 & 255, tempo >> 8 & 255, tempo & 255, 0, 0xFF, 0x58, 4, 4, 2, 24, 8, 0, 0xFF, 0x2F, 0];
+    const trs = pat.tracks.map((t, ti) => {
+      const { ch, note } = gmNote(t); const msgs = [];
+      for (const e of ev) if (e.ti === ti) { const n = Math.max(0, Math.min(127, note + e.tune)); const tk = Math.round(e.when / beat * PPQ); const ln = Math.max(6, Math.round(e.len / beat * PPQ * (ch === 9 ? 0.5 : 0.95))); msgs.push([tk, 0x90 | ch, n, Math.max(1, Math.min(127, Math.round(e.vel * 127)))], [tk + ln, 0x80 | ch, n, 0]); }
+      msgs.sort((a, b) => a[0] - b[0] || a[1] - b[1]); const name = [...enc(bySlug[t.slug].title)].slice(0, 60); const d = [0, 0xFF, 0x03, ...vlq(name.length), ...name]; let last = 0;
+      for (const [tk, st, n, v] of msgs) { d.push(...vlq(tk - last), st, n, v); last = tk; } d.push(0, 0xFF, 0x2F, 0); return chunk('MTrk', d);
+    });
+    return new Uint8Array([...chunk('MThd', [...u16(1), ...u16(trs.length + 1), ...u16(PPQ)]), ...chunk('MTrk', head), ...trs.flat()]);
+  }
   async function seqExport() {
-    if (!pat.tracks.length) { toast('Add a track first.'); return; } const reps = +$('#seq-reps').value || 2; const btn = document.querySelector('[data-seq="wav"]'); btn.disabled = true;
+    if (!pat.tracks.length) { toast('Add a track first.'); return; } const reps = +$('#seq-reps').value || 2; const kind = $('#seq-exp').value; const btn = document.querySelector('[data-seq="export"]'); btn.disabled = true;
+    const name = patFilename(); const names = pat.tracks.map((t) => `- ${bySlug[t.slug].title}`).join('\n');
+    const license = enc(`${pat.title}: ${pat.song ? `a song (${pat.chain})` : 'a pattern'} made with SoundWell, ${pat.bpm} BPM\n\nSounds:\n${names}\n\nEvery sound is CC0 1.0 (public domain). Use this audio for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`);
     try {
       const bufs = await Promise.all(pat.tracks.map((t) => getBuf(bySlug[t.slug]))); pat.tracks.forEach((t, i) => seqBufs.set(t.slug, bufs[i]));
-      let total = 0; for (let k = 0; k < pat.steps * reps; k++) total += stepLen(k % pat.steps); const sr = 44100; const oc = new OfflineAudioContext(2, Math.ceil(sr * (total + 2.5)), sr);
-      const comp = oc.createDynamicsCompressor(); comp.threshold.value = -8; comp.ratio.value = 6; const out = oc.createGain(); out.connect(comp); comp.connect(oc.destination); const voices = new Map(); const anySolo = pat.tracks.some((t) => t.solo);
-      let when = 0; for (let k = 0; k < pat.steps * reps; k++) { const i = k % pat.steps; for (const t of pat.tracks) { const c = t.pat[i]; if (c === '.' || t.mute || (anySolo && !t.solo)) continue; seqHit(oc, out, t, when, c === 'X' ? 1 : 0.62, voices); } when += stepLen(i); }
-      const audio = await oc.startRendering(); const chs = [audio.getChannelData(0), audio.getChannelData(1)]; let pk = 0; for (const d of chs) for (let i = 0; i < d.length; i++) pk = Math.max(pk, Math.abs(d[i])); if (pk > 0.95) for (const d of chs) for (let i = 0; i < d.length; i++) d[i] *= 0.95 / pk;
-      const names = pat.tracks.map((t) => `- ${bySlug[t.slug].title}`).join('\n');
-      await saveZip(`${patFilename()}.zip`, [{ name: `${patFilename()}.wav`, data: toWav(audio) }, { name: `${patFilename()}.json`, data: enc(patJson()) }, { name: 'LICENSE.txt', data: enc(`${pat.title}: a pattern made with SoundWell, ${pat.bpm} BPM\n\nSounds:\n${names}\n\nEvery sound is CC0 1.0 (public domain). Use this audio for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n`) }]);
-    } catch { toast('Couldn’t render the pattern. Try fewer passes.'); }
+      const perf = seqEvents(reps); const files = [];
+      if (kind === 'midi') { files.push({ name: `${name}.mid`, data: midiFile(perf) }); toast('Building the MIDI file…'); }
+      else {
+        toast(kind === 'stems' ? 'Rendering the mix and stems…' : 'Rendering…');
+        const mix = await seqRender(perf); const pk = peakOf(mix); scaleBuf(mix, pk > 0.95 ? 0.95 / pk : 1); files.push({ name: `${name}.wav`, data: toWav(mix) });
+        if (kind === 'stems') {
+          const dry = await seqRender(perf, null, false); const g = Math.min(1, 0.95 / (peakOf(dry) || 1));
+          for (let i = 0; i < pat.tracks.length; i++) { if (!audible(pat.tracks[i])) continue; const st = scaleBuf(await seqRender(perf, i, false), g); const tn = bySlug[pat.tracks[i].slug].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); files.push({ name: `stems/${String(i + 1).padStart(2, '0')}-${tn}.wav`, data: toWav(st) }); }
+        }
+      }
+      files.push({ name: `${name}.json`, data: enc(patJson()) }, { name: 'LICENSE.txt', data: license });
+      await saveZip(`${name}${kind === 'stems' ? '-stems' : kind === 'midi' ? '-midi' : ''}.zip`, files);
+    } catch { toast('Couldn’t export. Try fewer passes.'); }
     btn.disabled = false;
   }
   async function seqSaveFile() {
     if (!dlCap) { toast('Saving files isn’t available in this view.'); return; }
     try { await dlCap.save({ filename: `${patFilename()}.json`, data: patJson() }); toast(`Saved ${patFilename()}.json`); } catch (e) { if (e && e.code !== 'declined') toast('Couldn’t save the file in this view.'); }
   }
+  function seqLoadPattern(p2, msg) { seqStop(); snap(); pat = p2; seqPersist(); SEQ.menu = -1; renderSeq(); if (msg) toast(msg); }
   function seqOpenFile(file) {
-    const rd = new FileReader(); rd.onload = () => { let p2 = null; try { p2 = cleanPattern(JSON.parse(String(rd.result))); } catch {} if (!p2 || !p2.tracks.length) { toast('That file isn’t a SoundWell pattern with sounds from this library.'); return; } seqStop(); pat = p2; seqPersist(); renderSeq(); toast(`Opened “${pat.title}”`); }; rd.readAsText(file);
+    const rd = new FileReader(); rd.onload = () => { let p2 = null; try { p2 = cleanPattern(JSON.parse(String(rd.result))); } catch {} if (!p2 || !p2.tracks.length) { toast('That file isn’t a SoundWell pattern with sounds from this library.'); return; } seqLoadPattern(p2, `Opened “${p2.title}”`); }; rd.readAsText(file);
   }
   function seqSaveLocal() { const list = store.get(SEQ_SAVED_KEY, []).filter((p2) => p2.title !== pat.title); list.unshift(JSON.parse(JSON.stringify(pat))); store.set(SEQ_SAVED_KEY, list.slice(0, 50)); toast(`Saved “${pat.title}” in this browser`); renderSeq(); }
 
@@ -2774,9 +3112,9 @@ return { enumerate, renderEntry, peaks, SR };
   }).catch(() => {});
   function subscribeCommunity() {
     if (!dbCap || commUnsub) return; commState = 'loading'; const timer = setTimeout(() => { if (commState === 'loading') { commState = 'slow'; renderCommunity(); } }, 10000);
-    commUnsub = dbCap.collection('patterns').limit(300).onSnapshot((snap) => {
-      if (!snap.metadata.fromCache) { clearTimeout(timer); commState = 'ready'; }
-      community = snap.docs.flatMap((d) => { const items = d.data()?.items; return Array.isArray(items) ? items.map((it) => ({ ...it, uid: d.id })) : []; })
+    commUnsub = dbCap.collection('patterns').limit(300).onSnapshot((snap2) => {
+      if (!snap2.metadata.fromCache) { clearTimeout(timer); commState = 'ready'; }
+      community = snap2.docs.flatMap((d) => { const items = d.data()?.items; return Array.isArray(items) ? items.map((it) => ({ ...it, uid: d.id })) : []; })
         .map((it) => { const c = cleanPattern(it, { allowCustom: false }); return c && c.tracks.length ? { ...c, id: String(it.id || ''), at: Number(it.at) || 0, uid: it.uid } : null; }).filter(Boolean).sort((a, b) => b.at - a.at);
       renderCommunity(); resolveNames();
     }, () => { clearTimeout(timer); commState = 'error'; renderCommunity(); });
@@ -2788,8 +3126,8 @@ return { enumerate, renderEntry, peaks, SR };
     note.textContent = commState === 'error' ? 'The community board can’t be reached right now.' : commState === 'slow' ? 'Still connecting to the community board…' : commState !== 'ready' ? 'Loading…'
       : community.length ? `${community.length} shared pattern${community.length === 1 ? '' : 's'}. Load one to play it or remix it.` : canWrite === false ? 'No shared patterns yet. You can browse and play patterns others share.' : 'No shared patterns yet. Be the first: press “Share this pattern”.';
     if (canWrite === false && commState === 'ready') note.textContent += ' Sharing is open to people with Contributor access.';
-    list.innerHTML = community.slice(0, 100).map((c) => { const mine = c.uid === myId; const by = mine ? 'you' : (commNames[c.uid] || 'a SoundWell member');
-      return `<li><span class="pt">${esc(c.title)}</span><span class="pm">by ${esc(by)} · ${c.bpm} BPM · ${c.tracks.length} tracks</span><span class="pa"><button class="btn" type="button" data-comm="load" data-uid="${esc(c.uid)}" data-id="${esc(c.id)}">Load</button>${mine || amOwner ? `<button class="btn" type="button" data-comm="del" data-uid="${esc(c.uid)}" data-id="${esc(c.id)}" aria-label="Remove ${esc(c.title)}">Remove</button>` : ''}</span></li>`; }).join('');
+    list.innerHTML = community.slice(0, 100).map((c) => { const mine = c.uid === myId; const by = mine ? 'you' : (commNames[c.uid] || 'a SoundWell member'); const banks = BANKS.filter((b) => c.tracks.some((t) => t.pats[b] && /[xX]/.test(t.pats[b].s))).length;
+      return `<li><span class="pt">${esc(c.title)}</span><span class="pm">by ${esc(by)} · ${c.bpm} BPM · ${c.tracks.length} tracks${banks > 1 ? ` · ${banks} patterns` : ''}${c.song ? ' · song' : ''}</span><span class="pa"><button class="btn" type="button" data-comm="load" data-uid="${esc(c.uid)}" data-id="${esc(c.id)}">Load</button>${mine || amOwner ? `<button class="btn" type="button" data-comm="del" data-uid="${esc(c.uid)}" data-id="${esc(c.id)}" aria-label="Remove ${esc(c.title)}">Remove</button>` : ''}</span></li>`; }).join('');
   }
   async function shareCommunity() {
     if (!dbCap || !myId) { toast('Sharing works when SoundWell is opened on claude.ai.'); return; }
@@ -2797,8 +3135,9 @@ return { enumerate, renderEntry, peaks, SR };
     if (clean.tracks.length < pat.tracks.length) { toast('Your own creations stay in your browser, so those tracks aren’t shared.'); }
     const btn = $('#seq-share'); btn.disabled = true;
     try {
-      const ref = dbCap.doc('patterns/' + myId); const cur = await ref.get(); const items = cur.exists && Array.isArray(cur.data().items) ? cur.data().items.slice() : [];
-      const id = 'p' + Date.now().toString(36); items.unshift({ id, at: Date.now(), ...clean }); await ref.set({ items: items.slice(0, 50) }); toast(`Shared “${clean.title}” with the community`);
+      const ref = dbCap.doc('patterns/' + myId); const cur = await ref.get(); let items = cur.exists && Array.isArray(cur.data().items) ? cur.data().items.slice() : [];
+      const id = 'p' + Date.now().toString(36); items.unshift({ id, at: Date.now(), ...clean }); items = items.slice(0, 40); while (items.length > 1 && JSON.stringify(items).length > 700000) items.pop();
+      await ref.set({ items }); toast(`Shared “${clean.title}” with the community`);
     } catch (e) { toast(e && e.code === 'quota_exceeded' ? 'The community board is full right now.' : e && e.code === 'invalid_argument' ? 'Your access level can browse but not share patterns.' : 'Couldn’t share the pattern. Try again.'); if (e && e.code === 'invalid_argument') { canWrite = false; renderCommunity(); } }
     btn.disabled = false;
   }
@@ -2809,43 +3148,96 @@ return { enumerate, renderEntry, peaks, SR };
 
   // sequencer events
   const seqview = $('#seqview');
+  const trackOf = (el) => { const tr = el.closest('[data-t]'); return tr ? [pat.tracks[+tr.dataset.t], +tr.dataset.t] : [null, -1]; };
   seqview.addEventListener('click', (e) => {
-    const st = e.target.closest('[data-step]'); if (st) { const i = +st.closest('.trk').dataset.t; const k = +st.dataset.step; const t = pat.tracks[i]; const nxt = { '.': 'x', x: 'X', X: '.' }[t.pat[k]]; t.pat = t.pat.slice(0, k) + nxt + t.pat.slice(k + 1); st.dataset.v = nxt; st.setAttribute('aria-pressed', String(nxt !== '.')); st.setAttribute('aria-label', st.getAttribute('aria-label').replace(/: (off|on|accent)$/, ': ' + (nxt === '.' ? 'off' : nxt === 'X' ? 'accent' : 'on'))); seqPersist(); if (nxt !== '.' && !SEQ.playing) seqHit(ac(), seqOut(), t, actx.currentTime + 0.005, nxt === 'X' ? 1 : 0.62, new Map()); return; }
+    const st = e.target.closest('[data-step]');
+    if (st) {
+      const [t] = trackOf(st); const k = +st.dataset.step; const L = laneOf(t); const lane = SEQ.lane;
+      if (lane === 'steps') { snapSoon(); const nxt = { '.': 'x', x: 'X', X: '.' }[L.s[k]]; L.s = L.s.slice(0, k) + nxt + L.s.slice(k + 1); if (nxt === '.') delete L.p[k]; seqCell(st, t, k); seqPersist(); if (nxt !== '.' && !SEQ.playing) audition(t, (L.p[k] || {}).tune || 0, nxt === 'X' ? 1 : 0.62); return; }
+      if (L.s[k] === '.') { toast('Turn the step on in the Steps view first.'); return; }
+      if (lane === 'cond') { snapSoon(); const i = CONDS.indexOf(laneVal(t, k, 'cond')); setLane(t, k, 'cond', CONDS[(i + (e.shiftKey ? -1 : 1) + CONDS.length) % CONDS.length]); seqCell(st, t, k); seqPersist(); return; }
+      if (e.detail === 0) { snapSoon(); const d = LANES[lane]; let v = laneVal(t, k, lane) + d.step * (lane === 'rep' ? 1 : 4); if (v > d.max) v = d.min; setLane(t, k, lane, v); seqCell(st, t, k); seqPersist(); }
+      return;
+    }
+    const ln = e.target.closest('[data-lane]'); if (ln) { SEQ.lane = ln.dataset.lane; renderSeq(); return; }
+    const bk = e.target.closest('[data-bank]'); if (bk) { const b = bk.dataset.bank; if (SEQ.playing && !pat.song) { SEQ.queued = b === SEQ.bank ? null : b; renderSeq(); } else { pat.cur = b; seqPersist(); renderSeq(); } return; }
     const pk = e.target.closest('[data-pickslug]'); if (pk) { seqApplyPick(pk.dataset.pickslug); return; }
-    const cm = e.target.closest('[data-comm]'); if (cm) { const c = community.find((x) => x.uid === cm.dataset.uid && x.id === cm.dataset.id); if (!c) return; if (cm.dataset.comm === 'load') { seqStop(); pat = cleanPattern(c); seqPersist(); renderSeq(); seqPlay(); toast(`Loaded “${pat.title}”`); } else removeCommunity(c.uid, c.id); return; }
-    const b = e.target.closest('[data-seq]'); if (!b || b.tagName === 'INPUT' || b.tagName === 'SELECT') return; const a = b.dataset.seq; const tr = b.closest('.trk'); const t = tr ? pat.tracks[+tr.dataset.t] : null;
+    const cm = e.target.closest('[data-comm]'); if (cm) { const c = community.find((x) => x.uid === cm.dataset.uid && x.id === cm.dataset.id); if (!c) return; if (cm.dataset.comm === 'load') { seqLoadPattern(cleanPattern(c), `Loaded “${c.title}”`); seqPlay(); } else removeCommunity(c.uid, c.id); return; }
+    const b = e.target.closest('[data-seq]'); if (!b || b.tagName === 'INPUT' || b.tagName === 'SELECT') return; const a = b.dataset.seq; const [t, ti] = trackOf(b);
+    const edit = (fn) => { snap(); fn(); seqPersist(); renderSeq(); };
     if (a === 'play') SEQ.playing ? seqStop() : seqPlay();
-    else if (a === 'pick') seqPick(+tr.dataset.t);
+    else if (a === 'pick') seqPick(ti);
     else if (a === 'add') seqPick(pat.tracks.length);
-    else if (a === 'mute' || a === 'solo') { t[a] = !t[a]; seqPersist(); renderSeq(); }
-    else if (a === 'rm') { pat.tracks.splice(+tr.dataset.t, 1); seqPersist(); renderSeq(); }
-    else if (a === 'clear') { for (const x of pat.tracks) x.pat = blankPat(pat.steps); seqPersist(); renderSeq(); }
-    else if (a === 'new') { seqStop(); pat = defaultPattern(); pat.title = 'New pattern'; seqPersist(); renderSeq(); }
+    else if (a === 'mute' || a === 'solo') edit(() => { t[a] = !t[a]; });
+    else if (a === 'swap') seqSwap(ti, e.shiftKey ? -1 : 1);
+    else if (a === 'more') { SEQ.menu = SEQ.menu === ti ? -1 : ti; renderSeq(); }
+    else if (a === 'rm') edit(() => { pat.tracks.splice(ti, 1); SEQ.menu = -1; });
+    else if (a === 'dup') { if (pat.tracks.length < SEQ_MAX_TRACKS) edit(() => { pat.tracks.splice(ti + 1, 0, JSON.parse(JSON.stringify(t))); }); }
+    else if (a === 'clrrow') edit(() => setRow(t, ''));
+    else if (a === 'shl' || a === 'shr') edit(() => shiftRow(t, a === 'shr' ? 1 : -1));
+    else if (a === 'rand') edit(() => randomRow(t));
+    else if (a === 'euclid') { const tr = b.closest('[data-t]'); const k = +tr.querySelector('[data-seq="eu-k"]').value; const r = +tr.querySelector('[data-seq="eu-r"]').value; edit(() => setRow(t, euclid(k, Math.min(t.len, pat.steps), r))); }
+    else if (a === 'copy') { SEQ.clip = JSON.parse(JSON.stringify(laneOf(t))); toast('Copied the steps. Paste them into any track or pattern.'); renderSeq(); }
+    else if (a === 'paste' && SEQ.clip) edit(() => { const L = laneOf(t); L.s = (SEQ.clip.s + blankPat(pat.steps)).slice(0, pat.steps); L.p = JSON.parse(JSON.stringify(SEQ.clip.p)); });
+    else if (a === 'clrbank') edit(() => { for (const x of pat.tracks) delete x.pats[pat.cur]; });
+    else if (a === 'song') edit(() => { pat.song = !pat.song; if (SEQ.playing) { seqStop(); seqPlay(); } });
+    else if (a === 'rec') { SEQ.rec = !SEQ.rec; if (SEQ.rec && !SEQ.playing) seqPlay(); renderSeq(); if (SEQ.rec) toast('Recording: play keys 1–8 in time. Hits snap to the nearest step.'); }
+    else if (a === 'fill') { SEQ.fill = !SEQ.fill; b.setAttribute('aria-pressed', String(SEQ.fill)); }
+    else if (a === 'human') humanize();
+    else if (a === 'tap') { const now = performance.now(); SEQ.taps = SEQ.taps.filter((x) => now - x < 2500).concat(now); if (SEQ.taps.length > 1) { const iv = (SEQ.taps.at(-1) - SEQ.taps[0]) / (SEQ.taps.length - 1); snapSoon(); pat.bpm = num(60000 / iv, 60, 200, pat.bpm); $('#seq-bpm').value = pat.bpm; seqPersist(); } }
+    else if (a === 'undo' || a === 'redo') seqUndo(a === 'redo');
+    else if (a === 'new') { seqLoadPattern(defaultPattern()); pat.title = 'New pattern'; renderSeq(); }
     else if (a === 'save') seqSaveLocal();
     else if (a === 'file') seqSaveFile();
     else if (a === 'open') $('#seq-file').click();
-    else if (a === 'wav') seqExport();
+    else if (a === 'export') seqExport();
     else if (a === 'share') shareCommunity();
-    else if (a === 'loadmine') { const p2 = cleanPattern(store.get(SEQ_SAVED_KEY, [])[+b.dataset.i]); if (p2) { seqStop(); pat = p2; seqPersist(); renderSeq(); toast(`Loaded “${pat.title}”`); } }
+    else if (a === 'loadmine') { const p2 = cleanPattern(store.get(SEQ_SAVED_KEY, [])[+b.dataset.i]); if (p2) seqLoadPattern(p2, `Loaded “${p2.title}”`); }
     else if (a === 'delmine') { const list = store.get(SEQ_SAVED_KEY, []); list.splice(+b.dataset.i, 1); store.set(SEQ_SAVED_KEY, list); renderSeq(); }
   });
+  // drag on a step to draw velocity, chance, repeat, nudge or pitch (paints across steps)
+  let laneDrag = null;
+  const laneAt = (x, y) => { const el = document.elementFromPoint(x, y)?.closest('#seqview .steps.lanemode [data-step]'); return el || null; };
+  function laneFromPointer(el, y) { const [t] = trackOf(el); const k = +el.dataset.step; const lane = SEQ.lane; const d = LANES[lane]; if (!d.min && d.min !== 0 || laneOf(t).s[k] === '.') return; const r = el.getBoundingClientRect(); const f = 1 - Math.min(1, Math.max(0, (y - r.top) / r.height)); setLane(t, k, lane, d.min + f * (d.max - d.min)); seqCell(el, t, k); }
+  seqview.addEventListener('pointerdown', (e) => { const el = e.target.closest('.steps.lanemode [data-step]'); if (!el || SEQ.lane === 'cond' || e.button) return; e.preventDefault(); snap(); laneDrag = true; laneFromPointer(el, e.clientY); });
+  window.addEventListener('pointermove', (e) => { if (!laneDrag) return; const el = laneAt(e.clientX, e.clientY); if (el) laneFromPointer(el, e.clientY); });
+  window.addEventListener('pointerup', () => { if (laneDrag) { laneDrag = null; seqPersist(); } });
   seqview.addEventListener('input', (e) => {
-    const el = e.target; const a = el.dataset.seq; const tr = el.closest('.trk'); const t = tr ? pat.tracks[+tr.dataset.t] : null;
+    const el = e.target; const a = el.dataset.seq; const [t] = trackOf(el);
     if (el.id === 'seq-q') { seqResults(el.value); return; }
-    if (a === 'title') pat.title = el.value.slice(0, 60) || 'Untitled pattern';
-    else if (a === 'bpm') { const v = Math.round(+el.value); if (v >= 60 && v <= 180) pat.bpm = v; }
-    else if (a === 'swing') { pat.swing = +el.value; el.nextElementSibling.textContent = pat.swing + '%'; }
-    else if (a === 'vol' && t) t.vol = el.value / 100;
+    if (a === 'title') { snapSoon(); pat.title = el.value.slice(0, 60) || 'Untitled pattern'; }
+    else if (a === 'bpm') { const v = Math.round(+el.value); if (v >= 60 && v <= 200) { snapSoon(); pat.bpm = v; } }
+    else if (a === 'swing') { snapSoon(); pat.swing = +el.value; el.nextElementSibling.textContent = pat.swing + '%'; }
+    else if (a === 'chain') { const v = el.value.toUpperCase().replace(/[^ABCD]/g, ''); if (el.value !== v) el.value = v; if (v) { snapSoon(); pat.chain = v; } }
+    else if (t && (a === 'vol' || a === 'pan' || a === 'tone' || a === 'send')) {
+      snapSoon(); t[a] = a === 'vol' ? el.value / 100 : +el.value; liveBus(t); const o = el.nextElementSibling;
+      if (o && a === 'pan') o.textContent = t.pan === 0 ? 'C' : t.pan < 0 ? 'L' + -t.pan : 'R' + t.pan; else if (o && a === 'tone') o.textContent = t.tone === 0 ? 'Off' : t.tone < 0 ? 'Low-pass' : 'High-pass'; else if (o && a === 'send') o.textContent = t.send + '%';
+    }
     else return; seqPersist();
   });
   seqview.addEventListener('change', (e) => {
-    const el = e.target; const a = el.dataset.seq; const tr = el.closest('.trk'); const t = tr ? pat.tracks[+tr.dataset.t] : null;
+    const el = e.target; const a = el.dataset.seq; const [t] = trackOf(el);
     if (el.id === 'seq-file' && el.files[0]) { seqOpenFile(el.files[0]); el.value = ''; return; }
-    if (a === 'pitch' && t) { t.pitch = +el.value; seqPersist(); seqHit(ac(), seqOut(), t, actx.currentTime + 0.005, 1, new Map()); }
-    else if (a === 'steps') { const n = +el.value; for (const x of pat.tracks) x.pat = n === 32 ? x.pat + x.pat : x.pat.slice(0, 16); pat.steps = n; seqPersist(); renderSeq(); }
+    if (a === 'pitch' && t) { snap(); t.pitch = +el.value; seqPersist(); audition(t); }
+    else if ((a === 'choke' || a === 'len') && t) { snap(); t[a] = +el.value; seqPersist(); renderSeq(); }
+    else if (a === 'steps') setSteps(+el.value);
     else if (a === 'bpm') { el.value = pat.bpm; }
+    else if (a === 'chain') { el.value = pat.chain; }
+    else if (a === 'tpl' && el.value !== '') { const tp = TEMPLATES[+el.value]; seqLoadPattern(templatePattern(tp), `Loaded the ${tp.name} template. Undo goes back to your pattern.`); seqPlay(); }
+    else if (a === 'copyto' && el.value) { const to = el.value; snap(); for (const x of pat.tracks) x.pats[to] = JSON.parse(JSON.stringify(laneOf(x))); seqPersist(); toast(`Copied pattern ${pat.cur} to ${to}`); renderSeq(); }
   });
-  seqview.addEventListener('keydown', (e) => { if (e.target.id === 'seq-q' && e.key === 'Enter') { const first = $('#seq-results [data-pickslug]'); if (first) seqApplyPick(first.dataset.pickslug); } });
+  seqview.addEventListener('keydown', (e) => {
+    if (e.target.id === 'seq-q' && e.key === 'Enter') { const first = $('#seq-results [data-pickslug]'); if (first) seqApplyPick(first.dataset.pickslug); return; }
+    const st = e.target.closest?.('.steps.lanemode [data-step]');
+    if (st && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && SEQ.lane !== 'cond') { e.preventDefault(); const [t] = trackOf(st); const k = +st.dataset.step; if (laneOf(t).s[k] === '.') return; snapSoon(); setLane(t, k, SEQ.lane, laneVal(t, k, SEQ.lane) + LANES[SEQ.lane].step * (e.key === 'ArrowUp' ? 1 : -1)); seqCell(st, t, k); seqPersist(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (state.view !== 'seq' || e.altKey) return; const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName) && document.activeElement.type !== 'range'; if (typing) return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z' || e.key === 'y')) { e.preventDefault(); seqUndo(e.key === 'y' || e.shiftKey); return; }
+    if (e.ctrlKey || e.metaKey) return;
+    const d = /^Digit([1-8])$/.exec(e.code); if (d && !e.repeat) { e.preventDefault(); e.stopImmediatePropagation(); seqPad(+d[1] - 1, e.shiftKey); return; }
+    if ((e.key === 'f' || e.key === 'F') && !e.repeat) { SEQ.fill = !SEQ.fill; document.querySelector('[data-seq="fill"]')?.setAttribute('aria-pressed', String(SEQ.fill)); }
+  }, true);
 
   // ---------- events ----------
   list.addEventListener('click', (e) => {

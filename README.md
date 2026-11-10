@@ -12,7 +12,14 @@ A free, fast, accessible library of sound effects and music. **7,305 original so
 - **Spooky and horror collection** (202 sounds): creaks, ghostly whispers, dread drones, jump scares, horror risers, creepy music boxes, breathing, chains, footsteps in the dark, knocks, haunted wind, ghost moans, EVP static, scrapes, tolling bells, haunted organ, reversed swells and haunted-place ambiences.
 - **Describe a sound:** type "a heavy wooden door slamming in a church" and get a custom sound (on claude.ai, Claude picks and tunes it; elsewhere it uses the closest keyword match). Creations are saved in the browser.
 - **Layer mixer:** stack loops in sync, play one-shots as pads (keys 1–9), and download the mix as WAV.
-- **Step sequencer:** up to 8 tracks of any library sound, 16 or 32 steps, accents, swing, tempo 60–180, per-track volume, pitch, mute and solo. Add sounds from the picker or from any sound's detail panel. Save patterns in the browser, as a `.json` file to reopen later, or export the beat as a WAV (zipped with the pattern and license).
+- **Step sequencer**, modeled on the most-used sequencers (Elektron, Roland TR, Logic's Step Sequencer, FL Studio, Maschine, MPC, Splice Beatmaker):
+  - Up to 8 tracks of any library sound, 16/32/64 steps, tempo 60–200 with tap tempo, swing.
+  - Four pattern banks (A–D) that switch on the bar, plus a song mode that plays a chain like `AABA`.
+  - Per-step edit lanes: velocity, chance, conditions (1:2, 2:4, Fill, 1st…), repeats/ratchets, nudge (micro-timing) and pitch.
+  - Per-track length for polymeter, pan, filter, reverb send, choke groups (open/closed hats), mute, solo and a swap-for-similar-sound button.
+  - Euclidean rhythms, shift, randomize, copy/paste, duplicate, humanize, undo/redo, and live recording from keys 1–8.
+  - Nine genre templates (boom bap, trap, house, techno, lo-fi, reggaeton, drum & bass, afrobeats, cinematic).
+  - Save in the browser or as a `.json` file; export the mix as WAV, stems (a WAV per track), or a MIDI file for any DAW.
 - **Community patterns:** on claude.ai, share patterns to a board everyone with access can load. Sharing needs Contributor access; the owner can remove any pattern.
 - **Stem kits** (Neon Groove, Rainy Lo-fi, Epic Trailer) in all 12 keys, and a **song starter** that builds chords, bass, arpeggio, melody and drums in any key.
 - **Sound editor:** speed/pitch, reverse, trim, fades, volume, and a pack of 5 natural variations.
