@@ -1,6 +1,6 @@
 # SoundWell
 
-A free, fast, accessible library of sound effects and music. **7,136 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files.
+A free, fast, accessible library of sound effects and music. **7,136 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files. Everything is mastered to consistent loudness, ambience, reverbs and ensembles are in stereo, and bright synth tones are rendered at double resolution to avoid aliasing.
 
 ## The current app: `site/`
 
