@@ -2080,7 +2080,7 @@ return { enumerate, renderEntry, peaks, SR };
         const listTxt = pool.map((s) => `${s.slug} | ${s.title} | ${s.tags.slice(0, 6).join(', ')}`).join('\n');
         const prompt = `You are a sound designer. Someone wants this sound: "${text.slice(0, 300)}".\nPick the ONE best starting sound from this list (format: slug | title | tags), then tune it with these settings to match the description as closely as possible:\n- speed: 0.5 to 2 (below 1 is slower and deeper, above 1 is faster and higher)\n- reverse: true or false\n- gain: volume change in dB, -12 to 6\n- fadeIn, fadeOut: seconds, 0 to 3\n- trimStart, trimEnd: the part of the sound to keep, as fractions from 0 to 1\n${retry ? 'Give a clearly different take from the obvious first choice.\n' : ''}\n${listTxt}\n\nReply with JSON only: {"slug":"<slug from the list>","name":"short title for the new sound, at most 6 words","speed":1,"reverse":false,"gain":0,"fadeIn":0,"fadeOut":0,"trimStart":0,"trimEnd":1,"why":"one short sentence"}`;
         const r = await sampleCap.json(prompt, { modelTier: 'quick', cache: !retry });
-        if (r && bySlug[r.slug] && pool.includes(bySlug[r.slug])) { pick = r; how = 'Designed by Claude'; }
+        if (r && bySlug[r.slug] && pool.includes(bySlug[r.slug])) { pick = r; how = 'Designed by Helion Sound Labs'; }
       } catch { pick = null; }
     }
     if (!pick) { const base = matched[0]; if (!base) { go.disabled = false; out.innerHTML = '<p class="hint">No close match yet. Try naming the object, the action and the place, like “glass bottle breaking in a stone hallway”.</p>'; return; }
