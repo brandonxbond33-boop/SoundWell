@@ -1,6 +1,6 @@
 # SoundWell
 
-A free, fast, accessible library of sound effects and music. **5,360 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files.
+A free, fast, accessible library of sound effects and music. **7,136 original sounds**, all CC0 (public domain): effects, ambience layers, drum hits, tuned notes, and music loops and stems in all 12 keys. Most sounds are synthesized right in the browser from small recipes, so the whole app is one static page plus 168 MP3 files.
 
 ## The current app: `site/`
 
@@ -8,6 +8,7 @@ A free, fast, accessible library of sound effects and music. **5,360 original so
 
 - **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
 - **Search** with synonyms, plus filters for type, category, key and tempo. Results load 40 at a time.
+- **Cinematic score collection** (1,776 sounds): string ostinatos and pulses, legato strings, brass swells, heroic horn themes, choir, piano with strings, pizzicato, harp, tension beds and orchestral percussion, in all 12 keys at 90 and 120 BPM, plus braams, orchestral hits, swells, risers, timpani, cymbals, harp glissandos, celesta, choir and brass stabs and solo strings. Rendered with band-limited oscillators, detuned ensembles, Karplus-Strong plucked strings and a concert-hall reverb.
 - **Describe a sound:** type "a heavy wooden door slamming in a church" and get a custom sound (on claude.ai, Claude picks and tunes it; elsewhere it uses the closest keyword match). Creations are saved in the browser.
 - **Layer mixer:** stack loops in sync, play one-shots as pads (keys 1–9), and download the mix as WAV.
 - **Stem kits** (Neon Groove, Rainy Lo-fi, Epic Trailer) in all 12 keys, and a **song starter** that builds chords, bass, arpeggio, melody and drums in any key.

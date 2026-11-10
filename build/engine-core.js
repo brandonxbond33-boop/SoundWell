@@ -774,6 +774,160 @@ G({ id: 'padtex', cat: 'Pad Textures', kind: 'music', loop: true, xfade: true, g
   render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const ch = [r, r + (p.minor ? 3 : 4), r + 7, r + 12, r + 14 + (p.minor ? 1 : 0)]; const lp = lowpass([1200, 4000, 600][p.tim]); const rv = reverb(0.5, 1.7);
     return loopRender(16, (t) => { let s = 0; ch.forEach((n, i) => { const f = midi(n); const amp = 0.5 + 0.5 * Math.sin(TAU * t / 16 * (i % 2 ? 1 : 2) + i); s += (p.tim === 1 ? sin(f * t) + 0.4 * sin(f * 2 * t) : saw(f * t) + saw(f * 1.004 * t)) * amp * 0.12; }); return rv(lp(s, [900, 3000, 500][p.tim] + 300 * Math.sin(TAU * t / 16))); }, 3); } });
 
+// ======================= SCORE: orchestral loops and one-shots =======================
+// Higher-fidelity voices: band-limited (PolyBLEP) oscillators, detuned ensembles with
+// natural vibrato, Karplus-Strong plucked strings and a Freeverb-style concert hall.
+
+function polyblep(t, dt) { if (t < dt) { t /= dt; return t + t - t * t - 1; } if (t > 1 - dt) { t = (t - 1) / dt; return t * t + t + t + 1; } return 0; }
+/** Concert hall: 8 damped combs + 4 allpasses (Freeverb tunings), pre-delay and a high cut on the tail. */
+function hall(mix = 0.3, size = 0.86, damp = 0.3, pre = 0.025, hc = 7000) {
+  const combs = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617].map((n) => ({ b: new Float32Array(n), i: 0, s: 0 }));
+  const aps = [556, 441, 341, 225].map((n) => ({ b: new Float32Array(n), i: 0 }));
+  const pd = new Float32Array(Math.max(1, Math.round(pre * SR))); let pi = 0; const lp = lowpass(hc);
+  return (x) => {
+    const xin = pd[pi]; pd[pi] = x; pi = (pi + 1) % pd.length; const inp = xin * 0.12; let out = 0;
+    for (const c of combs) { const y = c.b[c.i]; c.s = y * (1 - damp) + c.s * damp; c.b[c.i] = inp + c.s * size; c.i = (c.i + 1) % c.b.length; out += y; }
+    for (const a of aps) { const y = a.b[a.i]; const o = y - out; a.b[a.i] = out + y * 0.5; a.i = (a.i + 1) % a.b.length; out = o; }
+    return x * (1 - mix) + lp(out) * mix * 1.6;
+  };
+}
+/** Bowed/blown ensemble: N detuned band-limited saws per note, delayed vibrato, 12 dB/oct dynamic low-pass. */
+function section({ voices = 5, detune = 9, vib = 0.004, att = 0.08, rel = 0.35, sus = 0.85, bright = 3200, dyn = 0.65, seed = 1 } = {}) {
+  return (n, lt) => {
+    if (!n.st) { const r = rng(seed + n.note * 7 + Math.round(n.start * 997)); n.st = { o: Array.from({ length: voices }, () => ({ ph: r(), det: 1 + (r() - 0.5) * 2 * detune / 1200, vr: 4.8 + r() * 1.3, vp: r() * 6.28 })), a: lowpass(bright), b: lowpass(bright) }; }
+    const env = adsr(lt, n.att ?? att, 0.25, n.sus ?? sus, n.rel ?? rel, n.dur) * (n.vel ?? 1); if (env < 1e-5 && lt > n.dur) return 0;
+    const f = midi(n.note); const va = vib * Math.min(1, Math.max(0, lt - 0.12) * 2.5); let s = 0;
+    for (const o of n.st.o) { const ff = f * o.det * (1 + va * Math.sin(TAU * o.vr * lt + o.vp)); const dt = ff / SR; o.ph += dt; if (o.ph >= 1) o.ph -= 1; s += 2 * o.ph - 1 - polyblep(o.ph, dt); }
+    const cut = (n.cut ?? bright) * ((1 - dyn) + dyn * env); return n.st.b(n.st.a(s / voices, cut), cut) * env;
+  };
+}
+const STRINGS = (o = {}) => section({ voices: 6, detune: 10, vib: 0.0045, att: 0.12, rel: 0.45, bright: 3600, ...o });
+const SPICC = (o = {}) => section({ voices: 5, detune: 8, vib: 0, att: 0.006, rel: 0.06, sus: 0.35, bright: 4200, dyn: 0.5, ...o });
+const BRASS = (o = {}) => section({ voices: 3, detune: 5, vib: 0.002, att: 0.09, rel: 0.4, bright: 2600, dyn: 0.92, ...o });
+/** Karplus-Strong plucked string (harp, pizzicato). */
+function ks({ damp = 0.996, tone = 0.5, seed = 1 } = {}) {
+  return (n, lt) => {
+    if (!n.ks) { const N = Math.max(2, Math.round(SR / midi(n.note))); const r = rng(seed + n.note * 13 + Math.round(n.start * 991)); const b = new Float32Array(N); let p = 0; for (let i = 0; i < N; i++) { p += (n.tone ?? tone) * ((r() * 2 - 1) - p); b[i] = p; } n.ks = { b, i: 0 }; }
+    const k = n.ks; const y = k.b[k.i]; const j = (k.i + 1) % k.b.length; k.b[k.i] = (n.damp ?? damp) * 0.5 * (y + k.b[j]); k.i = j; return y * (n.vel ?? 1) * (lt < n.dur ? 1 : Math.exp(-(lt - n.dur) * 10));
+  };
+}
+/** Choir: ensemble saws through vowel formants. */
+function choirBus(notes, vowel = 0, seed = 1) {
+  const F = [[800, 1150, 2900], [400, 800, 2600], [350, 2000, 2800]][vowel]; const f1 = bandpass(F[0], 6), f2 = bandpass(F[1], 7), f3 = bandpass(F[2], 8);
+  const src = sequence(notes, section({ voices: 6, detune: 12, vib: 0.005, att: 0.5, rel: 0.8, bright: 5000, dyn: 0.2, seed }), 1.2);
+  return (t) => { const x = src(t); return f1(x) * 1.3 + f2(x) * 0.8 + f3(x) * 0.35 + x * 0.05; };
+}
+/** Gentle body resonance for string sections. */
+function stringBody() { const a = bandpass(280, 1.2), b = bandpass(1100, 1.5), c = bandpass(3000, 2); return (x) => x * 0.6 + a(x) * 0.35 + b(x) * 0.25 + c(x) * 0.12; }
+function timp(f, vel = 1) { const R = [1, 1.5, 1.99, 2.44, 2.98]; return (lt) => { if (lt < 0) return 0; let s = 0; for (let i = 0; i < R.length; i++) s += sin(f * R[i] * (1 - 0.02 * expDecay(lt, 20)) * lt) * expDecay(lt, 2.2 * (1 + i * 0.7)) / (1 + i); return s * vel * Math.min(1, lt * 600); }; }
+function bigDrum(seed, f0 = 50) { const n = noise(seed); const lp = lowpass(400); const ph = phasor(); return (lt, vel = 1) => lt < 0 ? 0 : vel * (sin(ph(f0 * (1 + 1.2 * expDecay(lt, 18)))) * expDecay(lt, 4.5) + lp(n()) * expDecay(lt, 22) * 1.6); }
+
+const CINE = [5, 6, 10, 1]; const BRIGHT = [0, 2, 9, 4];
+const scoreMeta = (kind, cat = 'Score Loops') => (p) => { const pr = PROGS[p.prog]; const key = keyName(p.key, pr.minor); return { title: `${kind} · ${pr.name} · ${key} · ${p.bpm} BPM`, key, bpm: p.bpm, loop: true, mood: pr.mood,
+  tags: ['orchestral', 'score', 'cinematic', 'film', kind.toLowerCase(), pr.name.toLowerCase(), key.toLowerCase(), pr.minor ? 'minor' : 'major', `${p.bpm} bpm`, 'loop'],
+  desc: `A four-bar orchestral ${kind.toLowerCase()} loop over the ${pr.name} progression in ${key} at ${p.bpm} BPM, recorded in a virtual concert hall. Layers with every other score loop in the same key and tempo.` }; };
+const scoreGrid = (progs, extra = {}) => ({ prog: progs, key: NOTES.map((_, i) => i), bpm: [90, 120], ...extra });
+const scCh = (p, i, oct) => chordNotes(p.key > 6 ? p.key - 12 : p.key, PROGS[p.prog], i, oct);
+
+G({ id: 'sc-ostinato', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid(CINE), meta: scoreMeta('String Ostinato'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; const pat = [0, 0, 2, 0, 1, 0, 2, 1, 0, 0, 2, 0, 1, 2, 1, 2];
+    for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 48); for (let k = 0; k < 16; k++) notes.push({ note: c[pat[k]] + (k % 8 === 4 ? 12 : 0), start: (bar * 16 + k) * B / 4, dur: B / 4 * 0.55, vel: k % 4 === 0 ? 1 : 0.7 }); }
+    const f = sequence(notes, SPICC({ seed: 11 }), 0.2); const bd = stringBody(); const h = hall(0.32, 0.87); return loopRender(16 * B, (t) => h(bd(f(t))), 3); } });
+G({ id: 'sc-pulse', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid(CINE), meta: scoreMeta('Low String Pulse'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const r = scCh(p, bar, 36)[0]; for (let k = 0; k < 8; k++) notes.push({ note: r + (k === 7 ? 7 : 0), start: (bar * 8 + k) * B / 2, dur: B / 2 * 0.7, vel: 0.55 + 0.45 * (k / 7), att: 0.01 }); }
+    const f = sequence(notes, section({ voices: 5, detune: 8, vib: 0, att: 0.01, rel: 0.1, sus: 0.6, bright: 1600, dyn: 0.7, seed: 12 }), 0.2); const h = hall(0.28, 0.86, 0.35); return loopRender(16 * B, (t) => h(f(t)) * 1.2, 3); } });
+G({ id: 'sc-legato', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...CINE, ...BRIGHT]), meta: scoreMeta('Legato Strings'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); for (const note of [c[0] - 12, ...c]) notes.push({ note, start: bar * 4 * B, dur: 4 * B * 0.98, att: 0.35, vel: 0.85 }); }
+    const f = sequence(notes, STRINGS({ seed: 13 }), 1); const bd = stringBody(); const h = hall(0.4, 0.88); return loopRender(16 * B, (t) => h(bd(f(t))), 3); } });
+G({ id: 'sc-brass', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid(CINE), meta: scoreMeta('Brass Swells'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 48); for (const note of [c[0] - 12, c[0], c[1], c[2]]) notes.push({ note, start: bar * 4 * B, dur: 3.6 * B, att: 1.4 * B, rel: 0.25, vel: 1 }); }
+    const f = sequence(notes, BRASS({ seed: 14 }), 0.6); const h = hall(0.34, 0.87, 0.35); return loopRender(16 * B, (t) => h(f(t)), 3); } });
+G({ id: 'sc-horns', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...CINE, ...BRIGHT]), meta: scoreMeta('Heroic Horn Theme'),
+  render: (p) => { const B = beat(p.bpm); const r = rng(9100 + p.prog * 41 + p.key * 7 + p.bpm); const sc = PROGS[p.prog].minor ? MIN : MAJ; const root = 60 + (p.key > 6 ? p.key - 12 : p.key); const mel = []; let deg = 4;
+    const rh = [[0, 1.5, 2, 3], [0, 2, 3], [0, 1, 1.5, 2, 3], [0, 3]];
+    for (let bar = 0; bar < 4; bar++) { const pat = bar === 3 ? [0] : rh[Math.floor(r() * 3)]; pat.forEach((o, j) => { if (j === 0) { const c = scCh(p, bar, 60); deg = sc.indexOf((c[r() < 0.5 ? 0 : 2] - root + 120) % 12); if (deg < 0) deg = 0; } else deg = Math.max(0, Math.min(9, deg + [-2, -1, 1, 1, 2][Math.floor(r() * 5)])); const next = pat[j + 1] ?? 4; mel.push({ note: root + sc[deg % 7] + 12 * Math.floor(deg / 7), start: (bar * 4 + o) * B, dur: (next - o) * B * 0.95, att: 0.06, vel: j === 0 ? 1 : 0.85 }); }); }
+    const horn = sequence(mel, section({ voices: 4, detune: 6, vib: 0.004, att: 0.06, rel: 0.25, bright: 2200, dyn: 0.85, seed: 15 }), 0.5);
+    const bed = sequence([0, 1, 2, 3].flatMap((bar) => scCh(p, bar, 48).map((note) => ({ note, start: bar * 4 * B, dur: 4 * B, att: 0.5, vel: 0.35 }))), STRINGS({ seed: 16 }), 1);
+    const h = hall(0.36, 0.88); return loopRender(16 * B, (t) => h(horn(t) * 0.9 + bed(t) * 0.5), 3); } });
+G({ id: 'sc-choir', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid(CINE, { vow: [0, 1] }), meta: (p) => scoreMeta(p.vow ? 'Choir "Oo"' : 'Choir "Ah"')(p),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) for (const note of scCh(p, bar, 57)) notes.push({ note, start: bar * 4 * B, dur: 4 * B * 0.98 }); const f = choirBus(notes, p.vow, 17); const h = hall(0.45, 0.89); return loopRender(16 * B, (t) => h(f(t)), 3); } });
+G({ id: 'sc-piano', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...CINE, ...BRIGHT]), meta: scoreMeta('Piano and Strings'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); const seq = [c[0] - 12, c[0], c[1], c[2], c[1], c[0] + 12, c[2], c[1]]; seq.forEach((note, k) => notes.push({ note, start: (bar * 8 + k) * B / 2, dur: B * 1.2 })); }
+    const pn = sequence(notes, piano, 2); const str = sequence([0, 1, 2, 3].flatMap((bar) => scCh(p, bar, 60).map((note) => ({ note, start: bar * 4 * B, dur: 4 * B, att: 0.8, vel: 0.4 }))), STRINGS({ seed: 18 }), 1); const h = hall(0.32, 0.87);
+    return loopRender(16 * B, (t) => h(pn(t) * 0.55 + str(t) * 0.45), 3); } });
+G({ id: 'sc-pizz', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...BRIGHT, ...CINE]), meta: scoreMeta('Pizzicato'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; const pat = [0, null, 2, 1, 0, 2, null, 1]; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); pat.forEach((k, j) => { if (k != null) notes.push({ note: c[k] + (j === 5 ? 12 : 0), start: (bar * 8 + j) * B / 2, dur: B / 2, vel: j % 4 === 0 ? 1 : 0.7 }); }); notes.push({ note: c[0] - 12, start: bar * 4 * B, dur: B, vel: 1 }); }
+    const f = sequence(notes, ks({ damp: 0.985, tone: 0.35, seed: 19 }), 0.4); const lp = lowpass(3500); const h = hall(0.3, 0.85); return loopRender(16 * B, (t) => h(lp(f(t))), 2); } });
+G({ id: 'sc-harp', cat: 'Score Loops', kind: 'music', loop: true, grid: scoreGrid([...BRIGHT, ...CINE]), meta: scoreMeta('Harp Arpeggio'),
+  render: (p) => { const B = beat(p.bpm); const notes = []; for (let bar = 0; bar < 4; bar++) { const c = scCh(p, bar, 60); const up = [c[0] - 12, c[0] - 5, c[0], c[1], c[2], c[0] + 12, c[1] + 12, c[2] + 12]; const seq = [...up, ...up.slice().reverse()]; seq.forEach((note, k) => notes.push({ note, start: (bar * 16 + k) * B / 4, dur: B * 1.5, vel: 0.8 })); }
+    const f = sequence(notes, ks({ damp: 0.9975, tone: 0.28, seed: 20 }), 1.5); const h = hall(0.35, 0.88); return loopRender(16 * B, (t) => h(f(t)), 3); } });
+G({ id: 'sc-tension', cat: 'Score Loops', kind: 'music', loop: true, grid: { key: NOTES.map((_, i) => i), bpm: [90, 120], v: [0, 1] },
+  meta: (p) => { const key = keyName(p.key, true); return { title: `Tension Bed ${p.v ? '(ticking)' : '(drone)'} · ${key} · ${p.bpm} BPM`, key, bpm: p.bpm, loop: true, mood: 'Tense', tags: ['tension', 'suspense', 'thriller', 'orchestral', 'score', 'cinematic', 'underscore', key.toLowerCase(), `${p.bpm} bpm`, 'loop'],
+    desc: `A suspenseful score bed in ${key}: a low string drone with uneasy high tremolo${p.v ? ' and a ticking col legno pulse' : ''} at ${p.bpm} BPM. Seamless loop.` }; },
+  render: (p) => { const B = beat(p.bpm); const r = 36 + p.key; const L = 16 * B; const lo = sequence([{ note: r, start: 0, dur: L, att: 1.5, vel: 0.9 }, { note: r + 12, start: 0, dur: L, att: 2, vel: 0.5 }], STRINGS({ seed: 21, bright: 1200 }), 0);
+    const hi = sequence([{ note: r + 37, start: 0, dur: L, att: 2, vel: 0.35 }, { note: r + 38, start: 0, dur: L, att: 3, vel: 0.3 }], section({ voices: 6, detune: 14, vib: 0.008, att: 2, bright: 6000, seed: 22 }), 0);
+    const n = noise(9200 + p.key); const bp = bandpass(2500, 6); const tick = (t) => { if (!p.v) return 0; const lt = t % (B / 2); return bp(n()) * expDecay(lt, 120) * (Math.floor(t / (B / 2)) % 2 ? 0.6 : 1) * 3; };
+    const h = hall(0.4, 0.88); return loopRender(L, (t) => h(lo(t) + hi(t) * (0.7 + 0.3 * Math.sin(TAU * 7 * t)) + tick(t)), 3); } });
+const PERC = ['Epic Taiko', 'Military March', 'Hybrid Trailer', 'War Drums', 'Tribal Toms', 'Ticking Suspense'];
+G({ id: 'sc-perc', cat: 'Score Loops', kind: 'music', loop: true, grid: { pat: PERC.map((_, i) => i), bpm: [80, 90, 100, 120, 140] },
+  meta: (p) => ({ title: `${PERC[p.pat]} Percussion · ${p.bpm} BPM`, bpm: p.bpm, loop: true, mood: p.pat === 5 ? 'Tense' : 'Epic', tags: ['orchestral', 'percussion', 'drums', 'score', 'cinematic', 'trailer', PERC[p.pat].toLowerCase(), `${p.bpm} bpm`, 'loop'],
+    desc: `A four-bar ${PERC[p.pat].toLowerCase()} orchestral percussion loop at ${p.bpm} BPM, in a big concert hall.` }),
+  render: (p) => { const B = beat(p.bpm); const s16 = B / 4; const L = 64 * s16; const dk = bigDrum(9300 + p.pat, [55, 60, 45, 50, 90, 70][p.pat]); const tom = bigDrum(9301, 110); const n = noise(9302); const hp = highpass(1500); const bp = bandpass(2400, 5);
+    const pats = [['x..x..x...x.x...', '....x.......x..x'], ['x.......x.......', 'x.xxx.x.xxx.x.xx'], ['x.....x...x.....', '....x.......x...'], ['x.x...x.x.x...x.', '....x..x....x.xx'], ['x..x..x.x..x.x..', '.x..x.x..x..x.xx'], ['x...............', 'x.x.x.x.x.x.x.x.']][p.pat];
+    const hits = []; for (let bar = 0; bar < 4; bar++) for (let k = 0; k < 16; k++) { if (pats[0][k] === 'x') hits.push({ start: (bar * 16 + k) * s16, dur: 1, t: 'big', g: k % 4 === 0 ? 1 : 0.75 }); if (pats[1][k] === 'x') hits.push({ start: (bar * 16 + k) * s16, dur: 0.4, t: p.pat === 1 || p.pat === 2 ? 'snare' : p.pat === 5 ? 'tick' : 'tom', g: 0.7 }); }
+    if (p.pat !== 5) hits.push({ start: 63 * s16, dur: 0.6, t: 'snare', g: 0.5 });
+    const f = sequence(hits, (h, lt) => h.t === 'big' ? dk(lt, h.g) * 1.2 : h.t === 'tom' ? tom(lt, h.g) * 0.7 : h.t === 'tick' ? bp(n()) * expDecay(lt, 140) * 2.5 * h.g : (hp(n()) * expDecay(lt, 18) + sin(200 * lt) * expDecay(lt, 25) * 0.4) * h.g, 1.2);
+    const sw = p.pat === 2 ? (t) => (t % (16 * B) > 12 * B ? hp(n()) * ((t % (16 * B)) - 12 * B) / (4 * B) * 0.25 : 0) : () => 0; const h = hall(0.3, 0.88, 0.3, 0.02); return loopRender(L, (t) => h(f(t) + sw(t)), 3); } });
+
+// ---------- score one-shots ----------
+const oneMeta = (title, tags, desc, key) => ({ title, tags: ['orchestral', 'score', 'cinematic', 'one shot', ...tags], desc, ...(key ? { key } : {}) });
+G({ id: 'sc-braam', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), len: [0, 1] },
+  meta: (p) => oneMeta(`Braam · ${NOTES[p.key]}${p.len ? ' (long)' : ''}`, ['braam', 'brass', 'trailer', 'impact', 'low', 'epic', NOTES[p.key].toLowerCase()], `A huge, growling low-brass "braam" on ${NOTES[p.key]}, the classic trailer impact${p.len ? ', held long' : ''}.`, NOTES[p.key]),
+  render: (p) => { const r = 31 + p.key; const L = p.len ? 5 : 2.6; const notes = [r, r + 12, r + 19, r + 24].map((note) => ({ note, start: 0, dur: L - 1.2, att: 0.02, rel: 1, vel: 1, cut: 1800 })); const f = sequence(notes, section({ voices: 5, detune: 14, vib: 0, att: 0.02, rel: 1, bright: 1800, dyn: 0.95, seed: 30 }), 1.5); const dk = bigDrum(9400 + p.key, 40); const h = hall(0.35, 0.89);
+    return render(L + 1.8, (t) => h(sat(f(t) * 2.2 * (1 + 0.15 * Math.sin(TAU * 31 * t) * expDecay(t, 2)), 1.6) * 0.7 + dk(t) * 0.8)); } });
+G({ id: 'sc-hit', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), minor: [0, 1] },
+  meta: (p) => oneMeta(`Orchestral Hit · ${keyName(p.key, p.minor)}`, ['hit', 'stab', 'tutti', 'impact', 'orchestra'], `A full-orchestra hit: brass, strings, timpani and cymbal together on a ${keyName(p.key, p.minor)} chord, with a long hall tail.`, keyName(p.key, p.minor)),
+  render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const c = [r - 12, r, r + (p.minor ? 3 : 4), r + 7, r + 12, r + (p.minor ? 15 : 16)]; const st = { dur: 0.35, att: 0.008, rel: 0.5, vel: 1 };
+    const br = sequence(c.slice(0, 4).map((note) => ({ note, start: 0, ...st })), BRASS({ seed: 31, bright: 3500 }), 1); const sr = sequence(c.slice(2).map((note) => ({ note, start: 0, ...st })), STRINGS({ seed: 32, att: 0.005 }), 1); const tp = timp(midi(r - 12)); const n = noise(9500 + p.key); const hp = highpass(4000); const h = hall(0.42, 0.89);
+    return render(4, (t) => h(br(t) * 0.8 + sr(t) * 0.6 + tp(t) * 0.9 + hp(n()) * expDecay(t, 3) * 0.3)); } });
+G({ id: 'sc-swell', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), minor: [0, 1] },
+  meta: (p) => oneMeta(`String Swell · ${keyName(p.key, p.minor)}`, ['swell', 'crescendo', 'strings', 'build up', 'transition'], `Strings swelling from nothing to a big ${keyName(p.key, p.minor)} chord and cutting off. Lead into a downbeat with it.`, keyName(p.key, p.minor)),
+  render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const L = 3.2; const notes = [r - 12, r, r + 7, r + 12, r + (p.minor ? 15 : 16), r + 19].map((note) => ({ note, start: 0, dur: L, att: L, rel: 0.08, vel: 1 })); const f = sequence(notes, STRINGS({ seed: 33, dyn: 0.9 }), 0.3); const bd = stringBody(); const h = hall(0.25, 0.86);
+    return render(L + 1.5, (t) => h(bd(f(t)) * (t < L ? (t / L) ** 1.5 : 1))); } });
+G({ id: 'sc-riser', cat: 'Score One-Shots', kind: 'sfx', grid: { len: [0, 1, 2], int: [0, 1, 2] },
+  meta: (p) => oneMeta(`Orchestral Riser (${['4', '6', '8'][p.len]} s, ${['soft', 'building', 'massive'][p.int]})`, ['riser', 'build up', 'crescendo', 'trailer', 'transition', 'tension'], `A ${['soft', 'building', 'massive'][p.int]} orchestral build: strings sliding upward with a cymbal swell${p.int ? ' and a timpani roll' : ''}, ${['4', '6', '8'][p.len]} seconds.`),
+  render: (p) => { const L = [4, 6, 8][p.len]; const f0 = midi(40); const v = Array.from({ length: 6 }, (_, k) => ({ ph: k / 6, det: 1 + (k - 2.5) * 0.004 })); const lp = lowpass(3000); const n = noise(9600 + p.len * 3 + p.int); const hp = highpass(5000); const tp = timp(midi(38)); const h = hall(0.35, 0.88);
+    return render(L + 1.5, (t) => { if (t > L) return h(0); const x = t / L; const f = f0 * 2 ** (x * 2.5); let s = 0; for (const o of v) { const dt = f * o.det / SR; o.ph += dt; if (o.ph >= 1) o.ph -= 1; s += 2 * o.ph - 1 - polyblep(o.ph, dt); } const roll = p.int ? tp((t * 16) % 1 / 16) * x * 0.5 * p.int : 0; return h(lp(s / 6, 800 + 4000 * x) * x ** 1.5 * 0.8 + hp(n()) * x ** 3 * 0.35 * (1 + p.int * 0.5) + roll); }); } });
+G({ id: 'sc-timpani', cat: 'Score One-Shots', kind: 'sfx', grid: { note: NOTES.map((_, i) => i), roll: [0, 1] },
+  meta: (p) => oneMeta(`Timpani ${p.roll ? 'Roll' : 'Hit'} · ${NOTES[p.note]}`, ['timpani', 'drum', 'percussion', 'kettle drum', p.roll ? 'roll' : 'hit', NOTES[p.note].toLowerCase()], `A tuned timpani ${p.roll ? 'roll that crescendos into a final hit' : 'hit'} on ${NOTES[p.note]}.`, NOTES[p.note]),
+  render: (p) => { const f = midi(41 + p.note); const h = hall(0.3, 0.87); if (!p.roll) { const tp = timp(f); return render(3.5, (t) => h(tp(t))); }
+    const hits = Array.from({ length: 36 }, (_, i) => ({ start: i * 0.055, dur: 0.3, vel: 0.25 + 0.75 * (i / 35) })).concat([{ start: 2.05, dur: 2, vel: 1.4 }]); const fn = sequence(hits, (n, lt) => (n.tp ??= timp(f, n.vel))(lt), 1.5); return render(4.5, (t) => h(fn(t))); } });
+G({ id: 'sc-cymbal', cat: 'Score One-Shots', kind: 'sfx', grid: { type: [0, 1, 2], v: [0, 1, 2] },
+  meta: (p) => oneMeta(`${['Orchestral Crash Cymbal', 'Suspended Cymbal Swell', 'Gong'][p.type]} ${p.v + 1}`, ['cymbal', 'crash', 'gong', 'swell', 'percussion', 'orchestral', ['crash', 'swell', 'gong'][p.type]], `${['A big orchestral crash cymbal', 'A suspended cymbal rolled into a shimmering swell', 'A deep gong strike that blooms and rings'][p.type]}.`),
+  render: (p) => { const n = noise(9700 + p.type * 3 + p.v); const hp = highpass(4000 + p.v * 1000); const h = hall(0.3, 0.88); const k = 1 + p.v * 0.08;
+    if (p.type === 0) return render(4, (t) => h(hp(n() + [3150, 4320, 5550, 6900].reduce((a, f) => a + square(f * k * t), 0) * 0.08) * expDecay(t, 1.3) * Math.min(1, t * 2000)));
+    if (p.type === 1) return render(5, (t) => { const x = Math.min(1, t / 3.5); return h(hp(n()) * x ** 2 * (t < 3.5 ? 1 : expDecay(t - 3.5, 3)) * 0.9); });
+    const R = [1, 1.37, 1.83, 2.19, 2.71, 3.3, 4.1]; const f = 80 * k; return render(7, (t) => h(R.reduce((a, r, i) => a + sin(f * r * t) * expDecay(t, 0.35 + i * 0.15) * Math.min(1, t * (3 - i * 0.3)) / (1 + i * 0.4), 0) * 0.5 + hp(n()) * expDecay(t, 4) * 0.1)); } });
+G({ id: 'sc-gliss', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), dir: [0, 1] },
+  meta: (p) => oneMeta(`Harp Glissando ${p.dir ? 'Down' : 'Up'} · ${keyName(p.key, false)}`, ['harp', 'glissando', 'magic', 'sweep', 'fairy tale', 'transition'], `A sweeping harp glissando ${p.dir ? 'down' : 'up'} through the ${keyName(p.key, false)} scale.`, keyName(p.key, false)),
+  render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const sc = []; for (let o = 0; o < 3; o++) for (const d of MAJ) sc.push(r + o * 12 + d); if (p.dir) sc.reverse(); const notes = sc.map((note, i) => ({ note, start: i * 0.045, dur: 2.5, vel: 0.5 + 0.5 * Math.sin(Math.PI * i / sc.length) })); const f = sequence(notes, ks({ damp: 0.9975, tone: 0.3, seed: 34 }), 1.5); const h = hall(0.4, 0.88);
+    return render(sc.length * 0.045 + 3, (t) => h(f(t))); } });
+G({ id: 'sc-celesta', cat: 'Score One-Shots', kind: 'sfx', grid: { oct: [0, 1], note: NOTES.map((_, i) => i) },
+  meta: (p) => oneMeta(`Celesta · ${NOTES[p.note]}${5 + p.oct}`, ['celesta', 'bell', 'magic', 'twinkle', 'note', 'tuned', NOTES[p.note].toLowerCase()], `A single sparkling celesta note: ${NOTES[p.note]}${5 + p.oct}.`, NOTES[p.note]),
+  render: (p) => { const f = midi(72 + p.oct * 12 + p.note); const h = hall(0.35, 0.86); return render(2.5, (t) => h((sin(f * t) * expDecay(t, 2.2) + sin(f * 2 * t) * 0.25 * expDecay(t, 4) + sin(f * 4.02 * t) * 0.08 * expDecay(t, 9)) * Math.min(1, t * 900) * 0.8)); } });
+G({ id: 'sc-choirstab', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), minor: [0, 1] },
+  meta: (p) => oneMeta(`Choir Stab · ${keyName(p.key, p.minor)}`, ['choir', 'voices', 'stab', 'ah', 'epic', 'vocal'], `A big choir "Ah" on a ${keyName(p.key, p.minor)} chord, short and powerful, with a hall tail.`, keyName(p.key, p.minor)),
+  render: (p) => { const r = 57 + (p.key > 6 ? p.key - 12 : p.key) - 12; const notes = [r, r + (p.minor ? 3 : 4), r + 7, r + 12].map((note) => ({ note, start: 0, dur: 0.6, att: 0.03, rel: 0.4 })); const f = choirBus(notes, 0, 35); const h = hall(0.45, 0.89); return render(3.5, (t) => h(f(t) * 1.4)); } });
+G({ id: 'sc-pizznote', cat: 'Score One-Shots', kind: 'sfx', grid: { oct: [0, 1], note: NOTES.map((_, i) => i) },
+  meta: (p) => oneMeta(`Pizzicato · ${NOTES[p.note]}${3 + p.oct}`, ['pizzicato', 'pluck', 'strings', 'note', 'tuned', NOTES[p.note].toLowerCase()], `A single plucked string note: ${NOTES[p.note]}${3 + p.oct}.`, NOTES[p.note]),
+  render: (p) => { const f = sequence([{ note: 48 + p.oct * 12 + p.note, start: 0, dur: 0.6 }], ks({ damp: 0.985, tone: 0.35, seed: 36 }), 0.5); const h = hall(0.3, 0.85); return render(1.6, (t) => h(f(t))); } });
+G({ id: 'sc-solo', cat: 'Score One-Shots', kind: 'sfx', grid: { inst: [0, 1], note: NOTES.map((_, i) => i) },
+  meta: (p) => oneMeta(`Solo ${p.inst ? 'Violin' : 'Cello'} · ${NOTES[p.note]}${p.inst ? 4 : 2}`, ['solo', p.inst ? 'violin' : 'cello', 'strings', 'sustain', 'note', 'tuned', NOTES[p.note].toLowerCase()], `A single expressive ${p.inst ? 'violin' : 'cello'} note held with vibrato: ${NOTES[p.note]}${p.inst ? 4 : 2}.`, NOTES[p.note]),
+  render: (p) => { const note = (p.inst ? 67 : 36) + p.note; const f = sequence([{ note, start: 0, dur: 2.4, att: 0.25, rel: 0.5 }], section({ voices: 2, detune: 3, vib: 0.007, att: 0.25, rel: 0.5, bright: p.inst ? 5000 : 2200, seed: 37 }), 0.8); const bd = stringBody(); const h = hall(0.3, 0.86); return render(3.6, (t) => h(bd(f(t)))); } });
+G({ id: 'sc-brassstab', cat: 'Score One-Shots', kind: 'sfx', grid: { key: NOTES.map((_, i) => i), minor: [0, 1] },
+  meta: (p) => oneMeta(`Brass Stab · ${keyName(p.key, p.minor)}`, ['brass', 'stab', 'horns', 'trombone', 'accent', 'epic'], `A short, punchy brass section stab on a ${keyName(p.key, p.minor)} chord.`, keyName(p.key, p.minor)),
+  render: (p) => { const r = 48 + (p.key > 6 ? p.key - 12 : p.key); const notes = [r - 12, r, r + (p.minor ? 3 : 4), r + 7].map((note) => ({ note, start: 0, dur: 0.25, att: 0.01, rel: 0.25, cut: 4000 })); const f = sequence(notes, BRASS({ seed: 38 }), 0.6); const h = hall(0.32, 0.87); return render(2.5, (t) => h(f(t))); } });
+
 // ---------- enumeration + rendering API ----------
 function product(grid) { let out = [{}]; for (const [k, vals] of Object.entries(grid)) out = out.flatMap((o) => vals.map((v) => ({ ...o, [k]: v }))); return out; }
 function enumerate() {

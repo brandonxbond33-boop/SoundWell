@@ -14,7 +14,7 @@ Needs Node 22+ (and ffmpeg only for making new MP3s). Every sound is original, s
 | `catalog-3.js` | Batch 3: 45 sounds (MP3) incl. the 3 stem kits in their original keys. |
 | `build-batch3.mjs` | Renders batch 3 to `<site>/media/*.mp3` and writes `sounds3.json`. Usage: `node build-batch3.mjs <siteDir> [onlySlug]` (needs `<siteDir>/sounds.json` with batches 1–2). |
 | `sounds3.json` | Metadata + waveform peaks for all 168 MP3 sounds, plus kit definitions. The MP3s themselves are the artifact's `media/` files. |
-| `gens.js` | **The procedural library** (5,192 sounds): 77 families, each a parameter grid (or `list`) + `meta()` + `render()`. Add new families here. Mark continuous sounds (noise beds, pads, hums) `xfade: true` so their loops crossfade instead of folding the tail. |
+| `gens.js` | **The procedural library** (6,968 sounds): 100 families, including the score families (`sc-*`: `section()` ensembles, `ks()` plucked strings, `hall()` reverb), each a parameter grid (or `list`) + `meta()` + `render()`. Add new families here. Mark continuous sounds (noise beds, pads, hums) `xfade: true` so their loops crossfade instead of folding the tail. |
 | `seqfast.js` | Faster `sequence()` swapped into the engine (bit-identical output). |
 | `assemble-engine.sh` | Builds `engine-core.js` = `function SoundwellEngine(){ synth + catalog voices + gens }`. Run after editing `gens.js`. |
 | `engine-core.js` | Assembled engine. Embedded in the page; the page also runs it in a Web Worker to render sounds on demand. |
