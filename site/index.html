@@ -437,6 +437,17 @@ body { font-family: var(--f-body); letter-spacing: .005em; }
 .seqbar .songctl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-left: auto; }
 .seqplay { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--grad); color: #fff; display: grid; place-items: center; flex: none; }
 .seqplay svg { width: 20px; height: 20px; }
+.seqplay.loading { animation: seqpulse .8s ease-in-out infinite alternate; }
+@keyframes seqpulse { to { opacity: .45; } }
+body.seqmode .transport { display: none; }
+body.seqmode .seq { padding-bottom: 84px; }
+.seqdock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; display: flex; align-items: center; gap: 12px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: var(--side); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -18px rgba(0,0,0,.35); }
+.seqdock .seqplay.withlabel { width: auto; height: 48px; border-radius: 999px; padding: 0 22px 0 18px; display: inline-flex; gap: 8px; font: 800 1rem var(--f-display); }
+.seqdock .dockinfo { display: grid; min-width: 0; flex: 1; }
+.seqdock .dt { font: 700 .95rem/1.2 var(--f-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seqdock .ds { font: 500 .76rem var(--f-mono); color: var(--muted); }
+.seqdock .dbpm { font: 600 .82rem var(--f-mono); color: var(--muted); }
+@media (min-width: 1100px) { .seqdock { left: 236px; } }
 .bankbtns { display: inline-flex; gap: 4px; }
 .bankbtns button { width: 40px; height: 36px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); font: 800 .95rem var(--f-display); color: var(--muted); position: relative; }
 .bankbtns button.used { color: var(--ink); }
@@ -506,7 +517,12 @@ body { font-family: var(--f-body); letter-spacing: .005em; }
 .plist li .pa { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 4px; }
 .plist li .pa .btn { padding: 5px 9px; font-size: .78rem; }
 @media (max-width: 720px) {
-  .trk { grid-template-columns: minmax(120px, 150px) auto 1fr auto; } .trk .tctl.vol { display: none; } .trk .tname kbd { display: none; }
+  .seqgrid { overflow-x: visible; gap: 10px; }
+  .trk { grid-template-columns: minmax(0, 1fr) auto auto; min-width: 0; row-gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .trk .tctl.vol { display: none; } .trk .tname kbd { display: none; }
+  .trk .steps { grid-column: 1 / -1; grid-row: 2; grid-auto-columns: minmax(18px, 1fr); gap: 3px; overflow-x: auto; padding: 3px 2px; }
+  .steps button { width: auto; height: 40px; } .steps.lanemode button { height: 60px; }
+  .seqdock .dbpm { display: none; }
   .seqbar input#seq-title { width: 100%; } .seqbar .songctl, .seqbar .pos { margin-left: 0; }
   .seqbar .seqplay { order: -1; }
 }
@@ -2051,7 +2067,7 @@ return { enumerate, renderEntry, peaks, SR };
   function openPack(id) { resetFilters(); state.pack = id; render(); window.scrollTo({ top: 0 }); }
   function render() {
     compute(); chips(); header(); renderHome(); musicFilters(); $('#keyf').value = state.key; $('#bpmf').value = state.bpm || '';
-    const seqView = state.view === 'seq'; $('#seqview').hidden = !seqView; list.hidden = seqView; document.querySelector('.chips').hidden = seqView;
+    const seqView = state.view === 'seq'; $('#seqview').hidden = !seqView; document.body.classList.toggle('seqmode', seqView); list.hidden = seqView; document.querySelector('.chips').hidden = seqView;
     if (seqView) { $('#packs').hidden = true; $('#colhead').hidden = true; document.querySelector('.reshead').hidden = true; renderSeq(); return; }
     const packsView = state.view === 'packs'; $('#packs').hidden = !packsView; $('#colhead').hidden = packsView; document.querySelector('.reshead').hidden = packsView;
     if (packsView) { list.innerHTML = ''; const all = [...PACKS.values()].sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name)); $('#packs').innerHTML = `<div class="secth"><h2>All packs</h2><span class="pmeta" style="font:500 .8rem var(--f-mono);color:var(--muted)">${all.length} packs</span></div>` + all.map(pcardHtml).join(''); return; }
@@ -2358,11 +2374,11 @@ return { enumerate, renderEntry, peaks, SR };
   let actx = null, master = null;
   function ac() {
     if (!actx) {
-      const C = window.AudioContext || window.webkitAudioContext; actx = new C();
+      const C = window.AudioContext || window.webkitAudioContext; actx = new C(); try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
       const comp = actx.createDynamicsCompressor(); comp.threshold.value = -14; comp.knee.value = 6; comp.ratio.value = 8;
       master = actx.createGain(); master.gain.value = mixVol; master.connect(comp); comp.connect(actx.destination);
     }
-    if (actx.state === 'suspended') actx.resume();
+    if (actx.state !== 'running' && actx.state !== 'closed') actx.resume().catch(() => {});
     return actx;
   }
   const bufs = new Map();
@@ -2890,18 +2906,34 @@ return { enumerate, renderEntry, peaks, SR };
     }
     if (SEQ.playing) SEQ.raf = requestAnimationFrame(seqDraw);
   }
-  function seqPlay() {
-    const G = seqLive(); for (const t of pat.tracks) seqLoad(t.slug); if (P.playing) pPause();
-    if (pat.song && !pat.chain.length) pat.chain = 'A';
-    Object.assign(SEQ, { playing: true, slot: 0, a: 0, abs: {}, queued: null, marks: [], bank: pat.song ? pat.chain[0] : pat.cur, next: G.ctx.currentTime + 0.08 });
+  /** Start playback. Shows Stop at once, loads any sounds that aren't ready, and explains why nothing would play. */
+  async function seqPlay() {
+    const G = seqLive(); if (P.playing) pPause(); if (pat.song && !pat.chain.length) pat.chain = 'A';
+    if (!pat.tracks.length) { toast('Add a track first: press “Add a track” or pick a template.'); return; }
+    const banks = pat.song ? [...new Set(pat.chain)] : [pat.cur];
+    if (!pat.tracks.some((t) => banks.some((b) => t.pats[b] && /[xX]/.test(t.pats[b].s)))) toast(pat.song ? `Song mode plays the chain “${pat.chain}”, and those patterns are empty. Turn off Song mode or change the chain.` : `Pattern ${pat.cur} has no steps yet. Tap some squares in the grid so it has something to play.`);
+    else if (pat.song && !pat.chain.includes(pat.cur)) toast(`Song mode is on, so it plays the chain “${pat.chain}”, not pattern ${pat.cur}. Add ${pat.cur} to the chain or turn Song mode off.`);
+    else if (pat.tracks.every((t) => !audible(t))) toast('Every track is muted. Unmute one to hear it.');
+    const run = SEQ.run = (SEQ.run || 0) + 1; SEQ.playing = true; seqSyncPlay();
+    const missing = pat.tracks.filter((t) => !seqBufs.get(t.slug));
+    if (missing.length) {
+      document.querySelectorAll('[data-seq="play"]').forEach((b) => b.classList.add('loading'));
+      await Promise.race([Promise.all(missing.map((t) => getBuf(bySlug[t.slug]).then((b) => seqBufs.set(t.slug, b)).catch(() => {}))), new Promise((r) => setTimeout(r, 8000))]);
+      document.querySelectorAll('[data-seq="play"]').forEach((b) => b.classList.remove('loading'));
+      if (!SEQ.playing || run !== SEQ.run) return;
+    }
+    Object.assign(SEQ, { slot: 0, a: 0, abs: {}, queued: null, marks: [], bank: pat.song ? pat.chain[0] : pat.cur, next: G.ctx.currentTime + 0.08 });
     clearInterval(SEQ.timer); SEQ.timer = setInterval(seqTick, 25); seqTick(); cancelAnimationFrame(SEQ.raf); SEQ.raf = requestAnimationFrame(seqDraw); seqSyncPlay();
   }
   function seqStop() {
-    SEQ.playing = false; SEQ.last = null; clearInterval(SEQ.timer); cancelAnimationFrame(SEQ.raf);
+    SEQ.playing = false; SEQ.last = null; SEQ.run = (SEQ.run || 0) + 1; clearInterval(SEQ.timer); cancelAnimationFrame(SEQ.raf);
     if (SEQ.G) { for (const v of SEQ.G.voices.values()) { try { v.g.gain.setTargetAtTime(0, actx.currentTime, 0.01); v.src.stop(actx.currentTime + 0.1); } catch {} } SEQ.G.voices.clear(); }
     document.querySelectorAll('.steps .now').forEach((b) => b.classList.remove('now')); const pos = $('#seq-pos'); if (pos) pos.textContent = ''; seqSyncPlay();
   }
-  function seqSyncPlay() { const b = $('#seqplay'); if (!b) return; b.setAttribute('aria-label', SEQ.playing ? 'Stop pattern' : 'Play pattern'); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${SEQ.playing ? 'stop' : 'play'}"/></svg>`; }
+  function seqSyncPlay() {
+    for (const b of document.querySelectorAll('[data-seq="play"]')) { b.setAttribute('aria-label', SEQ.playing ? 'Stop the sequencer' : 'Play the sequencer'); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${SEQ.playing ? 'stop' : 'play'}"/></svg>${b.classList.contains('withlabel') ? `<span>${SEQ.playing ? 'Stop' : 'Play'}</span>` : ''}`; }
+    const st = $('#seqdock-state'); if (st) st.textContent = SEQ.playing ? (pat.song ? `Playing song ${pat.chain}` : `Playing pattern ${pat.cur}`) : 'Stopped · Space or the button plays';
+  }
 
   // pads: keys 1–8 play tracks; with Record on they write hits into the playing pattern, quantized to the nearest step
   function seqPad(i, accent) {
@@ -3015,7 +3047,9 @@ return { enumerate, renderEntry, peaks, SR };
           ${dbCap ? `<div class="seqtools"><button class="btn primary" type="button" data-seq="share" id="seq-share">Share this pattern</button></div>` : ''}<ul id="comm-list"></ul></section>
         <section class="plist" aria-label="Saved in this browser"><h3>Saved in this browser</h3>${saved.length ? `<ul>${saved.map((p2, i) => `<li><span class="pt">${esc(p2.title)}</span><span class="pm">${p2.bpm} BPM · ${p2.tracks.length} tracks · ${p2.steps} steps</span><span class="pa"><button class="btn" type="button" data-seq="loadmine" data-i="${i}">Load</button><button class="btn" type="button" data-seq="delmine" data-i="${i}" aria-label="Delete ${esc(p2.title)}">Delete</button></span></li>`).join('')}</ul>` : '<p class="note">Nothing saved yet. “Save in browser” keeps patterns on this device.</p>'}</section>
       </div>
-      <input type="file" id="seq-file" accept=".json,application/json" hidden>`;
+      <input type="file" id="seq-file" accept=".json,application/json" hidden>
+      <div class="seqdock" role="region" aria-label="Sequencer controls"><button class="seqplay withlabel" type="button" data-seq="play"></button>
+        <div class="dockinfo"><span class="dt">${esc(pat.title)}</span><span class="ds" id="seqdock-state"></span></div><span class="dbpm">${pat.bpm} BPM</span></div>`;
     for (const row of v.querySelectorAll('.trk')) { const t = pat.tracks[+row.dataset.t]; row.querySelectorAll('[data-step]').forEach((b, k) => seqCell(b, t, k)); }
     seqSyncPlay(); renderCommunity(); for (const t of pat.tracks) seqLoad(t.slug); if (focus) document.getElementById(focus)?.focus();
   }
@@ -3236,8 +3270,10 @@ return { enumerate, renderEntry, peaks, SR };
     if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z' || e.key === 'y')) { e.preventDefault(); seqUndo(e.key === 'y' || e.shiftKey); return; }
     if (e.ctrlKey || e.metaKey) return;
     const d = /^Digit([1-8])$/.exec(e.code); if (d && !e.repeat) { e.preventDefault(); e.stopImmediatePropagation(); seqPad(+d[1] - 1, e.shiftKey); return; }
+    if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) (SEQ.playing ? seqStop() : seqPlay()); return; }
     if ((e.key === 'f' || e.key === 'F') && !e.repeat) { SEQ.fill = !SEQ.fill; document.querySelector('[data-seq="fill"]')?.setAttribute('aria-pressed', String(SEQ.fill)); }
   }, true);
+  document.addEventListener('keyup', (e) => { if (state.view === 'seq' && (e.key === ' ' || e.code === 'Space') && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName)) e.preventDefault(); }, true);
 
   // ---------- events ----------
   list.addEventListener('click', (e) => {
