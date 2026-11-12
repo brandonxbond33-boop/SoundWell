@@ -2123,7 +2123,7 @@ return { enumerate, renderEntry, peaks, SR };
     const sim = similar(s);
     return `<div class="detail" id="d-${s.slug}">
       <div><p>${esc(s.desc)}</p>${s.credit ? `<p class="recby">🎙 Recorded by <a href="${esc(s.credit.url)}" target="_blank" rel="noopener">${esc(s.credit.by)}</a> on Freesound · CC0, no credit required</p>` : ''}${s.custom ? '' : `<p style="margin:0 0 8px;font-size:.86rem">From the pack <button class="clear" type="button" data-pack="${s.pack}">${esc(packName(s))}</button></p>`}
-        <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · 16-bit WAV' : s.g ? 'Generated in your browser · 16-bit WAV · 44.1 kHz' : 'MP3 · 192 kbps · 44.1 kHz'}</dd></dl>
+        <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · 16-bit WAV' : s.g ? 'Generated in your browser · 16-bit WAV · 44.1 kHz' : s.sp ? 'Recording · downloads as 16-bit WAV' : 'MP3 · 192 kbps · 44.1 kHz'}</dd></dl>
         <div class="tags">${s.tags.map((t) => `<button type="button" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>
         ${s.kit ? `<p style="margin:10px 0 0;font-size:.86rem">Part of the <b>${esc(kitOf(s.kit).name)}</b> stem kit (${kitOf(s.kit).bpm} BPM, ${esc(kitOf(s.kit).key)}). Every stem lines up with the others.</p>` : ''}
         <div class="btnrow" style="margin-top:10px">
@@ -2454,7 +2454,7 @@ return { enumerate, renderEntry, peaks, SR };
     if (!dlCap) { toast('Downloads aren’t available in this view.'); return; }
     try {
       let file;
-      if (s.g || s.custom) { toast(`Preparing “${s.title}”…`); file = { name: `${fname(s)}.wav`, data: toWav(await getBuf(s)) }; }
+      if (s.g || s.custom || s.sp) { toast(`Preparing “${s.title}”…`); file = { name: `${fname(s)}.wav`, data: toWav(await getBuf(s)) }; }
       else { const res = await fetch(`media/${s.slug}.mp3`); if (!res.ok) throw new Error('fetch'); file = { name: `${s.slug}.mp3`, data: new Uint8Array(await res.arrayBuffer()) }; }
       const note = `${s.title}\n\n${s.desc}\n\nLicense: CC0 1.0 Universal (public domain dedication)\nhttps://creativecommons.org/publicdomain/zero/1.0/\n\nYou can use this sound for anything, including commercial work. No credit required.\nOptional credit: ${credit(s)}\n`;
       await dlCap.save({ filename: `${fname(s)}.zip`, data: zip([file, { name: 'LICENSE.txt', data: new TextEncoder().encode(note) }]) });
@@ -2505,12 +2505,25 @@ return { enumerate, renderEntry, peaks, SR };
     return actx;
   }
   const bufs = new Map();
+  // Recordings live in sound packs (one MP3 holding many sounds, separated by silence). Decode a pack once, then cut
+  // each sound out with a 30 ms margin, which covers any MP3 decoder delay difference between browsers.
+  const spriteCache = new Map();
+  function spriteFile(f) {
+    if (spriteCache.has(f)) { const p = spriteCache.get(f); spriteCache.delete(f); spriteCache.set(f, p); return p; }
+    const p = fetch(`media/${f}.mp3`).then((r) => { if (!r.ok) throw new Error('fetch'); return r.arrayBuffer(); }).then((ab) => new Promise((res, rej) => ac().decodeAudioData(ab, res, rej)));
+    p.catch(() => spriteCache.delete(f)); spriteCache.set(f, p); while (spriteCache.size > 6) spriteCache.delete(spriteCache.keys().next().value); return p;
+  }
+  async function spriteSlice(s) {
+    const big = await spriteFile(s.sp.f); const sr = big.sampleRate; const a = Math.max(0, Math.floor((s.sp.o - 0.03) * sr)); const b = Math.min(big.length, Math.ceil((s.sp.o + s.sp.d + 0.03) * sr));
+    const out = ac().createBuffer(big.numberOfChannels, Math.max(1, b - a), sr); for (let c = 0; c < big.numberOfChannels; c++) out.copyToChannel(big.getChannelData(c).subarray(a, b), c); return out;
+  }
   function getBuf(s) {
     if (bufs.has(s.slug)) { const p = bufs.get(s.slug); bufs.delete(s.slug); bufs.set(s.slug, p); return p; }
     const p = s.custom
       ? (bySlug[s.custom.base] ? processBuf(bySlug[s.custom.base], s.custom.o, s.custom.m) : Promise.reject(new Error('missing')))
       : s.g
       ? renderProc(s).then((o) => { const b = ac().createBuffer(2, o.l.length, 44100); b.copyToChannel(o.l, 0); b.copyToChannel(o.r || o.l, 1); return b; })
+      : s.sp ? spriteSlice(s)
       : fetch(`media/${s.slug}.mp3`).then((r) => { if (!r.ok) throw new Error('fetch'); return r.arrayBuffer(); }).then((ab) => new Promise((res, rej) => ac().decodeAudioData(ab, res, rej)));
     p.catch(() => bufs.delete(s.slug)); bufs.set(s.slug, p);
     // keep memory bounded: drop the oldest buffers that aren't in the mix or playing

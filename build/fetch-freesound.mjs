@@ -16,11 +16,15 @@ const DEADLINE = Date.now() + (Number(process.env.FREESOUND_MINUTES) || 40) * 60
 const lib = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : { sounds: [] };
 const have = new Set([...lib.sounds.map((s) => s.fsid), ...(lib.blocked || [])]); // blocked: removed by hand, never re-import
 const SR = 44100; const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-let calls = 0;
+let gate = Promise.resolve(); const throttle = () => (gate = gate.then(() => sleep(1100))); // stay under 60 API requests a minute
+const MAX_MB = Number(process.env.FREESOUND_MAX_MB) || 200; // total size of the recordings, so the app stays within hosting limits
+import { readdirSync, statSync } from 'node:fs';
+let mediaBytes = readdirSync(MEDIA).filter((f) => f.startsWith('fs-')).reduce((a, f) => a + statSync(`${MEDIA}/${f}`).size, 0);
+const full = () => lib.sounds.length >= MAX || Date.now() > DEADLINE || mediaBytes > MAX_MB * 1e6;
 async function api(path, params) {
   const url = new URL(API + path); for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   for (let tries = 0; tries < 4; tries++) {
-    if (calls++) await sleep(1100); // stay under 60 requests a minute
+    await throttle();
     const res = await fetch(url, { headers: { Authorization: `Token ${KEY}` }, signal: AbortSignal.timeout(60000) });
     if (res.status === 429) { await sleep(15000); continue; }
     if (!res.ok) throw new Error(`Freesound ${res.status} for ${url.pathname}: ${(await res.text()).slice(0, 200)}`);
@@ -43,11 +47,11 @@ function decode(buf) {
   const n = f.length >> 1; const L = new Float32Array(n), R = new Float32Array(n); for (let i = 0; i < n; i++) { L[i] = f[2 * i]; R[i] = f[2 * i + 1]; } return [L, R];
 }
 /** Quality gate, silence trim, loudness match (the same mastering as the generated library), MP3 encode. */
-function processAudio([L, R], bed) {
+function processAudio([L, R], bed, strict) {
   const n = L.length; let pk = 0, clip = 0, sq = 0; for (let i = 0; i < n; i++) { const a = Math.max(Math.abs(L[i]), Math.abs(R[i])); pk = Math.max(pk, a); if (a > 0.999) clip++; sq += (L[i] * L[i] + R[i] * R[i]) / 2; }
   const rms = Math.sqrt(sq / (n || 1)); if (pk < 0.02 || rms < 0.002) return { why: 'too quiet' }; if (clip / n > 0.001) return { why: 'clipped' };
   const thr = Math.max(pk * 0.004, 0.0006); let a = 0, b = n - 1; while (a < n && Math.abs(L[a]) < thr && Math.abs(R[a]) < thr) a++; while (b > a && Math.abs(L[b]) < thr && Math.abs(R[b]) < thr) b--;
-  a = Math.max(0, a - Math.round(SR * 0.01)); b = Math.min(n, b + Math.round(SR * 0.08)); const cap = Math.round(SR * (bed ? 40 : 12)); if (b - a > cap) b = a + cap;
+  a = Math.max(0, a - Math.round(SR * 0.01)); b = Math.min(n, b + Math.round(SR * 0.08)); const cap = Math.round(SR * (strict ? (bed ? 30 : 8) : (bed ? 40 : 12))); if (b - a > cap) b = a + cap;
   if (b - a < SR * 0.08) return { why: 'too short' };
   let l = L.slice(a, b), r = R.slice(a, b);
   [l, r] = master(l, r, { loop: bed, fade: 0.004 });
@@ -62,35 +66,39 @@ function encode(l, r, file) {
 
 const titles = new Map(); for (const s of lib.sounds) titles.set(s.title, (titles.get(s.title) || 0) + 1);
 let added = 0; const report = { searched: 0, rejected: {} };
-for (const { q, cat, bed = false, n } of CFG.queries) {
-  if (lib.sounds.length >= MAX || Date.now() > DEADLINE) break;
-  const want = n || CFG.perQuery; let got = lib.sounds.filter((s) => s.query === q).length; if (got >= want) continue;
+async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 'sfx' }) {
+  if (full()) return;
+  const want = n || CFG.perQuery; let got = lib.sounds.filter((s) => s.query === q).length; if (got >= want) return; const strict = minRating != null;
   const data = await api('/search/text/', {
     query: q, page_size: 60, sort: 'downloads_desc',
-    filter: `license:"Creative Commons 0" duration:[0.15 TO ${bed ? 90 : 20}] avg_rating:[${CFG.minRating} TO *] num_ratings:[${CFG.minRatings} TO *] samplerate:[44100 TO *]`,
+    filter: `license:"Creative Commons 0" duration:[0.15 TO ${bed ? 90 : 20}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *] samplerate:[44100 TO *]`,
     fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews',
   }); report.searched++;
   const perUser = new Map();
   for (const s of data.results) {
-    if (got >= want || lib.sounds.length >= MAX || Date.now() > DEADLINE) break;
+    if (got >= want || full()) break;
     if (have.has(s.id) || !/publicdomain\/zero/.test(s.license)) continue;
     if ((perUser.get(s.username) || 0) >= 2) continue;
+    have.add(s.id); // claim it so a parallel search doesn't take it too
     const pre = s.previews?.['preview-hq-ogg'] || s.previews?.['preview-hq-mp3']; if (!pre) continue;
     let res; try { res = await fetch(pre, { signal: AbortSignal.timeout(60000) }); } catch { continue; } if (!res.ok) continue;
-    const pcm = decode(Buffer.from(await res.arrayBuffer())); if (!pcm) { report.rejected['undecodable'] = (report.rejected['undecodable'] || 0) + 1; continue; }
-    const out = processAudio(pcm, bed); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
+    let pcm; try { pcm = decode(Buffer.from(await res.arrayBuffer())); } catch { pcm = null; } if (!pcm) { report.rejected['undecodable'] = (report.rejected['undecodable'] || 0) + 1; continue; }
+    const out = processAudio(pcm, bed, strict); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
     const tags = [...new Set((s.tags || []).map((t) => t.toLowerCase().replace(/[-_]/g, ' ')).filter((t) => t.length > 2 && !/\d/.test(t) && !JUNK1.test(t)))].slice(0, 10);
     let title = cleanTitle(s.name, tags); const k = (titles.get(title) || 0) + 1; titles.set(title, k); if (k > 1) title = `${title} ${k}`;
-    const slug = `fs-${slugify(title)}-${s.id}`; if (!encode(out.l, out.r, `${MEDIA}/${slug}.mp3`)) continue;
+    const slug = `fs-${slugify(title)}-${s.id}`; const file = `${MEDIA}/${slug}.mp3`; if (!encode(out.l, out.r, file)) continue; mediaBytes += statSync(file).size;
     const mid = new Float32Array(out.l.length); for (let i = 0; i < mid.length; i++) mid[i] = (out.l[i] + out.r[i]) / 2;
     let desc = stripHtml(s.description); desc = desc.length > 20 ? (desc.split(/(?<=[.!?])\s/)[0] || desc).slice(0, 220) : '';
-    lib.sounds.push({ slug, title, desc: desc || `A real recording: ${title.toLowerCase()}.`, kind: 'sfx', cat, tags: [...new Set([...tags, 'recorded', 'field recording', 'real'])], mood: '', bpm: 0, key: '', loop: false, bed,
+    lib.sounds.push({ slug, title, desc: desc || `A real recording: ${title.toLowerCase()}.`, kind, cat, tags: [...new Set([...tags, 'recorded', 'field recording', 'real'])], mood: '', bpm: 0, key: '', loop: false, bed,
       dur: Math.round(out.l.length / SR * 100) / 100, n: out.l.length, kit: '', stem: '', layer: false, peaks: peaks(mid).filter((_, i) => i % 2 === 0),
       credit: { by: s.username, url: s.url, license: 'CC0', source: 'Freesound' }, fsid: s.id, query: q, rating: Math.round(s.avg_rating * 10) / 10 });
-    have.add(s.id); perUser.set(s.username, (perUser.get(s.username) || 0) + 1); got++; added++;
+    perUser.set(s.username, (perUser.get(s.username) || 0) + 1); got++; added++;
     writeFileSync(OUT, JSON.stringify(lib, null, 1));
     console.log(`+ ${title}  (${cat}, by ${s.username}, ★${s.avg_rating.toFixed(1)})`);
   }
 }
+// four searches at a time; API calls still go out one by one through the throttle
+const queue = [...CFG.queries];
+await Promise.all(Array.from({ length: 4 }, async () => { while (queue.length && !full()) { const q = queue.shift(); try { await runQuery(q); } catch (e) { console.log('! ' + q.q + ': ' + e.message); } } }));
 writeFileSync(OUT, JSON.stringify(lib, null, 1));
-console.log(`added ${added}, library now ${lib.sounds.length} recordings; ${report.searched} searches; rejected ${JSON.stringify(report.rejected)}`);
+console.log(`added ${added}, library now ${lib.sounds.length} recordings, ${Math.round(mediaBytes / 1e6)} MB; ${report.searched} searches; rejected ${JSON.stringify(report.rejected)}`);

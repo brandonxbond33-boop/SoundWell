@@ -1,23 +1,1063 @@
 {
-  "perQuery": 7,
-  "minRating": 4,
-  "minRatings": 4,
-  "queries": [
-    { "q": "footsteps wood", "cat": "Foley" }, { "q": "footsteps gravel", "cat": "Foley" }, { "q": "footsteps snow", "cat": "Foley" },
-    { "q": "door close", "cat": "Household" }, { "q": "door creak", "cat": "Household" }, { "q": "keys", "cat": "Foley" },
-    { "q": "cloth rustle", "cat": "Foley" }, { "q": "paper", "cat": "Foley" }, { "q": "glass break", "cat": "Impacts" },
-    { "q": "punch", "cat": "Impacts" }, { "q": "body fall", "cat": "Impacts" }, { "q": "metal impact", "cat": "Impacts" },
-    { "q": "wood impact", "cat": "Impacts" }, { "q": "whoosh", "cat": "Transitions" }, { "q": "swoosh", "cat": "Transitions" },
-    { "q": "rain", "cat": "Weather", "bed": true }, { "q": "thunder", "cat": "Weather" }, { "q": "wind", "cat": "Weather", "bed": true },
-    { "q": "ocean waves", "cat": "Nature", "bed": true }, { "q": "forest birds", "cat": "Nature", "bed": true }, { "q": "stream water", "cat": "Nature", "bed": true },
-    { "q": "fire crackling", "cat": "Nature", "bed": true }, { "q": "night crickets", "cat": "Nature", "bed": true },
-    { "q": "city street ambience", "cat": "Ambience Layers", "bed": true }, { "q": "cafe restaurant ambience", "cat": "Ambience Layers", "bed": true }, { "q": "crowd", "cat": "Ambience Layers", "bed": true },
-    { "q": "dog bark", "cat": "Animals" }, { "q": "cat meow", "cat": "Animals" }, { "q": "horse", "cat": "Animals" }, { "q": "rooster", "cat": "Animals" }, { "q": "frog", "cat": "Animals" },
-    { "q": "car engine", "cat": "Vehicles" }, { "q": "car pass by", "cat": "Vehicles" }, { "q": "train", "cat": "Vehicles" }, { "q": "airplane", "cat": "Vehicles" },
-    { "q": "gunshot", "cat": "Weapons" }, { "q": "sword", "cat": "Weapons" }, { "q": "explosion", "cat": "Impacts" },
-    { "q": "applause", "cat": "Human" }, { "q": "laugh", "cat": "Human" }, { "q": "breath", "cat": "Human" },
-    { "q": "kitchen cooking", "cat": "Household" }, { "q": "water pour", "cat": "Household" },
-    { "q": "button click", "cat": "Interface" }, { "q": "notification", "cat": "Interface" },
-    { "q": "creepy", "cat": "Horror" }, { "q": "church bell", "cat": "Nature" }
-  ]
+ "perQuery": 7,
+ "minRating": 4,
+ "minRatings": 4,
+ "queries": [
+  {
+   "q": "footsteps wood",
+   "cat": "Foley"
+  },
+  {
+   "q": "footsteps gravel",
+   "cat": "Foley"
+  },
+  {
+   "q": "footsteps snow",
+   "cat": "Foley"
+  },
+  {
+   "q": "door close",
+   "cat": "Household"
+  },
+  {
+   "q": "door creak",
+   "cat": "Household"
+  },
+  {
+   "q": "keys",
+   "cat": "Foley"
+  },
+  {
+   "q": "cloth rustle",
+   "cat": "Foley"
+  },
+  {
+   "q": "paper",
+   "cat": "Foley"
+  },
+  {
+   "q": "glass break",
+   "cat": "Impacts"
+  },
+  {
+   "q": "punch",
+   "cat": "Impacts"
+  },
+  {
+   "q": "body fall",
+   "cat": "Impacts"
+  },
+  {
+   "q": "metal impact",
+   "cat": "Impacts"
+  },
+  {
+   "q": "wood impact",
+   "cat": "Impacts"
+  },
+  {
+   "q": "whoosh",
+   "cat": "Transitions"
+  },
+  {
+   "q": "swoosh",
+   "cat": "Transitions"
+  },
+  {
+   "q": "rain",
+   "cat": "Weather",
+   "bed": true
+  },
+  {
+   "q": "thunder",
+   "cat": "Weather"
+  },
+  {
+   "q": "wind",
+   "cat": "Weather",
+   "bed": true
+  },
+  {
+   "q": "ocean waves",
+   "cat": "Nature",
+   "bed": true
+  },
+  {
+   "q": "forest birds",
+   "cat": "Nature",
+   "bed": true
+  },
+  {
+   "q": "stream water",
+   "cat": "Nature",
+   "bed": true
+  },
+  {
+   "q": "fire crackling",
+   "cat": "Nature",
+   "bed": true
+  },
+  {
+   "q": "night crickets",
+   "cat": "Nature",
+   "bed": true
+  },
+  {
+   "q": "city street ambience",
+   "cat": "Ambience Layers",
+   "bed": true
+  },
+  {
+   "q": "cafe restaurant ambience",
+   "cat": "Ambience Layers",
+   "bed": true
+  },
+  {
+   "q": "crowd",
+   "cat": "Ambience Layers",
+   "bed": true
+  },
+  {
+   "q": "dog bark",
+   "cat": "Animals"
+  },
+  {
+   "q": "cat meow",
+   "cat": "Animals"
+  },
+  {
+   "q": "horse",
+   "cat": "Animals"
+  },
+  {
+   "q": "rooster",
+   "cat": "Animals"
+  },
+  {
+   "q": "frog",
+   "cat": "Animals"
+  },
+  {
+   "q": "car engine",
+   "cat": "Vehicles"
+  },
+  {
+   "q": "car pass by",
+   "cat": "Vehicles"
+  },
+  {
+   "q": "train",
+   "cat": "Vehicles"
+  },
+  {
+   "q": "airplane",
+   "cat": "Vehicles"
+  },
+  {
+   "q": "gunshot",
+   "cat": "Weapons"
+  },
+  {
+   "q": "sword",
+   "cat": "Weapons"
+  },
+  {
+   "q": "explosion",
+   "cat": "Impacts"
+  },
+  {
+   "q": "applause",
+   "cat": "Human"
+  },
+  {
+   "q": "laugh",
+   "cat": "Human"
+  },
+  {
+   "q": "breath",
+   "cat": "Human"
+  },
+  {
+   "q": "kitchen cooking",
+   "cat": "Household"
+  },
+  {
+   "q": "water pour",
+   "cat": "Household"
+  },
+  {
+   "q": "button click",
+   "cat": "Interface"
+  },
+  {
+   "q": "notification",
+   "cat": "Interface"
+  },
+  {
+   "q": "creepy",
+   "cat": "Horror"
+  },
+  {
+   "q": "church bell",
+   "cat": "Nature"
+  },
+  {
+   "q": "piano note",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "acoustic guitar strum",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "guitar pluck",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "violin",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "cello",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "trumpet",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "flute",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "harp",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "marimba",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "kalimba",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "glockenspiel",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "church organ",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "singing bowl",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "gong",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "music box",
+   "cat": "Instruments",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "snare drum",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "kick drum",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "cymbal crash",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "hand clap",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "tambourine",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "shaker",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "conga",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "djembe",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "taiko",
+   "cat": "Drum Hits",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "kind": "music"
+  },
+  {
+   "q": "basketball bounce",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "tennis",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "soccer ball kick",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "referee whistle",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bowling",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "golf swing",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "skateboard",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "boxing bell",
+   "cat": "Sports",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "camera shutter",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "phone ring",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "phone vibrate",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "mouse click",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "switch click",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "cash register",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "typewriter",
+   "cat": "Interface",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "dishes",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "glass clink",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "cutlery",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "fridge",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "vacuum cleaner",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "washing machine",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "toilet flush",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "faucet",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "clock ticking",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "doorbell",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "knock door",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "drawer",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "zipper",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bottle open",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "can open",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bag",
+   "cat": "Household",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "waterfall",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "seagulls",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "owl",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "wolf howl",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "crow",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bees",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "fly buzz",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "leaves rustle",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "branch break",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "cave drips",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "underwater",
+   "cat": "Nature",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "thunderstorm",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "snow storm wind",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "subway train station",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "airport",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "office ambience",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "market",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "beach ambience",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "rainforest",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "farm",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "playground",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "church interior",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "factory",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "harbor",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "restaurant kitchen",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "heartbeat",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "scream",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "monster growl",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "evil laugh",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "chains",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "whisper",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "dark drone",
+   "cat": "Horror",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "cinematic impact",
+   "cat": "Cinematic",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "riser",
+   "cat": "Cinematic",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "boom hit",
+   "cat": "Cinematic",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "motorcycle",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "truck",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bus",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "helicopter",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "boat",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bicycle bell",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "car horn",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "tire screech",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "gun reload",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bow arrow",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "machine gun",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "sword clash",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "cough",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "sneeze",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "yawn",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "kiss",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "baby crying",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "sigh",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "whistling",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "snoring",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "eating crunch",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "gulp drink",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "footsteps heels",
+   "cat": "Human",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "coin pickup",
+   "cat": "Game",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "power up",
+   "cat": "Game",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "game over",
+   "cat": "Game",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "retro jump",
+   "cat": "Game",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  }
+ ],
+ "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."
 }
