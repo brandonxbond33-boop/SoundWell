@@ -12,9 +12,21 @@ let WIDE = false;      // ambience beds: each channel gets its own noise texture
 export const panGain = (pan) => { const a = (Math.max(-1, Math.min(1, pan)) + 1) * Math.PI / 4; return Math.SQRT2 * (CH ? Math.sin(a) : Math.cos(a)); };
 export const panned = () => { markSpatial(); return panGain; };
 const TAU = Math.PI * 2;
+/**
+ * Recipe knobs ("make it yours"). They change the recipe while it renders: oscillator pitch, envelope length,
+ * filter brightness, the random seed (a new take of the same sound), plus drive and a room around it.
+ * Neutral values (the default) leave every sound exactly as published.
+ */
+const MOD = { tune: 1, decay: 1, tone: 1, room: 0, drive: 0, seed: 0, loop: false };
+export function setMod(m, loop = false) {
+  const n = (v, lo, hi) => Math.min(hi, Math.max(lo, Number(v) || 0));
+  MOD.tune = 2 ** (n(m && m.pitch, -24, 24) / 12); MOD.decay = m && m.length ? n(m.length, 0.25, 3) : 1; MOD.tone = 2 ** (n(m && m.tone, -100, 100) / 50);
+  MOD.room = n(m && m.room, 0, 100) / 100; MOD.drive = n(m && m.drive, 0, 100) / 100; MOD.seed = Math.round(n(m && m.seed, 0, 1e6)); MOD.loop = !!loop;
+  if (MOD.seed) { const h = (k) => { let x = Math.imul(MOD.seed * 2654435761 + k, 2246822519) >>> 0; x ^= x >>> 15; return (x >>> 0) / 4294967296; }; MOD.tune *= 2 ** ((h(1) - 0.5) * 0.3 / 12); MOD.decay *= 1 + (h(2) - 0.5) * 0.16; } // a new take: ±15 cents, ±8% length
+}
 
 export function rng(seed = 1) {
-  let a = seed >>> 0;
+  let a = (seed + MOD.seed * 7919) >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
@@ -31,7 +43,7 @@ export const tri = (ph) => 1 - 4 * Math.abs((ph % 1) - 0.5);
 
 /** Render `seconds` of audio; fn(t, i) returns one sample. */
 export function render(seconds, fn) {
-  const n = Math.round(seconds * SR);
+  const n = Math.round(seconds * (MOD.decay > 1 && !MOD.loop ? MOD.decay : 1) * SR);
   const out = new Float32Array(n);
   for (let i = 0; i < n; i++) out[i] = fn(i / SR, i);
   return out;
@@ -40,7 +52,7 @@ export function render(seconds, fn) {
 /** Phase accumulator for oscillators with time-varying frequency. */
 export function phasor() {
   let ph = 0;
-  return (freq) => { ph += freq / SR; return ph; };
+  return (freq) => { ph += freq * MOD.tune / SR; return ph; };
 }
 
 export function noise(seed) {
@@ -74,7 +86,7 @@ export function brownNoise(seed) {
 /** One-pole low-pass; cutoff may change per sample. */
 export function lowpass(cutoff) {
   let y = 0, lf = NaN, a = 0;
-  return (x, fc = cutoff) => { if (fc !== lf) { lf = fc; a = 1 - Math.exp(-TAU * fc / SR); } y += a * (x - y); return y; };
+  return (x, fc = cutoff) => { if (fc !== lf) { lf = fc; a = 1 - Math.exp(-TAU * Math.min(fc * MOD.tone, SR * 0.45) / SR); } y += a * (x - y); return y; };
 }
 export function highpass(cutoff) {
   const lp = lowpass(cutoff);
@@ -84,7 +96,7 @@ export function highpass(cutoff) {
 export function bandpass(center, q = 2) {
   let low = 0, band = 0;
   return (x, fc = center) => {
-    const f = 2 * Math.sin(Math.PI * Math.min(fc, SR / 6) / SR);
+    const f = 2 * Math.sin(Math.PI * Math.min(fc * MOD.tone, SR / 6) / SR);
     low += f * band;
     const high = x - low - band / q;
     band += f * high;
@@ -129,7 +141,7 @@ export function reverb(mix = 0.25, size = 1) {
   return (x) => x * (1 - mix) + lp(tank(x * 0.12)) * mix * 0.48; // level matched to the previous reverb with broadband input
 }
 
-export const expDecay = (t, rate) => (t < 0 ? 0 : Math.exp(-rate * t));
+export const expDecay = (t, rate) => (t < 0 ? 0 : Math.exp(-rate / MOD.decay * t));
 export const adsr = (t, a, d, s, r, len) => {
   if (t < 0) return 0;
   if (t < a) return t / a;
@@ -221,11 +233,26 @@ export function master(Lc, Rc, { loop = false, fade = 0.006, maxRms = 0.3, loopR
  * (seeded, so both passes are identical apart from spatial effects). `os: 2` renders at 88.2 kHz and decimates.
  */
 export function renderStereo(make, { loop = false, os = 1, maxRms = 0.3, wide = false } = {}) {
-  const pass = (ch) => { CH = ch; SR = BASE_SR * os; WIDE = wide; let b; try { b = make(); } finally { SR = BASE_SR; CH = 0; WIDE = false; } return os === 2 ? decimate2(b, loop) : b; };
+  const pass = (ch) => { CH = ch; SR = BASE_SR * os; WIDE = wide; let b; try { b = colour(make(), loop); } finally { SR = BASE_SR; CH = 0; WIDE = false; } return os === 2 ? decimate2(b, loop) : b; };
   SPATIAL = false; const Lc = pass(0); const spatial = SPATIAL; const Rc = spatial ? pass(1) : Lc;
   const [l, r] = master(Lc, Rc, { loop, maxRms }); return { l, r, stereo: spatial };
 }
 
+/** Drive and room knobs, applied to each rendered pass (a loop runs through the room twice so its seam stays clean). */
+function colour(b, loop) {
+  if (MOD.tone !== 1) { // tilt on top of the recipe's own filters, so sounds without filters respond too (lowpass() scales by MOD.tone itself)
+    if (MOD.tone < 1) { const lp = lowpass(Math.max(250, 16000 * MOD.tone) / MOD.tone); for (let i = 0; i < b.length; i++) b[i] = lp(b[i]); }
+    else { const lp = lowpass(2500 / MOD.tone); const amt = (MOD.tone - 1) * 0.5; for (let i = 0; i < b.length; i++) { const x = b[i]; b[i] = x + (x - lp(x)) * amt; } }
+  }
+  if (MOD.drive > 0) { let p = 0; for (let i = 0; i < b.length; i++) p = Math.max(p, Math.abs(b[i])); if (p) { const k = 1 + MOD.drive * 8; const g = p / Math.tanh(k); for (let i = 0; i < b.length; i++) b[i] = Math.tanh(b[i] / p * k) * g; } }
+  if (MOD.room > 0) {
+    const tank = stereoTank({ fb: 0.8 + 0.12 * MOD.room, damp: 0.3, scale: 0.8 + 0.6 * MOD.room }); const lp = lowpass(7000); const wet = MOD.room * 0.9;
+    if (loop) { const n = b.length; const out = new Float32Array(n); for (let r = 0; r < 2; r++) for (let i = 0; i < n; i++) { const y = lp(tank(b[i] * 0.12)); if (r) out[i] = b[i] + y * wet; } return out; }
+    const ext = Math.round(SR * (0.6 + 2.4 * MOD.room)); const out = new Float32Array(b.length + ext); out.set(b);
+    for (let i = 0; i < out.length; i++) out[i] += lp(tank(out[i] * 0.12)) * wet; return out;
+  }
+  return b;
+}
 /** Downsample to `n` peak bars in 0..100 for the waveform display. */
 export function peaks(buf, n = 120) {
   const out = [];

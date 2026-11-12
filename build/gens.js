@@ -901,7 +901,8 @@ function enumerate() {
   return list;
 }
 const BY_ID = Object.fromEntries(GENS.map((g) => [g.id, g]));
-function renderEntry(gid, p) { const g = BY_ID[gid]; const m = g.meta(p); return renderStereo(() => { XF = !!g.xfade; try { return g.render(p); } finally { XF = false; } }, { loop: !!(m.loop ?? g.loop), os: OS.has(gid) ? 2 : 1, maxRms: 0.3, wide: !!g.wide }); }
+function renderEntry(gid, p, mod) { const g = BY_ID[gid]; const m = g.meta(p); const loop = !!(m.loop ?? g.loop); setMod(mod, loop);
+  try { return renderStereo(() => { XF = !!g.xfade; try { return g.render(p); } finally { XF = false; } }, { loop, os: OS.has(gid) ? 2 : 1, maxRms: 0.3, wide: !!g.wide }); } finally { setMod(null); } }
 /** Bright, lightly filtered oscillators render at 88.2 kHz to remove aliasing (families without sample-count logic only). */
 const OS = new Set(['laser', 'pickup', 'jump', 'deny', 'siren', 'bleep', 'hud', 'toggle', 'alarmclock', 'bonk', 'phonering', 'horn', 'flyby', 'servo', 'power', 'downlifter', 'riser', 'stab', 'kitstem', 'sting', 'doorbell']);
 return { enumerate, renderEntry, peaks, SR };

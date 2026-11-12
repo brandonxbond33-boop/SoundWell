@@ -47,3 +47,11 @@ Step sequencer (`seq*` functions), pattern format v2: `{v: 2, title, bpm, swing,
 ## Limits to remember
 
 Artifact: 511 files per version (≈168 MP3s used), 256 MB total, 16 MB per page. Downloads only allow certain extensions, so sounds are delivered as `.zip` (MP3 or WAV inside).
+
+## Recipe knobs, beat partner, beatbox and video (all in `template.html.txt` and `synth.js`)
+
+- **Recipe knobs** live in `synth.js` as `MOD` / `setMod(m, loop)`: `pitch` scales every `phasor()` frequency, `length` divides `expDecay` rates (and lengthens one-shot renders), `tone` scales filter cutoffs plus a gentle tilt, `seed` offsets `rng()` (and adds ±15 cents / ±8% length so pure tones vary too), and `room` / `drive` are applied per pass in `colour()`. `renderEntry(g, p, mod)` sets and clears them, so neutral knobs render every sound bit-identically (checked across all 118 families). The page passes knobs to the worker (`renderProc(s, m)`), caches renders in `modBufs`, and custom sounds store them as `custom.m`.
+- **Beat partner**: `describeBeat` sends Claude (via `sample`) a shortlist of one-shot slugs and asks for JSON (`aiToPattern` validates it); `makeBSection` sends the current pattern; `addFill` is local. Fallbacks: `keywordBeat` (genre → template) and `variationB`.
+- **Beatbox**: `bbOnsets` (energy jumps, 70 ms minimum gap), `bbFeatures` (FFT centroid and low-band share → kick below ~800 Hz, hi-hat above ~4 kHz, otherwise snare), `bbQuantize` (16ths with a phase search for latency). The microphone needs `getUserMedia`, which some hosts block; upload always works.
+- **Video**: `VID` state; the `<video>` plays from an object URL and cues are scheduled on the audio clock from `video.currentTime`. Placements persist in localStorage per file name and size. Export renders an `OfflineAudioContext` exactly as long as the video at 48 kHz.
+

@@ -213,6 +213,10 @@ body:not(.can-dl) .dl { display: none !important; }
 .egrid label span { display: flex; justify-content: space-between; }
 .egrid output { font: 500 .76rem var(--f-mono); color: var(--ink); }
 .egrid input[type=range] { width: 100%; accent-color: var(--accent); }
+.knobs { display: grid; gap: 8px; padding: 12px; margin-top: 4px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--bg)); }
+.knobs .tagline { font: 600 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-left: 6px; }
+.knobs .hint { margin: 0; font-size: .8rem; color: var(--muted); }
+.knobs .take { font: 500 .78rem var(--f-mono); color: var(--muted); align-self: center; }
 .echeck { display: flex !important; align-items: center; gap: 8px; color: var(--ink) !important; font-size: .88rem !important; }
 .echeck input { width: 18px; height: 18px; accent-color: var(--accent); }
 .epreview { width: 100%; height: 52px; display: block; }
@@ -434,12 +438,43 @@ body { font-family: var(--f-body); letter-spacing: .005em; }
 .seqbar .btn.rec[aria-pressed="true"] { background: #e5484d; }
 .seqbar .pos { margin-left: auto; font: 600 .8rem var(--f-mono); color: var(--accent2); min-width: 9ch; text-align: right; }
 .seqbar .hint, .lanes .hint, .seqtools .hint { font-size: .8rem; color: var(--muted); }
+.seqai input#seq-desc { flex: 1 1 260px; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); font-size: .92rem; }
+.seqai .hint { flex-basis: 100%; }
+.bbox { background: var(--panel); border: 1px solid color-mix(in srgb, var(--accent2) 50%, var(--line)); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.bbox h3 { margin: 0; font: 800 1.05rem var(--f-display); }
+.bbox .note { margin: 0; font-size: .86rem; color: var(--muted); line-height: 1.5; } .bbox .note b { color: var(--ink); }
+.bbox #bb-status { margin: 0; font: 600 .86rem var(--f-mono); color: var(--accent2); min-height: 1.2em; }
+.bbox select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
 .seqbar .songctl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-left: auto; }
 .seqplay { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--grad); color: #fff; display: grid; place-items: center; flex: none; }
 .seqplay svg { width: 20px; height: 20px; }
 .seqplay.loading { animation: seqpulse .8s ease-in-out infinite alternate; }
 @keyframes seqpulse { to { opacity: .45; } }
-body.seqmode .transport { display: none; }
+body.seqmode .transport, body.vidmode .transport { display: none; }
+.vidempty { display: grid; justify-items: center; text-align: center; gap: 10px; padding: 48px 20px; border: 2px dashed var(--line); border-radius: 18px; background: var(--panel); }
+.vidempty > svg { width: 44px; height: 44px; color: var(--accent); }
+.vidempty h3 { margin: 0; font: 800 1.3rem var(--f-display); }
+.vidempty p { margin: 0; max-width: 560px; color: var(--muted); line-height: 1.5; }
+.vidwrap { background: #000; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
+.vidwrap video { width: 100%; max-height: 52vh; display: block; cursor: pointer; }
+.vidbar .vtime { font: 600 .9rem var(--f-mono); min-width: 15ch; }
+.vidbar .seqplay.withlabel { width: auto; height: 44px; border-radius: 999px; padding: 0 18px 0 14px; display: inline-flex; gap: 8px; font: 800 .95rem var(--f-display); }
+.timeline { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 8px 10px; }
+.tlscroll { overflow-x: auto; }
+.tlin { position: relative; min-width: 100%; cursor: pointer; background: repeating-linear-gradient(to bottom, transparent 0 25px, color-mix(in srgb, var(--line) 50%, transparent) 25px 26px, transparent 26px 34px); }
+.tlin .ruler { position: absolute; left: 0; right: 0; top: 0; height: 20px; border-bottom: 1px solid var(--line); }
+.tlin .tick { position: absolute; top: 2px; font: 500 .66rem var(--f-mono); color: var(--muted); padding-left: 3px; border-left: 1px solid var(--line); height: 16px; white-space: nowrap; }
+.tlin .cue { position: absolute; height: 28px; min-width: 18px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 30%, var(--panel2)); color: var(--ink); font: 600 .72rem var(--f-display); text-align: left; overflow: hidden; touch-action: none; cursor: grab; display: flex; align-items: center; }
+.tlin .cue span { white-space: nowrap; overflow: visible; }
+.tlin .cue.sel { background: var(--grad); color: #fff; border-color: var(--accent2); box-shadow: 0 0 0 2px var(--accent2); z-index: 2; }
+.tlin .cue:focus-visible { outline: 3px solid var(--focus); }
+.tlin .ph { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #ff4d6d; pointer-events: none; z-index: 3; }
+.vidinsp .insp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.vidinsp .btn { padding: 5px 10px; font-size: .8rem; }
+.vidinsp .hint { font-size: .82rem; color: var(--muted); } .vidinsp p.hint { margin: 0; }
+.vchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.vchips .chip { cursor: pointer; }
+body.vidmode .seq { padding-bottom: 20px; }
 body.seqmode .seq { padding-bottom: 84px; }
 .seqdock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; display: flex; align-items: center; gap: 12px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: var(--side); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -18px rgba(0,0,0,.35); }
 .seqdock .seqplay.withlabel { width: auto; height: 48px; border-radius: 999px; padding: 0 22px 0 18px; display: inline-flex; gap: 8px; font: 800 1rem var(--f-display); }
@@ -566,6 +601,7 @@ body.seqmode .seq { padding-bottom: 84px; }
   <symbol id="i-drum" viewBox="0 0 24 24"><ellipse cx="12" cy="8" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
   <symbol id="i-score" viewBox="0 0 24 24"><path d="M3 6h18M3 10h18M3 14h18M3 18h18" stroke="currentColor" stroke-width="1.4" opacity=".55"/><ellipse cx="9" cy="16" rx="2.6" ry="2" fill="currentColor"/><path d="M11.5 16V5l5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-ghost" viewBox="0 0 24 24"><path d="M5 20V10a7 7 0 0 1 14 0v10l-2.3-1.6L14.3 20 12 18.4 9.7 20l-2.4-1.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9.5" cy="10.5" r="1.3" fill="currentColor"/><circle cx="14.5" cy="10.5" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></g></symbol>
   <symbol id="i-seq" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="4" width="4" height="4" rx="1"/><rect x="10" y="4" width="4" height="4" rx="1" opacity=".35"/><rect x="17" y="4" width="4" height="4" rx="1"/><rect x="3" y="10" width="4" height="4" rx="1" opacity=".35"/><rect x="10" y="10" width="4" height="4" rx="1"/><rect x="17" y="10" width="4" height="4" rx="1" opacity=".35"/><rect x="3" y="16" width="4" height="4" rx="1"/><rect x="10" y="16" width="4" height="4" rx="1" opacity=".35"/><rect x="17" y="16" width="4" height="4" rx="1"/></g></symbol>
   <symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
 </svg>
@@ -575,6 +611,7 @@ body.seqmode .seq { padding-bottom: 84px; }
   <ul class="navlist">
       <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
       <li><button type="button" data-nav="seq"><svg aria-hidden="true"><use href="#i-seq"/></svg>Sequencer</button></li>
+      <li><button type="button" data-nav="video"><svg aria-hidden="true"><use href="#i-film"/></svg>Video</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
       <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Score</button></li>
       <li><button type="button" data-nav="spooky"><svg aria-hidden="true"><use href="#i-ghost"/></svg>Spooky</button></li>
@@ -593,6 +630,7 @@ body.seqmode .seq { padding-bottom: 84px; }
   <nav class="mobilenav" aria-label="Library"><ul class="navlist">
       <li><button type="button" data-nav="discover"><svg aria-hidden="true"><use href="#i-home"/></svg>Discover</button></li>
       <li><button type="button" data-nav="seq"><svg aria-hidden="true"><use href="#i-seq"/></svg>Sequencer</button></li>
+      <li><button type="button" data-nav="video"><svg aria-hidden="true"><use href="#i-film"/></svg>Video</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
       <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Score</button></li>
       <li><button type="button" data-nav="spooky"><svg aria-hidden="true"><use href="#i-ghost"/></svg>Spooky</button></li>
@@ -644,6 +682,7 @@ body.seqmode .seq { padding-bottom: 84px; }
 <main class="wrap" id="main">
   <section class="home" id="home" aria-label="Featured"></section>
   <section class="seq" id="seqview" hidden aria-label="Sequencer"></section>
+  <section class="seq vid" id="vidview" hidden aria-label="Sound for video"></section>
   <div id="packhead"></div>
   <section class="packgrid" id="packs" hidden aria-label="All packs"></section>
   <div class="reshead"><h2 id="reshead">All sounds</h2><button class="clear" id="clear" type="button" hidden>Clear filters</button></div>
@@ -716,9 +755,21 @@ let WIDE = false;      // ambience beds: each channel gets its own noise texture
 const panGain = (pan) => { const a = (Math.max(-1, Math.min(1, pan)) + 1) * Math.PI / 4; return Math.SQRT2 * (CH ? Math.sin(a) : Math.cos(a)); };
 const panned = () => { markSpatial(); return panGain; };
 const TAU = Math.PI * 2;
+/**
+ * Recipe knobs ("make it yours"). They change the recipe while it renders: oscillator pitch, envelope length,
+ * filter brightness, the random seed (a new take of the same sound), plus drive and a room around it.
+ * Neutral values (the default) leave every sound exactly as published.
+ */
+const MOD = { tune: 1, decay: 1, tone: 1, room: 0, drive: 0, seed: 0, loop: false };
+function setMod(m, loop = false) {
+  const n = (v, lo, hi) => Math.min(hi, Math.max(lo, Number(v) || 0));
+  MOD.tune = 2 ** (n(m && m.pitch, -24, 24) / 12); MOD.decay = m && m.length ? n(m.length, 0.25, 3) : 1; MOD.tone = 2 ** (n(m && m.tone, -100, 100) / 50);
+  MOD.room = n(m && m.room, 0, 100) / 100; MOD.drive = n(m && m.drive, 0, 100) / 100; MOD.seed = Math.round(n(m && m.seed, 0, 1e6)); MOD.loop = !!loop;
+  if (MOD.seed) { const h = (k) => { let x = Math.imul(MOD.seed * 2654435761 + k, 2246822519) >>> 0; x ^= x >>> 15; return (x >>> 0) / 4294967296; }; MOD.tune *= 2 ** ((h(1) - 0.5) * 0.3 / 12); MOD.decay *= 1 + (h(2) - 0.5) * 0.16; } // a new take: ±15 cents, ±8% length
+}
 
 function rng(seed = 1) {
-  let a = seed >>> 0;
+  let a = (seed + MOD.seed * 7919) >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
@@ -735,7 +786,7 @@ const tri = (ph) => 1 - 4 * Math.abs((ph % 1) - 0.5);
 
 /** Render `seconds` of audio; fn(t, i) returns one sample. */
 function render(seconds, fn) {
-  const n = Math.round(seconds * SR);
+  const n = Math.round(seconds * (MOD.decay > 1 && !MOD.loop ? MOD.decay : 1) * SR);
   const out = new Float32Array(n);
   for (let i = 0; i < n; i++) out[i] = fn(i / SR, i);
   return out;
@@ -744,7 +795,7 @@ function render(seconds, fn) {
 /** Phase accumulator for oscillators with time-varying frequency. */
 function phasor() {
   let ph = 0;
-  return (freq) => { ph += freq / SR; return ph; };
+  return (freq) => { ph += freq * MOD.tune / SR; return ph; };
 }
 
 function noise(seed) {
@@ -778,7 +829,7 @@ function brownNoise(seed) {
 /** One-pole low-pass; cutoff may change per sample. */
 function lowpass(cutoff) {
   let y = 0, lf = NaN, a = 0;
-  return (x, fc = cutoff) => { if (fc !== lf) { lf = fc; a = 1 - Math.exp(-TAU * fc / SR); } y += a * (x - y); return y; };
+  return (x, fc = cutoff) => { if (fc !== lf) { lf = fc; a = 1 - Math.exp(-TAU * Math.min(fc * MOD.tone, SR * 0.45) / SR); } y += a * (x - y); return y; };
 }
 function highpass(cutoff) {
   const lp = lowpass(cutoff);
@@ -788,7 +839,7 @@ function highpass(cutoff) {
 function bandpass(center, q = 2) {
   let low = 0, band = 0;
   return (x, fc = center) => {
-    const f = 2 * Math.sin(Math.PI * Math.min(fc, SR / 6) / SR);
+    const f = 2 * Math.sin(Math.PI * Math.min(fc * MOD.tone, SR / 6) / SR);
     low += f * band;
     const high = x - low - band / q;
     band += f * high;
@@ -833,7 +884,7 @@ function reverb(mix = 0.25, size = 1) {
   return (x) => x * (1 - mix) + lp(tank(x * 0.12)) * mix * 0.48; // level matched to the previous reverb with broadband input
 }
 
-const expDecay = (t, rate) => (t < 0 ? 0 : Math.exp(-rate * t));
+const expDecay = (t, rate) => (t < 0 ? 0 : Math.exp(-rate / MOD.decay * t));
 const adsr = (t, a, d, s, r, len) => {
   if (t < 0) return 0;
   if (t < a) return t / a;
@@ -926,11 +977,26 @@ function master(Lc, Rc, { loop = false, fade = 0.006, maxRms = 0.3, loopRms = 0.
  * (seeded, so both passes are identical apart from spatial effects). `os: 2` renders at 88.2 kHz and decimates.
  */
 function renderStereo(make, { loop = false, os = 1, maxRms = 0.3, wide = false } = {}) {
-  const pass = (ch) => { CH = ch; SR = BASE_SR * os; WIDE = wide; let b; try { b = make(); } finally { SR = BASE_SR; CH = 0; WIDE = false; } return os === 2 ? decimate2(b, loop) : b; };
+  const pass = (ch) => { CH = ch; SR = BASE_SR * os; WIDE = wide; let b; try { b = colour(make(), loop); } finally { SR = BASE_SR; CH = 0; WIDE = false; } return os === 2 ? decimate2(b, loop) : b; };
   SPATIAL = false; const Lc = pass(0); const spatial = SPATIAL; const Rc = spatial ? pass(1) : Lc;
   const [l, r] = master(Lc, Rc, { loop, maxRms }); return { l, r, stereo: spatial };
 }
 
+/** Drive and room knobs, applied to each rendered pass (a loop runs through the room twice so its seam stays clean). */
+function colour(b, loop) {
+  if (MOD.tone !== 1) { // tilt on top of the recipe's own filters, so sounds without filters respond too (lowpass() scales by MOD.tone itself)
+    if (MOD.tone < 1) { const lp = lowpass(Math.max(250, 16000 * MOD.tone) / MOD.tone); for (let i = 0; i < b.length; i++) b[i] = lp(b[i]); }
+    else { const lp = lowpass(2500 / MOD.tone); const amt = (MOD.tone - 1) * 0.5; for (let i = 0; i < b.length; i++) { const x = b[i]; b[i] = x + (x - lp(x)) * amt; } }
+  }
+  if (MOD.drive > 0) { let p = 0; for (let i = 0; i < b.length; i++) p = Math.max(p, Math.abs(b[i])); if (p) { const k = 1 + MOD.drive * 8; const g = p / Math.tanh(k); for (let i = 0; i < b.length; i++) b[i] = Math.tanh(b[i] / p * k) * g; } }
+  if (MOD.room > 0) {
+    const tank = stereoTank({ fb: 0.8 + 0.12 * MOD.room, damp: 0.3, scale: 0.8 + 0.6 * MOD.room }); const lp = lowpass(7000); const wet = MOD.room * 0.9;
+    if (loop) { const n = b.length; const out = new Float32Array(n); for (let r = 0; r < 2; r++) for (let i = 0; i < n; i++) { const y = lp(tank(b[i] * 0.12)); if (r) out[i] = b[i] + y * wet; } return out; }
+    const ext = Math.round(SR * (0.6 + 2.4 * MOD.room)); const out = new Float32Array(b.length + ext); out.set(b);
+    for (let i = 0; i < out.length; i++) out[i] += lp(tank(out[i] * 0.12)) * wet; return out;
+  }
+  return b;
+}
 /** Downsample to `n` peak bars in 0..100 for the waveform display. */
 function peaks(buf, n = 120) {
   const out = [];
@@ -1893,7 +1959,8 @@ function enumerate() {
   return list;
 }
 const BY_ID = Object.fromEntries(GENS.map((g) => [g.id, g]));
-function renderEntry(gid, p) { const g = BY_ID[gid]; const m = g.meta(p); return renderStereo(() => { XF = !!g.xfade; try { return g.render(p); } finally { XF = false; } }, { loop: !!(m.loop ?? g.loop), os: OS.has(gid) ? 2 : 1, maxRms: 0.3, wide: !!g.wide }); }
+function renderEntry(gid, p, mod) { const g = BY_ID[gid]; const m = g.meta(p); const loop = !!(m.loop ?? g.loop); setMod(mod, loop);
+  try { return renderStereo(() => { XF = !!g.xfade; try { return g.render(p); } finally { XF = false; } }, { loop, os: OS.has(gid) ? 2 : 1, maxRms: 0.3, wide: !!g.wide }); } finally { setMod(null); } }
 /** Bright, lightly filtered oscillators render at 88.2 kHz to remove aliasing (families without sample-count logic only). */
 const OS = new Set(['laser', 'pickup', 'jump', 'deny', 'siren', 'bleep', 'hud', 'toggle', 'alarmclock', 'bonk', 'phonering', 'horn', 'flyby', 'servo', 'power', 'downlifter', 'riser', 'stab', 'kitstem', 'sting', 'doorbell']);
 return { enumerate, renderEntry, peaks, SR };
@@ -2064,14 +2131,14 @@ return { enumerate, renderEntry, peaks, SR };
   }
   const isDiscover = () => !state.q && !state.cats.size && !state.loops && !state.saved && state.kind === 'all' && !state.pack && !state.browse && state.view === 'list' && !state.key && !state.bpm;
   function navKey() {
-    if (state.view === 'packs') return 'packs'; if (state.view === 'seq') return 'seq'; if (state.saved) return 'saved'; if (state.cats.has('Your Creations')) return 'mine'; if (state.cats.has('Stem Kits') && state.cats.size === 1) return 'kits';
+    if (state.view === 'packs') return 'packs'; if (state.view === 'seq') return 'seq'; if (state.view === 'video') return 'video'; if (state.saved) return 'saved'; if (state.cats.has('Your Creations')) return 'mine'; if (state.cats.has('Stem Kits') && state.cats.size === 1) return 'kits';
     if (state.cats.has('Drum Hits') && state.cats.has('Musical FX')) return 'oneshots'; if (state.cats.has('Score Loops') && state.cats.has('Score One-Shots') && state.cats.size === 2) return 'score'; if (state.cats.has('Horror') && state.cats.size === 1) return 'spooky'; if (state.kind === 'music' && state.loops) return 'loops'; if (isDiscover()) return 'discover'; if (state.browse && !state.q && !state.cats.size && !state.pack) return 'all'; return '';
   }
   function resetFilters() { state.q = ''; $('#q').value = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; state.pack = ''; state.browse = false; state.view = 'list'; state.open = null; syncSeg(); }
   function nav(key) {
     if (key === 'mixer') { $('#mixbtn').click(); return; }
     resetFilters();
-    if (key === 'all') state.browse = true; else if (key === 'packs') state.view = 'packs'; else if (key === 'seq') state.view = 'seq'; else if (key === 'kits') state.cats.add('Stem Kits');
+    if (key === 'all') state.browse = true; else if (key === 'packs') state.view = 'packs'; else if (key === 'seq') state.view = 'seq'; else if (key === 'video') state.view = 'video'; else if (key === 'kits') state.cats.add('Stem Kits');
     else if (key === 'loops') { state.kind = 'music'; state.loops = true; syncSeg(); } else if (key === 'oneshots') { state.cats.add('Drum Hits'); state.cats.add('Musical FX'); }
     else if (key === 'mine') state.cats.add('Your Creations'); else if (key === 'score') { state.cats.add('Score Loops'); state.cats.add('Score One-Shots'); } else if (key === 'spooky') state.cats.add('Horror'); else if (key === 'saved') state.saved = true;
     render(); window.scrollTo({ top: 0 });
@@ -2079,8 +2146,10 @@ return { enumerate, renderEntry, peaks, SR };
   function openPack(id) { resetFilters(); state.pack = id; render(); window.scrollTo({ top: 0 }); }
   function render() {
     compute(); chips(); header(); renderHome(); musicFilters(); $('#keyf').value = state.key; $('#bpmf').value = state.bpm || '';
-    const seqView = state.view === 'seq'; $('#seqview').hidden = !seqView; document.body.classList.toggle('seqmode', seqView); list.hidden = seqView; document.querySelector('.chips').hidden = seqView;
-    if (seqView) { $('#packs').hidden = true; $('#colhead').hidden = true; document.querySelector('.reshead').hidden = true; renderSeq(); return; }
+    const seqView = state.view === 'seq'; const vidView = state.view === 'video'; const tool = seqView || vidView;
+    $('#seqview').hidden = !seqView; $('#vidview').hidden = !vidView; document.body.classList.toggle('seqmode', seqView); document.body.classList.toggle('vidmode', vidView); list.hidden = tool; document.querySelector('.chips').hidden = tool;
+    if (!vidView && VID.playing) vidPause();
+    if (tool) { $('#packs').hidden = true; $('#colhead').hidden = true; document.querySelector('.reshead').hidden = true; if (seqView) renderSeq(); else renderVid(); return; }
     const packsView = state.view === 'packs'; $('#packs').hidden = !packsView; $('#colhead').hidden = packsView; document.querySelector('.reshead').hidden = packsView;
     if (packsView) { list.innerHTML = ''; const all = [...PACKS.values()].sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name)); $('#packs').innerHTML = `<div class="secth"><h2>All packs</h2><span class="pmeta" style="font:500 .8rem var(--f-mono);color:var(--muted)">${all.length} packs</span></div>` + all.map(pcardHtml).join(''); return; }
     if (!results.length) {
@@ -2297,18 +2366,34 @@ return { enumerate, renderEntry, peaks, SR };
   function getWorker() {
     if (worker || workerFailed) return worker;
     try {
-      const src = SoundwellEngine.toString() + '\nconst E = SoundwellEngine();\nonmessage = (e) => { const { id, g, p } = e.data; try { const o = E.renderEntry(g, p); if (o.stereo) postMessage({ id, l: o.l, r: o.r }, [o.l.buffer, o.r.buffer]); else postMessage({ id, l: o.l, r: null }, [o.l.buffer]); } catch (err) { postMessage({ id, err: String(err) }); } };';
+      const src = SoundwellEngine.toString() + '\nconst E = SoundwellEngine();\nonmessage = (e) => { const { id, g, p, m } = e.data; try { const o = E.renderEntry(g, p, m); if (o.stereo) postMessage({ id, l: o.l, r: o.r }, [o.l.buffer, o.r.buffer]); else postMessage({ id, l: o.l, r: null }, [o.l.buffer]); } catch (err) { postMessage({ id, err: String(err) }); } };';
       worker = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
       worker.onmessage = (e) => { const r = pending.get(e.data.id); if (!r) return; pending.delete(e.data.id); e.data.err ? r.rej(new Error(e.data.err)) : r.res(e.data); };
       worker.onerror = () => { workerFailed = true; worker = null; for (const [, r] of pending) r.rej(new Error('worker')); pending.clear(); };
     } catch { workerFailed = true; worker = null; }
     return worker;
   }
-  function renderProc(s) {
-    const w = getWorker();
-    if (!w) { ENGINE_MAIN ??= SoundwellEngine(); return new Promise((res, rej) => setTimeout(() => { try { res(ENGINE_MAIN.renderEntry(s.g, s.p)); } catch (e) { rej(e); } }, 0)); }
-    return new Promise((res, rej) => { const id = ++wid; pending.set(id, { res, rej: (e) => { if (workerFailed) { ENGINE_MAIN ??= SoundwellEngine(); try { res(ENGINE_MAIN.renderEntry(s.g, s.p)); } catch (x) { rej(x); } } else rej(e); } }); w.postMessage({ id, g: s.g, p: s.p }); });
+  function renderProc(s, m = null) {
+    const w = getWorker(); const local = () => { ENGINE_MAIN ??= SoundwellEngine(); return ENGINE_MAIN.renderEntry(s.g, s.p, m); };
+    if (!w) return new Promise((res, rej) => setTimeout(() => { try { res(local()); } catch (e) { rej(e); } }, 0));
+    return new Promise((res, rej) => { const id = ++wid; pending.set(id, { res, rej: (e) => { if (workerFailed) { try { res(local()); } catch (x) { rej(x); } } else rej(e); } }); w.postMessage({ id, g: s.g, p: s.p, m }); });
   }
+  // ---------- recipe knobs ("make it yours"): re-render a generated sound with changed ingredients ----------
+  const KNOBS = [
+    { k: 'pitch', label: 'Pitch', min: -12, max: 12, step: 1, fmt: (v) => (v > 0 ? '+' : '') + v + ' st', help: 'Retunes the oscillators inside the recipe. Unlike speed, the length stays the same, so loops keep their tempo.' },
+    { k: 'length', label: 'Length', min: 50, max: 300, step: 5, def: 100, fmt: (v) => (v / 100).toFixed(2) + '×', help: 'How long hits and notes ring.' },
+    { k: 'tone', label: 'Tone', min: -100, max: 100, step: 5, fmt: (v) => v === 0 ? 'neutral' : v < 0 ? 'darker ' + -v : 'brighter ' + v },
+    { k: 'room', label: 'Room', min: 0, max: 100, step: 5, fmt: (v) => v ? v + '%' : 'dry' },
+    { k: 'drive', label: 'Drive', min: 0, max: 100, step: 5, fmt: (v) => v ? v + '%' : 'clean' },
+  ];
+  const modOf = (m) => { if (!m) return null; const o = {}; for (const { k } of KNOBS) { const v = Number(m[k]); if (k === 'length' ? v && v !== 100 : v) o[k] = k === 'length' ? v / 100 : v; } if (m.seed) o.seed = m.seed | 0; return Object.keys(o).length ? o : null; };
+  const modBufs = new Map();
+  function modBuf(s, m) {
+    const mod = modOf(m); if (!mod || !s.g) return getBuf(s); const key = s.slug + JSON.stringify(mod);
+    if (!modBufs.has(key)) { const pr = renderProc(s, mod).then((o) => { const b = ac().createBuffer(2, o.l.length, 44100); b.copyToChannel(o.l, 0); b.copyToChannel(o.r || o.l, 1); return b; }); pr.catch(() => modBufs.delete(key)); modBufs.set(key, pr); while (modBufs.size > 24) modBufs.delete(modBufs.keys().next().value); }
+    return modBufs.get(key);
+  }
+  const modDesc = (m) => { const d = modOf(m); if (!d) return ''; return [d.pitch ? `${d.pitch > 0 ? '+' : ''}${d.pitch} semitones` : '', d.length ? `${d.length.toFixed(2)}× length` : '', d.tone ? (d.tone < 0 ? 'darker' : 'brighter') : '', d.room ? `${d.room}% room` : '', d.drive ? `${d.drive}% drive` : '', d.seed ? `take ${d.seed + 1}` : ''].filter(Boolean).join(', '); };
 
   // ---------- downloads (zip with the MP3 + a license note) ----------
   let dlCap = null;
@@ -2397,7 +2482,7 @@ return { enumerate, renderEntry, peaks, SR };
   function getBuf(s) {
     if (bufs.has(s.slug)) { const p = bufs.get(s.slug); bufs.delete(s.slug); bufs.set(s.slug, p); return p; }
     const p = s.custom
-      ? (bySlug[s.custom.base] ? processBuf(bySlug[s.custom.base], s.custom.o) : Promise.reject(new Error('missing')))
+      ? (bySlug[s.custom.base] ? processBuf(bySlug[s.custom.base], s.custom.o, s.custom.m) : Promise.reject(new Error('missing')))
       : s.g
       ? renderProc(s).then((o) => { const b = ac().createBuffer(2, o.l.length, 44100); b.copyToChannel(o.l, 0); b.copyToChannel(o.r || o.l, 1); return b; })
       : fetch(`media/${s.slug}.mp3`).then((r) => { if (!r.ok) throw new Error('fetch'); return r.arrayBuffer(); }).then((ab) => new Promise((res, rej) => ac().decodeAudioData(ab, res, rej)));
@@ -2574,6 +2659,16 @@ return { enumerate, renderEntry, peaks, SR };
   const edits = new Map();
   const defaults = () => ({ speed: 1, gain: 0, start: 0, end: 1, fin: 0, fout: 0, rev: false });
   const eo = (s) => { if (!edits.has(s.slug)) edits.set(s.slug, defaults()); return edits.get(s.slug); };
+  const knobs = new Map(); const km = (s) => { if (!knobs.has(s.slug)) knobs.set(s.slug, { pitch: 0, length: 100, tone: 0, room: 0, drive: 0, seed: 0 }); return knobs.get(s.slug); };
+  function knobsHtml(s) {
+    if (!s.g) return '';
+    const m = km(s);
+    return `<div class="knobs"><h4>Make it yours <span class="tagline">recipe knobs</span></h4>
+      <p class="hint">This sound is generated from a recipe, so these change the ingredients themselves. You get a brand-new sound, not an edited copy.</p>
+      <div class="egrid">${KNOBS.map((d) => `<label title="${esc(d.help || '')}"><span>${d.label}<output data-ko="${d.k}">${d.fmt(m[d.k])}</output></span><input type="range" data-k="${d.k}" min="${d.min}" max="${d.max}" step="${d.step}" value="${m[d.k]}"></label>`).join('')}</div>
+      <div class="btnrow"><button class="btn" type="button" data-act="kdice" title="Same recipe, new random take">🎲 New take</button><span class="take" data-ko="seed">${m.seed ? 'Take ' + (m.seed + 1) : 'Original take'}</span>
+        <button class="btn primary" type="button" data-act="ksave"><svg aria-hidden="true"><use href="#i-spark"/></svg>Save to Your creations</button><button class="btn" type="button" data-act="kreset">Reset knobs</button></div></div>`;
+  }
   const fadeMax = (s) => Math.min(3, s.dur / 2);
   function editorHtml(s) {
     const o = eo(s); const fm = fadeMax(s);
@@ -2593,7 +2688,7 @@ return { enumerate, renderEntry, peaks, SR };
         <button class="btn dl" type="button" data-act="edl"><svg aria-hidden="true"><use href="#i-down"/></svg>Download WAV</button>
         <button class="btn dl" type="button" data-act="evar"><svg aria-hidden="true"><use href="#i-spark"/></svg>5 variations</button>
         <button class="btn" type="button" data-act="ereset">Reset</button></div>
-      <p class="hint" style="margin:0;color:var(--muted);font-size:.8rem">Variations nudge pitch and volume slightly, so a sound you repeat in a game or edit doesn't sound robotic.</p></div>`;
+      <p class="hint" style="margin:0;color:var(--muted);font-size:.8rem">${s.g ? 'Variations are new takes of the recipe (different randomness, tiny pitch and length changes), so a sound you repeat in a game or edit never sounds robotic.' : 'Variations nudge pitch and volume slightly, so a sound you repeat in a game or edit doesn\'t sound robotic.'}</p>${knobsHtml(s)}</div>`;
   }
   function drawEdit(s) {
     const c = document.querySelector(`#e-${s.slug} canvas`); if (!c) return; const o = eo(s);
@@ -2609,8 +2704,8 @@ return { enumerate, renderEntry, peaks, SR };
     }
     ctx.globalAlpha = 1;
   }
-  async function processBuf(s, o) {
-    const src = await getBuf(s); const sr = src.sampleRate; const nch = src.numberOfChannels; const len = src.length;
+  async function processBuf(s, o, m = null) {
+    const src = await modBuf(s, m); const sr = src.sampleRate; const nch = src.numberOfChannels; const len = src.length;
     const a = Math.floor(Math.min(o.start, o.end) * len); const b = Math.max(a + 256, Math.floor(Math.max(o.start, o.end) * len)); const segLen = Math.min(b, len) - a;
     const inB = ac().createBuffer(nch, segLen, sr);
     for (let c = 0; c < nch; c++) { const seg = src.getChannelData(c).slice(a, a + segLen); if (o.rev) seg.reverse(); inB.copyToChannel(seg, c); }
@@ -2622,14 +2717,16 @@ return { enumerate, renderEntry, peaks, SR };
   }
   let previewSrc = null;
   async function previewEdit(s) {
-    try { const out = await processBuf(s, eo(s)); const c = ac(); if (previewSrc) try { previewSrc.stop(); } catch {} if (P.playing) pPause();
+    try { const out = await processBuf(s, eo(s), s.g ? km(s) : null); const c = ac(); if (previewSrc) try { previewSrc.stop(); } catch {} if (P.playing) pPause();
       previewSrc = c.createBufferSource(); previewSrc.buffer = out; previewSrc.connect(c.destination); previewSrc.start(); }
     catch { toast(`Couldn't load “${s.title}”.`); }
   }
   async function downloadEdit(s, variations = false) {
     try {
       const o = eo(s); const files = [];
-      if (!variations) files.push({ name: `${s.slug}-edit.wav`, data: toWav(await processBuf(s, o)) });
+      const m = s.g ? km(s) : null;
+      if (!variations) files.push({ name: `${s.slug}-edit.wav`, data: toWav(await processBuf(s, o, m)) });
+      else if (s.g) { const base = (m.seed || 0) + 1; for (let i = 1; i <= 5; i++) files.push({ name: `${s.slug}-take${i}.wav`, data: toWav(await processBuf(s, o, { ...m, seed: base * 10 + i })) }); }
       else { const r = rng(Date.now() % 100000); for (let i = 1; i <= 5; i++) files.push({ name: `${s.slug}-v${i}.wav`, data: toWav(await processBuf(s, { ...o, speed: o.speed * (1 + (r() - 0.5) * 0.12), gain: o.gain + (r() - 0.5) * 4 })) }); }
       files.push({ name: 'LICENSE.txt', data: enc(`${s.title} (edited)\n\nLicense: CC0 1.0 Universal (public domain)\nhttps://creativecommons.org/publicdomain/zero/1.0/\nUse it for anything, commercial work included. No credit required.\n`) });
       await saveZip(`${s.slug}${variations ? '-variations' : '-edit'}.zip`, files);
@@ -2660,11 +2757,11 @@ return { enumerate, renderEntry, peaks, SR };
   const MINE_KEY = 'mine';
   function buildIx(s) { s.ix = { title: words(s.title), tags: s.tags.flatMap(words), cat: words(s.cat), mood: words(s.mood || ''), desc: words(s.desc) }; s.kindLabel = s.kind === 'music' ? 'Music' : 'Sound effect'; }
   function customEntry(c) {
-    const base = bySlug[c.base]; if (!base) return null; const o = c.o;
+    const base = bySlug[c.base]; if (!base) return null; const o = c.o; const mod = modOf(c.m) || {};
     const plain = !o.rev && !o.fin && !o.fout && o.start <= 0 && o.end >= 1;
     const pk = o.rev ? [...base.peaks].reverse() : base.peaks;
     const s = { slug: c.slug, title: c.title, desc: c.desc, kind: base.kind, cat: 'Your Creations', tags: [...new Set([...words(c.text).filter((w) => w.length > 2).slice(0, 6), ...base.tags.slice(0, 4), 'custom'])],
-      mood: base.mood || '', bpm: 0, key: '', loop: !!base.loop && plain, dur: Math.max(0.05, Math.round(base.dur * (o.end - o.start) / o.speed * 100) / 100), peaks: pk, custom: c, kit: '', stem: '', pack: 'mine' };
+      mood: base.mood || '', bpm: 0, key: '', loop: !!base.loop && plain, dur: Math.max(0.05, Math.round((base.dur * (base.loop ? 1 : Math.max(1, mod.length || 1)) * (o.end - o.start) / o.speed + (mod.room && !base.loop ? 0.6 + 0.024 * mod.room : 0)) * 100) / 100), peaks: pk, custom: c, kit: '', stem: '', pack: 'mine' };
     buildIx(s); return s;
   }
   function addCustom(c, { front = true } = {}) { const s = customEntry(c); if (!s) return null; if (front) SOUNDS.unshift(s); else SOUNDS.push(s); bySlug[s.slug] = s; return s; }
@@ -3044,6 +3141,10 @@ return { enumerate, renderEntry, peaks, SR };
         <button class="btn tog" type="button" data-seq="fill" aria-pressed="${SEQ.fill}" title="Fill: plays steps set to the Fill condition (key F)">Fill</button>
         <button class="btn" type="button" data-seq="human" title="Small random changes to timing and velocity">Humanize</button>
         <span class="pos" id="seq-pos" aria-live="off"></span></div>
+      <div class="seqbar seqai"><label for="seq-desc" class="lbl">Describe a beat</label><input id="seq-desc" type="text" maxlength="200" value="${esc(SEQ.desc || '')}" placeholder="dusty boom bap at 88 with a lazy snare" autocomplete="off">
+        <button class="btn primary" type="button" data-seq="describe"${SEQ.aiBusy ? ' disabled' : ''}><svg aria-hidden="true"><use href="#i-spark"/></svg>Build it</button>
+        <button class="btn" type="button" data-seq="bsec"${SEQ.aiBusy ? ' disabled' : ''} title="Writes a variation into the next empty pattern and chains them">Make a B section</button><button class="btn" type="button" data-seq="fill2"${SEQ.aiBusy ? ' disabled' : ''} title="Copies this pattern with a drum fill at the end">Add a fill</button><button class="btn" type="button" data-seq="bbopen" aria-expanded="${!!SEQ.bbOpen}">🎤 Beatbox it</button>
+        <span class="hint" id="seq-ai-note" aria-live="polite">${esc(SEQ.aiNote || '')}</span></div>${bbPanelHtml()}
       <div class="seqbar banks"><span class="lbl">Pattern</span><div class="bankbtns" role="group" aria-label="Pattern bank">${BANKS.map((b) => `<button type="button" data-bank="${b}" aria-pressed="${pat.cur === b}" class="${bankUsed(b) ? 'used' : ''}${SEQ.queued === b ? ' queued' : ''}">${b}</button>`).join('')}</div>
         <label>Copy to <select data-seq="copyto"><option value="">—</option>${BANKS.filter((b) => b !== pat.cur).map((b) => `<option>${b}</option>`).join('')}</select></label><button class="btn" type="button" data-seq="clrbank">Clear ${pat.cur}</button>
         <span class="songctl"><button class="btn tog" type="button" data-seq="song" aria-pressed="${pat.song}">Song mode</button><label>Chain <input id="seq-chain" type="text" maxlength="16" value="${pat.chain}" data-seq="chain" spellcheck="false" autocomplete="off" aria-describedby="chainhelp"></label><span id="chainhelp" class="hint">e.g. AABA</span></span></div>
@@ -3078,22 +3179,226 @@ return { enumerate, renderEntry, peaks, SR };
   }
   // Preview a sound in the picker before using it (at the pitch of the track it would replace). One preview at a time.
   const PV = { slug: null, src: null, n: 0 };
-  function pvSync() { for (const b of document.querySelectorAll('#seq-results [data-preview]')) { const on = b.dataset.preview === PV.slug; b.setAttribute('aria-pressed', String(on)); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${on ? 'stop' : 'play'}"/></svg>`; } }
+  function pvSync() { for (const b of document.querySelectorAll('[data-preview]')) { const on = b.dataset.preview === PV.slug; b.setAttribute('aria-pressed', String(on)); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${on ? 'stop' : 'play'}"/></svg>`; } }
   function pvStop() { if (PV.src) { try { PV.src.stop(); } catch {} } PV.src = null; PV.slug = null; PV.n++; pvSync(); }
   async function seqPreview(slug) {
     if (PV.slug === slug) { pvStop(); return; } pvStop(); const s = bySlug[slug]; if (!s) return; const n = PV.n; PV.slug = slug; pvSync();
-    const btn = document.querySelector(`#seq-results [data-preview="${slug}"]`); btn?.classList.add('loading');
-    let buf = null; try { const c = ac(); buf = await getBuf(s); seqBufs.set(slug, buf); if (n !== PV.n) return; const t = pat.tracks[SEQ.picker];
+    const btn = document.querySelector(`[data-preview="${slug}"]`); btn?.classList.add('loading');
+    let buf = null; try { const c = ac(); buf = await getBuf(s); seqBufs.set(slug, buf); if (n !== PV.n) return; const t = state.view === 'seq' ? pat.tracks[SEQ.picker] : null;
       const src = c.createBufferSource(); src.buffer = buf; src.playbackRate.value = 2 ** ((t ? t.pitch : 0) / 12); const g = c.createGain(); g.gain.value = 0.85; src.connect(g); g.connect(c.destination);
       src.onended = () => { if (PV.src === src) { PV.src = null; PV.slug = null; pvSync(); } }; PV.src = src; src.start(); }
     catch { toast(`Couldn't load “${s.title}”.`); pvStop(); }
-    finally { document.querySelector(`#seq-results [data-preview="${slug}"]`)?.classList.remove('loading'); }
+    finally { document.querySelector(`[data-preview="${slug}"]`)?.classList.remove('loading'); }
   }
   function seqApplyPick(slug) {
     const s = bySlug[slug]; if (!s) return; pvStop(); snap(); let t;
     if (SEQ.picker == null || SEQ.picker >= pat.tracks.length) { if (pat.tracks.length >= SEQ_MAX_TRACKS) { toast('The sequencer holds 8 tracks.'); return; } t = newTrack(slug, pat.steps); pat.tracks.push(t); }
     else { t = pat.tracks[SEQ.picker]; t.slug = slug; }
     seqLoad(slug); seqPersist(); SEQ.picker = null; renderSeq(); const ready = (n) => { if (seqBufs.get(slug)) audition(t); else if (n < 40) setTimeout(() => ready(n + 1), 60); }; ready(0);
+  }
+
+  // ---------- beat-making partner: describe a beat, make a B section, add a fill ----------
+  const nextFreeBank = () => BANKS.find((b) => b !== pat.cur && !bankUsed(b));
+  const partOf = (t) => { const s = bySlug[t.slug]; const x = (s.slug + ' ' + s.title).toLowerCase(); return /kick/.test(x) ? 'kick' : /snare|clap|rim/.test(x) ? 'snare' : /tom/.test(x) ? 'tom' : /open hi-hat|open hat/.test(x) ? 'ohat' : /hat|shaker|tambourine/.test(x) ? 'hat' : /cymbal|crash|ride/.test(x) ? 'cym' : /808|bass/.test(x) ? 'bass' : 'other'; };
+  function aiNote(msg) { SEQ.aiNote = msg; const n = $('#seq-ai-note'); if (n) n.textContent = msg; }
+  function aiBusy(on) { SEQ.aiBusy = on; document.querySelectorAll('[data-seq="describe"],[data-seq="bsec"],[data-seq="fill2"]').forEach((b) => { b.disabled = on; }); }
+  function beatPool(text) {
+    const one = SOUNDS.filter((s) => !s.custom && !s.loop && (s.kind === 'sfx' || s.kind === 'music'));
+    const core = one.filter((s) => s.g === 'drumhit' || s.g === 'note808' || s.g === 'notebass' || (s.g === 'stab' && s.p.minor === 1) || s.g === 'sc-hit' || (s.g === 'sc-timpani' && s.p.roll === 0));
+    const toks = words(text); const extra = toks.length ? one.map((s) => [s, score(s, toks)]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 30).map((x) => x[0]) : [];
+    return [...new Set([...extra, ...core])].slice(0, 200);
+  }
+  function stepsStr(s, n) { return (String(s || '').replace(/[^.xX]/g, '.') + blankPat(n)).slice(0, n); }
+  function paramsFrom(list) { const p = {}; for (const pr of Array.isArray(list) ? list : []) { if (!pr || !Number.isFinite(+pr.step)) continue; const o = {}; for (const k of ['vel', 'chance', 'rep', 'nudge', 'tune', 'cond']) if (pr[k] != null) o[k] = pr[k]; p[+pr.step] = o; } return p; }
+  function aiToPattern(r, text) {
+    const steps = +r.steps === 32 ? 32 : 16;
+    const tracks = (Array.isArray(r.tracks) ? r.tracks : []).filter((t) => t && bySlug[t.slug]).slice(0, SEQ_MAX_TRACKS).map((t) => {
+      const pats = {}; for (const b of BANKS) if (typeof t[b] === 'string') pats[b] = { s: stepsStr(t[b], steps), p: {} };
+      for (const pr of Array.isArray(t.params) ? t.params : []) { const b = BANKS.includes(pr && pr.bank) ? pr.bank : 'A'; if (pats[b]) Object.assign(pats[b].p, paramsFrom([pr])); }
+      return { slug: t.slug, vol: t.vol ?? 0.8, pan: t.pan, send: t.send, choke: t.choke, pats };
+    });
+    const p2 = cleanPattern({ title: r.title || text, bpm: r.bpm, swing: r.swing, steps, cur: 'A', chain: r.chain, song: false, tracks }); if (!p2 || !p2.tracks.length) return null;
+    const used = BANKS.filter((b) => p2.tracks.some((t) => t.pats[b] && /[xX]/.test(t.pats[b].s))); p2.chain = [...p2.chain].filter((c) => used.includes(c)).join('') || 'A'; p2.song = p2.chain.length > 1 && new Set(p2.chain).size > 1;
+    return p2;
+  }
+  function keywordBeat(text) {
+    const t = text.toLowerCase(); const map = [[/trap|drill/, 'Trap'], [/house|disco|dance/, 'House'], [/techno|industrial|warehouse|rave/, 'Techno'], [/lo-?fi|chill|study|dusty/, 'Lo-fi'], [/reggaeton|dembow|latin/, 'Reggaeton'], [/drum ?(&|and|n) ?bass|jungle|dnb|d&b/, 'Drum & bass'], [/afro|amapiano/, 'Afrobeats'], [/cinematic|epic|trailer|war|battle|toms?\b/, 'Cinematic drums'], [/boom ?bap|hip ?hop|90s|rap/, 'Boom bap']];
+    const hit = map.find(([re]) => re.test(t)); const tp = TEMPLATES.find((x) => x.name === (hit ? hit[1] : 'Boom bap')); const p2 = templatePattern(tp);
+    const bpm = /\b(\d{2,3})\s*bpm\b/.exec(t) || /\bat\s+(\d{2,3})\b/.exec(t); if (bpm && +bpm[1] >= 60 && +bpm[1] <= 200) p2.bpm = +bpm[1];
+    if (/swing|lazy|laid.?back|drunk|loose/.test(t)) p2.swing = Math.max(p2.swing, 35); if (/straight|tight|robotic|quantized/.test(t)) p2.swing = 0;
+    p2.title = text.replace(/\s+/g, ' ').trim().slice(0, 60) || p2.title; return { p: p2, name: tp.name };
+  }
+  async function describeBeat() {
+    const text = ($('#seq-desc')?.value || '').trim(); SEQ.desc = text;
+    if (!text) { toast('Describe the beat first, like “dusty boom bap at 88 with a lazy snare”.'); $('#seq-desc')?.focus(); return; }
+    aiBusy(true); let p2 = null; let how = '';
+    if (sampleCap) {
+      aiNote('Claude is writing your beat…');
+      try {
+        const pool = beatPool(text);
+        const prompt = `You are a beat programmer working in a step sequencer. Build a beat from this description: "${text.slice(0, 300)}".
+Rules:
+- Use 3 to 8 tracks, and ONLY slugs from the SOUNDS list below. Pick sounds that fit the genre and mood.
+- steps is 16 (one bar of 16th notes) unless the description clearly needs 32.
+- Every pattern string has exactly that many characters: "." = off, "x" = hit, "X" = accent (louder).
+- Pattern "A" is the main groove. Also write "B", a variation for the end of a phrase, and set chain to "AAAB". Use chain "A" only if a variation makes no sense.
+- bpm 60 to 200 to suit the style; swing 0 to 60 (0 straight; 20 to 45 for laid-back hip hop or lo-fi).
+- Optional per-step extras in "params": vel 5-100, chance 0-100 (odds the step plays), rep 2-4 (rolls, like trap hi-hats), nudge -50..50 (% of a step; positive is late and laid back), tune -12..12 (semitones; use it to write 808 or bass lines).
+- Open and closed hi-hats share choke 1 so they cut each other. pan -100..100, send 0-100 (reverb), vol 0-1.
+Reply with JSON only, no prose:
+{"title":"short name","bpm":90,"swing":25,"steps":16,"chain":"AAAB","tracks":[{"slug":"...","vol":0.8,"pan":0,"send":0,"choke":0,"A":"X.......x.X.....","B":"X.......x.X...x.","params":[{"bank":"A","step":10,"vel":45}]}],"why":"one short sentence"}
+SOUNDS (slug | title):
+${pool.map((s) => `${s.slug} | ${s.title}`).join('\n')}`;
+        const r = await sampleCap.json(prompt, { modelTier: 'quick' }); p2 = r && aiToPattern(r, text); if (p2) how = `Built by Helion Sound Labs${r.why ? `: ${String(r.why).slice(0, 140).replace(/[.\s]+$/, '')}` : ''}`;
+      } catch (e) { p2 = null; if (e && e.code === 'not_granted') sampleCap = null; }
+    }
+    if (!p2) { const k = keywordBeat(text); p2 = k.p; how = `Started from the ${k.name} template${sampleCap ? ' (Claude didn’t answer)' : ''}`; }
+    aiBusy(false); seqLoadPattern(p2); aiNote(how + '. Undo goes back.'); seqPlay();
+  }
+  function variationB(src, n) {
+    // offline fallback: same groove with a few classic changes
+    const r = seqRng(Date.now() % 1e6); const out = [];
+    pat.tracks.forEach((t, i) => {
+      const L = src[i]; let s = [...L.s]; const p = JSON.parse(JSON.stringify(L.p)); const part = partOf(t); const q = n / 4;
+      if (part === 'kick') { const k = [3, 7, 11, 14].map((x) => x * n / 16).find((x) => s[x] === '.' && r() < 0.7); if (k != null) s[k] = 'x'; }
+      else if (part === 'hat') { const k = n - (r() < 0.5 ? 1 : 2); if (s[k] !== '.') p[k] = { ...(p[k] || {}), rep: 3, vel: 70 }; else { s[k] = 'x'; p[k] = { rep: 2, vel: 65 }; } }
+      else if (part === 'snare') { const k = q * 3 + Math.round(3 * n / 16); if (s[k] === '.') { s[k] = 'x'; p[k] = { vel: 35 }; } }
+      else if (part === 'bass') { const hits = s.map((c, k) => c !== '.' ? k : -1).filter((k) => k >= n / 2); for (const k of hits) p[k] = { ...(p[k] || {}), tune: r() < 0.5 ? 5 : -2 }; }
+      else if (part === 'ohat') { const k = n - 2; if (s[k] === '.') s[k] = 'x'; }
+      out.push({ s: s.join(''), p });
+    });
+    return out;
+  }
+  async function makeBSection() {
+    const target = nextFreeBank(); if (!target) { toast('All four patterns are in use. Clear one first.'); return; }
+    const cur = pat.cur; const n = pat.steps; const src = pat.tracks.map((t) => laneOf(t, cur)); if (!src.some((L) => /[xX]/.test(L.s))) { toast(`Pattern ${cur} is empty. Make a groove first.`); return; }
+    aiBusy(true); let lanes = null; let how = '';
+    if (sampleCap) {
+      aiNote(`Claude is writing pattern ${target}…`);
+      try {
+        const lines = pat.tracks.map((t, i) => { const L = src[i]; const ex = Object.entries(L.p).map(([k, o]) => `step ${k} ${Object.entries(o).map(([a, b]) => `${a} ${b}`).join(' ')}`).join('; '); return `${i}. ${bySlug[t.slug].title}: ${L.s}${ex ? `   extras: ${ex}` : ''}`; }).join('\n');
+        const prompt = `Here is a drum pattern from a step sequencer at ${pat.bpm} BPM, ${n} steps of 16th notes. "." off, "x" hit, "X" accent.
+${lines}
+Write a second pattern for the end of a phrase: keep the same tracks and feel, but add interest (move or add a kick, a hi-hat roll, ghost snares, a different 808 note, a pickup into the next bar). Don't change everything.
+Per-step extras you may use: vel 5-100, chance 0-100, rep 2-4 (rolls), nudge -50..50, tune -12..12 (semitones).
+Reply with JSON only: {"tracks":[{"i":0,"s":"exactly ${n} characters","params":[{"step":14,"rep":3,"vel":70}]}],"why":"one short sentence"}`;
+        const r = await sampleCap.json(prompt, { modelTier: 'quick' });
+        if (r && Array.isArray(r.tracks)) { lanes = src.map((L) => ({ s: L.s, p: JSON.parse(JSON.stringify(L.p)) })); for (const x of r.tracks) { const i = +x.i; if (lanes[i]) lanes[i] = { s: stepsStr(x.s, n), p: paramsFrom(x.params) }; } how = `Pattern ${target} by Helion Sound Labs${r.why ? `: ${String(r.why).slice(0, 140).replace(/[.\s]+$/, '')}` : ''}`; }
+      } catch (e) { lanes = null; if (e && e.code === 'not_granted') sampleCap = null; }
+    }
+    if (!lanes) { lanes = variationB(src, n); how = `Pattern ${target}: a variation of ${cur}`; }
+    snap(); pat.tracks.forEach((t, i) => { t.pats[target] = lanes[i]; }); const tidy = cleanPattern(pat); pat.tracks.forEach((t, i) => { t.pats = tidy.tracks[i].pats; });
+    pat.chain = cur + cur + cur + target; pat.song = true; aiBusy(false); seqPersist(); renderSeq(); aiNote(`${how}. Song mode plays ${pat.chain}.`); if (SEQ.playing) { seqStop(); } seqPlay();
+  }
+  function addFill() {
+    const target = nextFreeBank(); if (!target) { toast('All four patterns are in use. Clear one first.'); return; }
+    const cur = pat.cur; const n = pat.steps; if (!pat.tracks.some((t) => /[xX]/.test(laneOf(t, cur).s))) { toast(`Pattern ${cur} is empty. Make a groove first.`); return; }
+    snap(); const z = n - Math.max(4, n / 8); const zone = Array.from({ length: n - z }, (_, i) => z + i); const ramp = (i) => Math.round(50 + 50 * i / (zone.length - 1));
+    let rolled = false; const toms = pat.tracks.filter((t) => partOf(t) === 'tom');
+    for (const t of pat.tracks) {
+      const L = JSON.parse(JSON.stringify(laneOf(t, cur))); const s = [...L.s]; const part = partOf(t);
+      if (part === 'snare' && !rolled && !toms.length) { rolled = true; zone.forEach((k, i) => { s[k] = i === zone.length - 1 ? 'X' : 'x'; L.p[k] = { vel: ramp(i), ...(i >= zone.length - 2 ? { rep: i === zone.length - 1 ? 3 : 2 } : {}) }; }); }
+      else if (part === 'tom') { const ti = toms.indexOf(t); zone.forEach((k, i) => { const on = Math.floor(i * toms.length / zone.length) === ti; s[k] = on ? 'x' : '.'; if (on) L.p[k] = { vel: ramp(i) }; else delete L.p[k]; }); }
+      else if (part === 'kick') zone.slice(1).forEach((k) => { s[k] = '.'; delete L.p[k]; });
+      else if (part === 'hat' || part === 'ohat') zone.forEach((k, i) => { if (i === 0 && part === 'hat') { s[k] = 'x'; L.p[k] = { rep: 2, vel: 60 }; } else { s[k] = '.'; delete L.p[k]; } });
+      L.s = s.join(''); t.pats[target] = L;
+    }
+    if (!rolled && !toms.length) { toast('Add a snare, clap or tom track so there’s something to roll on.'); seqUndo(); return; }
+    pat.chain = cur + cur + cur + target; pat.song = true; seqPersist(); renderSeq(); aiNote(`Pattern ${target} is ${cur} with a fill at the end. Song mode plays ${pat.chain}.`); if (SEQ.playing) seqStop(); seqPlay();
+  }
+
+  // ---------- beatbox to beat: hear kick, snare and hi-hat in a recording and write them as steps ----------
+  const BB = { stop: null };
+  const BB_SLUG = { kick: 'drumhit-kick-0-0', snare: 'drumhit-snare-0-0', hat: 'drumhit-hat-0-0' };
+  const canMic = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  function bbMsg(msg) { SEQ.bbMsg = msg; const n = $('#bb-status'); if (n) n.textContent = msg; }
+  function fft(re, im) {
+    const n = re.length;
+    for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
+    for (let len = 2; len <= n; len <<= 1) { const ang = -2 * Math.PI / len; const wr = Math.cos(ang), wi = Math.sin(ang); for (let i = 0; i < n; i += len) { let cr = 1, ci = 0; for (let k = 0; k < len / 2; k++) { const a = i + k, b = a + len / 2; const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr; re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti; const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr; } } }
+  }
+  /** Spectral centroid and share of energy below 250 Hz, over ~23 ms from the onset. */
+  function bbFeatures(x, sr, at) {
+    const N = 1024; const re = new Float64Array(N), im = new Float64Array(N);
+    for (let i = 0; i < N; i++) re[i] = (x[at + i] || 0) * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1)));
+    fft(re, im); let s = 0, w = 0, low = 0; for (let k = 1; k < N / 2; k++) { const m = re[k] * re[k] + im[k] * im[k]; const f = k * sr / N; s += m * f; w += m; if (f < 250) low += m; }
+    return { centroid: w ? s / w : 0, low: w ? low / w : 0 };
+  }
+  /** Find hits: a jump of about 7 dB within 15 ms above the noise floor, at least 70 ms apart. */
+  function bbOnsets(x, sr) {
+    const hop = Math.max(1, Math.round(sr * 0.005)), win = hop * 4; const env = [];
+    for (let i = 0; i + win < x.length; i += hop) { let e = 0; for (let j = i; j < i + win; j++) e += x[j] * x[j]; env.push(Math.sqrt(e / win)); }
+    if (!env.length) return []; const sorted = [...env].sort((a, b) => a - b); const noise = sorted[Math.floor(sorted.length * 0.2)]; const peak = sorted[sorted.length - 1]; if (peak < 0.005) return [];
+    const thr = Math.max(noise * 4, peak * 0.1); const out = []; let last = -1e9;
+    for (let i = 3; i < env.length; i++) {
+      const floor = Math.min(env[i - 1], env[i - 2], env[i - 3]); if (env[i] < thr || env[i] < floor * 2.2 || i - last < 14) continue;
+      let pk = env[i]; for (let j = i; j < Math.min(env.length, i + 8); j++) pk = Math.max(pk, env[j]); last = i;
+      // the sound itself starts where the signal first gets loud inside this frame: time the hit and analyse from there
+      let at = i * hop; const lim = Math.min(x.length, i * hop + win); const gate = pk * 0.5; while (at < lim && Math.abs(x[at]) < gate) at++; if (at >= lim) at = i * hop;
+      out.push({ t: at / sr, at: Math.max(0, at - Math.round(sr * 0.002)), amp: pk });
+    }
+    return out.map((o) => { const f = bbFeatures(x, sr, o.at); return { ...o, ...f, part: f.low > 0.45 || f.centroid < 800 ? 'kick' : f.centroid > 4000 ? 'hat' : 'snare' }; });
+  }
+  /** Snap hits to 16th notes. `t0` is where step 1 should be; a small phase search absorbs recording latency. */
+  function bbQuantize(hits, bpm, t0, nSteps) {
+    const step = 60 / bpm / 4; let best = 0, bestErr = Infinity;
+    if (hits.length > 2) for (let k = -20; k <= 20; k++) { const off = k / 40 * step; let err = 0; for (const h of hits) { const q = (h.t - t0 - off) / step; err += (q - Math.round(q)) ** 2; } if (err < bestErr) { bestErr = err; best = off; } }
+    const grid = { kick: new Map(), snare: new Map(), hat: new Map() }; let dropped = 0;
+    for (const h of hits) { const k = Math.round((h.t - t0 - best) / step); if (k < 0 || k >= nSteps) { dropped++; continue; } const g = grid[h.part]; if (!g.has(k) || g.get(k).amp < h.amp) g.set(k, h); }
+    return { grid, dropped };
+  }
+  function bbApply(hits, t0, bars, source) {
+    const want = bars * 16; if (want > pat.steps) setSteps(want); const n = pat.steps; const { grid, dropped } = bbQuantize(hits, pat.bpm, t0, Math.min(n, want));
+    const counts = Object.fromEntries(Object.entries(grid).map(([k, g]) => [k, g.size])); if (!counts.kick && !counts.snare && !counts.hat) { bbMsg('I couldn’t hear any hits. Get closer to the mic and make short, punchy sounds.'); return; }
+    snap(); const bank = pat.cur;
+    for (const part of ['kick', 'snare', 'hat']) {
+      const g = grid[part]; if (!g.size) continue; let t = pat.tracks.find((x) => partOf(x) === part);
+      if (!t) { if (pat.tracks.length >= SEQ_MAX_TRACKS) continue; t = newTrack(BB_SLUG[part], n, part === 'hat' ? { choke: 1, vol: 0.6 } : {}); pat.tracks.push(t); seqLoad(t.slug); }
+      const max = Math.max(...[...g.values()].map((h) => h.amp)); const s = Array(n).fill('.'); const p = {};
+      for (const [k, h] of g) { const v = h.amp / max; s[k] = v > 0.8 ? 'X' : 'x'; if (v <= 0.8) p[k] = { vel: Math.round(Math.max(30, Math.min(95, 35 + v * 60))) }; }
+      t.pats[bank] = { s: s.join(''), p }; t.len = n;
+    }
+    seqPersist(); SEQ.bbOpen = false; renderSeq();
+    aiNote(`Beatbox ${source}: heard ${counts.kick} kick${counts.kick === 1 ? '' : 's'}, ${counts.snare} snare${counts.snare === 1 ? '' : 's'} and ${counts.hat} hi-hat${counts.hat === 1 ? '' : 's'}${dropped ? ` (${dropped} outside the ${bars}-bar window)` : ''}. Written into pattern ${bank}. Undo goes back.`); seqPlay();
+  }
+  const mono = (buf) => { const n = buf.length; const out = new Float32Array(n); for (let c = 0; c < buf.numberOfChannels; c++) { const d = buf.getChannelData(c); for (let i = 0; i < n; i++) out[i] += d[i] / buf.numberOfChannels; } return out; };
+  async function bbFromFile(file) {
+    bbMsg('Listening to your recording…');
+    try {
+      const buf = await new Promise((res, rej) => file.arrayBuffer().then((ab) => ac().decodeAudioData(ab, res, rej)).catch(rej)); const x = mono(buf); const hits = bbOnsets(x, buf.sampleRate);
+      if (!hits.length) { bbMsg('I couldn’t hear any hits in that file.'); return; }
+      const step = 60 / pat.bpm / 4; const span = hits[hits.length - 1].t - hits[0].t; const bars = span > step * 16 - step / 2 ? 2 : 1;
+      bbApply(hits, hits[0].t, bars, 'from your file');
+    } catch { bbMsg('That file couldn’t be read. Try an audio file like .m4a, .mp3 or .wav.'); }
+  }
+  async function bbRecord() {
+    if (BB.stop) { BB.stop(); return; }
+    const bars = +($('#bb-bars')?.value || 1); const c = ac(); let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }); }
+    catch { bbMsg('The microphone isn’t available here (the browser or page blocked it). Record a voice memo on your phone and use “Upload a recording” instead.'); return; }
+    seqStop(); const sr = c.sampleRate; const src = c.createMediaStreamSource(stream); const proc = c.createScriptProcessor(4096, 1, 1); const mute = c.createGain(); mute.gain.value = 0;
+    const chunks = []; const capStart = c.currentTime; proc.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0))); src.connect(proc); proc.connect(mute); mute.connect(c.destination);
+    const beat = 60 / pat.bpm; const t1 = c.currentTime + 0.35; const recStart = t1 + beat * 4; const recEnd = recStart + beat * 4 * bars + beat * 0.5;
+    for (let i = 0; i < 4; i++) { const o = c.createOscillator(); const g = c.createGain(); o.frequency.value = i ? 1000 : 1500; g.gain.setValueAtTime(0.3, t1 + i * beat); g.gain.exponentialRampToValueAtTime(0.001, t1 + i * beat + 0.06); o.connect(g); g.connect(c.destination); o.start(t1 + i * beat); o.stop(t1 + i * beat + 0.08); }
+    const btn = () => document.querySelector('[data-seq="bbrec"]'); let done = false; let timer = 0;
+    const finish = (keep) => {
+      if (done) return; done = true; clearInterval(timer); BB.stop = null; try { src.disconnect(); proc.disconnect(); mute.disconnect(); } catch {} stream.getTracks().forEach((t) => t.stop()); const b = btn(); if (b) b.textContent = '🎤 Record';
+      if (!keep) { bbMsg('Stopped.'); return; }
+      const all = new Float32Array(chunks.reduce((a, ch) => a + ch.length, 0)); let o = 0; for (const ch of chunks) { all.set(ch, o); o += ch.length; }
+      const hits = bbOnsets(all, sr); const t0 = recStart - capStart; const inWin = hits.filter((h) => h.t > t0 - beat / 4);
+      if (!inWin.length) { bbMsg('I couldn’t hear any hits. Get closer to the mic and make short, punchy sounds.'); return; }
+      bbApply(inWin, t0, bars, 'recording');
+    };
+    BB.stop = () => finish(false); const b0 = btn(); if (b0) b0.textContent = '■ Stop';
+    timer = setInterval(() => { const now = c.currentTime; if (now < recStart) bbMsg(`Get ready… ${Math.max(1, Math.min(4, Math.floor((now - t1) / beat) + 1))}`); else if (now < recEnd) bbMsg(`Recording… bar ${Math.min(bars, Math.floor((now - recStart) / (beat * 4)) + 1)} of ${bars}. Beatbox now!`); else finish(true); }, 50);
+  }
+  function bbPanelHtml() {
+    if (!SEQ.bbOpen) return '';
+    return `<div class="bbox" id="bbox" role="region" aria-label="Beatbox it"><h3>🎤 Beatbox it</h3>
+      <p class="note">Make the sounds with your mouth: <b>“b”</b> or <b>“boots”</b> for a kick, <b>“k”</b>, <b>“pf”</b> or <b>“cats”</b> for a snare, <b>“ts”</b> for a hi-hat. SoundWell hears each hit, sorts it and writes it into pattern ${pat.cur} at ${pat.bpm} BPM. ${canMic() ? 'Press Record, wait for the four count-in clicks, then go.' : ''}</p>
+      <div class="seqtools"><label class="hint">Length <select id="bb-bars"><option value="1">1 bar</option><option value="2">2 bars</option></select></label>
+        ${canMic() ? '<button class="btn primary" type="button" data-seq="bbrec">🎤 Record</button>' : ''}<button class="btn" type="button" data-seq="bbfile">Upload a recording</button><button class="btn" type="button" data-seq="bbclose">Close</button></div>
+      <p class="hint" id="bb-status" aria-live="polite">${esc(SEQ.bbMsg || (canMic() ? '' : 'No microphone here: record a voice memo on your phone at about ' + pat.bpm + ' BPM and upload it.'))}</p><input type="file" id="bb-file" accept="audio/*,video/*" hidden></div>`;
   }
 
   // ---------- export: mix, stems, MIDI ----------
@@ -3250,6 +3555,13 @@ return { enumerate, renderEntry, peaks, SR };
     else if (a === 'rec') { SEQ.rec = !SEQ.rec; if (SEQ.rec && !SEQ.playing) seqPlay(); renderSeq(); if (SEQ.rec) toast('Recording: play keys 1–8 in time. Hits snap to the nearest step.'); }
     else if (a === 'fill') { SEQ.fill = !SEQ.fill; b.setAttribute('aria-pressed', String(SEQ.fill)); }
     else if (a === 'human') humanize();
+    else if (a === 'describe') describeBeat();
+    else if (a === 'bsec') makeBSection();
+    else if (a === 'fill2') addFill();
+    else if (a === 'bbopen') { SEQ.bbOpen = !SEQ.bbOpen; SEQ.bbMsg = ''; if (!SEQ.bbOpen && BB.stop) BB.stop(); renderSeq(); }
+    else if (a === 'bbclose') { if (BB.stop) BB.stop(); SEQ.bbOpen = false; renderSeq(); }
+    else if (a === 'bbrec') bbRecord();
+    else if (a === 'bbfile') $('#bb-file').click();
     else if (a === 'tap') { const now = performance.now(); SEQ.taps = SEQ.taps.filter((x) => now - x < 2500).concat(now); if (SEQ.taps.length > 1) { const iv = (SEQ.taps.at(-1) - SEQ.taps[0]) / (SEQ.taps.length - 1); snapSoon(); pat.bpm = num(60000 / iv, 60, 200, pat.bpm); $('#seq-bpm').value = pat.bpm; seqPersist(); } }
     else if (a === 'undo' || a === 'redo') seqUndo(a === 'redo');
     else if (a === 'new') { seqLoadPattern(defaultPattern()); pat.title = 'New pattern'; renderSeq(); }
@@ -3294,6 +3606,7 @@ return { enumerate, renderEntry, peaks, SR };
   window.addEventListener('pointerup', () => { if (laneDrag) { laneDrag = null; seqPersist(); } });
   seqview.addEventListener('input', (e) => {
     const el = e.target; const a = el.dataset.seq; const [t] = trackOf(el);
+    if (el.id === 'seq-desc') { SEQ.desc = el.value; return; }
     if (el.id === 'seq-q') { seqResults(el.value); if (PV.slug && !document.querySelector(`#seq-results [data-preview="${PV.slug}"]`)) pvStop(); return; }
     if (a === 'title') { snapSoon(); pat.title = el.value.slice(0, 60) || 'Untitled pattern'; }
     else if (a === 'bpm') { const v = Math.round(+el.value); if (v >= 60 && v <= 200) { snapSoon(); pat.bpm = v; } }
@@ -3308,6 +3621,7 @@ return { enumerate, renderEntry, peaks, SR };
   seqview.addEventListener('change', (e) => {
     const el = e.target; const a = el.dataset.seq; const [t] = trackOf(el);
     if (el.id === 'seq-file' && el.files[0]) { seqOpenFile(el.files[0]); el.value = ''; return; }
+    if (el.id === 'bb-file' && el.files[0]) { bbFromFile(el.files[0]); el.value = ''; return; }
     if (a === 'pitch' && t) { snap(); t.pitch = +el.value; seqPersist(); audition(t); }
     else if ((a === 'choke' || a === 'len') && t) { snap(); t[a] = +el.value; seqPersist(); renderSeq(); }
     else if (a === 'steps') setSteps(+el.value);
@@ -3317,6 +3631,7 @@ return { enumerate, renderEntry, peaks, SR };
     else if (a === 'copyto' && el.value) { const to = el.value; snap(); for (const x of pat.tracks) x.pats[to] = JSON.parse(JSON.stringify(laneOf(x))); seqPersist(); toast(`Copied pattern ${pat.cur} to ${to}`); renderSeq(); }
   });
   seqview.addEventListener('keydown', (e) => {
+    if (e.target.id === 'seq-desc' && e.key === 'Enter') { e.preventDefault(); if (!SEQ.aiBusy) describeBeat(); return; }
     if (e.target.id === 'seq-q' && e.key === 'Enter') { const first = $('#seq-results [data-pickslug]'); if (first) seqApplyPick(first.dataset.pickslug); return; }
     const st = e.target.closest?.('.steps.lanemode [data-step]');
     if (st && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && SEQ.lane !== 'cond') { e.preventDefault(); const [t] = trackOf(st); const k = +st.dataset.step; if (laneOf(t).s[k] === '.') return; snapSoon(); setLane(t, k, SEQ.lane, laneVal(t, k, SEQ.lane) + LANES[SEQ.lane].step * (e.key === 'ArrowUp' ? 1 : -1)); seqCell(st, t, k); seqPersist(); }
@@ -3330,6 +3645,195 @@ return { enumerate, renderEntry, peaks, SR };
     if ((e.key === 'f' || e.key === 'F') && !e.repeat) { SEQ.fill = !SEQ.fill; document.querySelector('[data-seq="fill"]')?.setAttribute('aria-pressed', String(SEQ.fill)); }
   }, true);
   document.addEventListener('keyup', (e) => { if (state.view === 'seq' && (e.key === ' ' || e.code === 'Space') && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName)) e.preventDefault(); }, true);
+
+  // ---------- sound effects for video: place sounds on a video's timeline, preview in sync, export aligned audio ----------
+  // The video never leaves the device: it plays from a local object URL, and only the sound placements are saved.
+  const VID_KEY = 'vid-project';
+  const VID = { file: null, url: '', name: '', size: 0, dur: 0, cues: [], sel: -1, playing: false, nodes: [], zoom: 1, orig: 0.8, picker: false, pickAt: 0, replace: false, raf: 0, drag: null };
+  const VID_CHIPS = ['whoosh', 'punch', 'impact', 'door', 'footsteps', 'glitch', 'pop', 'ding', 'boom', 'laugh', 'swoosh', 'riser'];
+  const vidEl = () => $('#vid-video');
+  const fmtT = (t) => { t = Math.max(0, t || 0); const m = Math.floor(t / 60); return `${m}:${(t - m * 60).toFixed(2).padStart(5, '0')}`; };
+  const cleanCue = (c) => ({ id: String(c.id || 'c' + Math.random().toString(36).slice(2, 9)), slug: c.slug, t: Math.max(0, Math.min(1e5, Number(c.t) || 0)), vol: Math.max(0, Math.min(1.5, Number.isFinite(+c.vol) ? +c.vol : 1)) });
+  const cueDur = (c) => { const s = bySlug[c.slug]; return s ? s.dur : 0.5; };
+  function vidSave() { store.set(VID_KEY, { name: VID.name, size: VID.size, cues: VID.cues }); }
+  const vidBufs = new Map();
+  function vidLoad(slug) { const s = bySlug[slug]; if (!s || vidBufs.has(slug)) return; vidBufs.set(slug, null); getBuf(s).then((b) => vidBufs.set(slug, b)).catch(() => { vidBufs.delete(slug); toast(`Couldn't load “${s.title}”.`); }); }
+  function vidOpenFile(file) {
+    if (!file) return; if (!/^video\//.test(file.type) && !/\.(mp4|mov|m4v|webm|ogv|mkv)$/i.test(file.name)) { toast('That isn’t a video file. Try .mp4, .mov or .webm.'); return; }
+    vidPause(); if (VID.url) URL.revokeObjectURL(VID.url);
+    Object.assign(VID, { file, url: URL.createObjectURL(file), name: file.name, size: file.size, dur: 0, cues: [], sel: -1, picker: false });
+    const prev = store.get(VID_KEY, null);
+    if (prev && prev.name === file.name && prev.size === file.size && Array.isArray(prev.cues)) { VID.cues = prev.cues.filter((c) => c && bySlug[c.slug]).map(cleanCue); if (VID.cues.length) toast(`Restored your ${VID.cues.length} sound${VID.cues.length === 1 ? '' : 's'} for this video.`); }
+    for (const c of VID.cues) vidLoad(c.slug); renderVid();
+  }
+  // playback: the video plays itself; sounds are scheduled on the audio clock from the video's position
+  function vidStopNodes() { for (const n of VID.nodes) { try { n.stop(); } catch {} } VID.nodes = []; }
+  function vidSchedule() {
+    vidStopNodes(); const v = vidEl(); if (!v || v.paused) return; const c = ac(); const now = v.currentTime; const base = c.currentTime + 0.03;
+    for (const cue of VID.cues) {
+      const buf = vidBufs.get(cue.slug); if (!buf) { vidLoad(cue.slug); continue; } const off = now - cue.t; if (off >= buf.duration) continue;
+      const src = c.createBufferSource(); src.buffer = buf; const g = c.createGain(); g.gain.value = cue.vol; src.connect(g); g.connect(c.destination);
+      if (off >= 0) src.start(base, off); else src.start(base - off); VID.nodes.push(src);
+    }
+  }
+  function vidPlay() { const v = vidEl(); if (!v) return; ac(); if (P.playing) pPause(); if (SEQ.playing) seqStop(); pvStop(); v.volume = VID.orig; if (v.ended || v.currentTime >= VID.dur - 0.02) v.currentTime = 0; v.play().then(() => { VID.playing = true; vidSchedule(); vidSyncPlay(); vidTick(); }).catch(() => toast('This video can’t play in your browser. Try an .mp4 file.')); }
+  function vidPause() { const v = vidEl(); VID.playing = false; vidStopNodes(); cancelAnimationFrame(VID.raf); if (v && !v.paused) v.pause(); vidSyncPlay(); }
+  function vidSyncPlay() { for (const b of document.querySelectorAll('[data-v="play"]')) { b.setAttribute('aria-label', VID.playing ? 'Pause' : 'Play'); b.innerHTML = `<svg aria-hidden="true"><use href="#i-${VID.playing ? 'pause' : 'play'}"/></svg><span>${VID.playing ? 'Pause' : 'Play'}</span>`; } }
+  function vidTick() { const v = vidEl(); if (!v) return; const ph = $('#vid-ph'); if (ph && VID.dur) ph.style.left = (v.currentTime / VID.dur * 100) + '%'; const tt = $('#vid-time'); if (tt) tt.textContent = `${fmtT(v.currentTime)} / ${fmtT(VID.dur)}`; if (VID.playing) VID.raf = requestAnimationFrame(vidTick); }
+  function vidSeek(t) { const v = vidEl(); if (!v) return; v.currentTime = Math.max(0, Math.min(VID.dur, t)); vidTick(); if (VID.playing) setTimeout(vidSchedule, 30); }
+
+  function vidLanes() {
+    const minSec = VID.dur * 0.07 / VID.zoom; const ends = []; const lane = new Map();
+    for (const c of [...VID.cues].sort((a, b) => a.t - b.t)) { const end = c.t + Math.max(cueDur(c), minSec); let i = ends.findIndex((e) => e <= c.t); if (i < 0) { i = ends.length; ends.push(0); } ends[i] = end; lane.set(c.id, i); }
+    return { lane, n: Math.max(1, ends.length) };
+  }
+  function vidTimelineHtml() {
+    if (!VID.dur) return '<p class="hint">Loading the video…</p>';
+    const { lane, n } = vidLanes(); const span = VID.dur / VID.zoom; const stepT = [0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300].find((x) => span / x <= 10) || 600;
+    const ticks = []; for (let t = 0; t <= VID.dur + 1e-6; t += stepT) ticks.push(`<span class="tick" style="left:${t / VID.dur * 100}%">${fmtT(t).replace(/\.\d+$/, '')}</span>`);
+    const cues = VID.cues.map((c, i) => { const s = bySlug[c.slug]; return `<button type="button" class="cue${i === VID.sel ? ' sel' : ''}" data-cue="${i}" style="left:${c.t / VID.dur * 100}%;width:${Math.max(0.4, cueDur(c) / VID.dur * 100)}%;top:${lane.get(c.id) * 34 + 26}px" aria-label="${esc(s.title)} at ${fmtT(c.t)}. Drag to move."><span>${esc(s.title)}</span></button>`; }).join('');
+    return `<div class="tlscroll"><div class="tlin" id="vid-tlin" style="width:${VID.zoom * 100}%;height:${n * 34 + 34}px"><div class="ruler">${ticks.join('')}</div>${cues}<div class="ph" id="vid-ph" style="left:${(vidEl()?.currentTime || 0) / VID.dur * 100}%"></div></div></div>`;
+  }
+  function vidInspectorHtml() {
+    const c = VID.cues[VID.sel]; if (!c) return `<p class="hint">${VID.cues.length ? 'Select a sound on the timeline to change it. Drag sounds to move them.' : 'Play or scrub to a moment, then press “Add sound here” (or the A key).'}</p>`;
+    const s = bySlug[c.slug];
+    return `<div class="insp"><b>${esc(s.title)}</b><span class="hint">at ${fmtT(c.t)}</span>
+      <button class="btn" type="button" data-v="nudge" data-d="-0.1" aria-label="Move 0.1 seconds earlier">−0.1s</button><button class="btn" type="button" data-v="nudge" data-d="-0.02" aria-label="Move one frame earlier">−1f</button><button class="btn" type="button" data-v="nudge" data-d="0.02" aria-label="Move one frame later">+1f</button><button class="btn" type="button" data-v="nudge" data-d="0.1" aria-label="Move 0.1 seconds later">+0.1s</button>
+      <button class="btn" type="button" data-v="tohere">Move to playhead</button>
+      <label class="hint">Volume <input type="range" min="0" max="150" value="${Math.round(c.vol * 100)}" data-v="cvol"><output>${Math.round(c.vol * 100)}%</output></label>
+      <button class="btn" type="button" data-v="hear">▶ Hear it</button><button class="btn" type="button" data-v="replace">Replace</button><button class="btn" type="button" data-v="del">Delete</button></div>`;
+  }
+  function vidPickerHtml() {
+    if (!VID.picker) return '';
+    return `<div class="picker" id="vid-picker"><div class="pkhead"><label for="vid-q">${VID.replace ? 'Replace with…' : `Add a sound at ${fmtT(VID.pickAt)}`}</label><button class="btn" type="button" data-v="pickclose">Close</button></div>
+      <div class="vchips">${VID_CHIPS.map((w) => `<button type="button" class="chip" data-vchip="${w}">${w}</button>`).join('')}</div>
+      <p class="pknote">Press ▶ to hear a sound first, then tap its name to place it.</p><input id="vid-q" type="search" placeholder="Search whoosh, punch, door slam, glitch…" autocomplete="off"><ul id="vid-results"></ul></div>`;
+  }
+  function vidResults(q) {
+    const toks = words(q || 'whoosh'); const pool = SOUNDS.filter((s) => !s.loop || s.kind === 'sfx');
+    const res = pool.map((s) => [s, score(s, toks)]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]).slice(0, 40).map((x) => x[0]);
+    const box = $('#vid-results'); if (!box) return;
+    box.innerHTML = res.length ? res.map((s) => `<li><button class="pv" type="button" data-preview="${s.slug}" aria-label="Preview ${esc(s.title)}" aria-pressed="${PV.slug === s.slug}"><svg aria-hidden="true"><use href="#i-${PV.slug === s.slug ? 'stop' : 'play'}"/></svg></button><button class="pick" type="button" data-vpick="${s.slug}" aria-label="Place ${esc(s.title)}"><span class="art" style="background-image:url(${soundArt(s)})"></span><span class="pt">${esc(s.title)}</span><span class="pm">${fmtDur(s.dur)}</span><span class="use">${VID.replace ? 'Use' : 'Place'}</span></button></li>`).join('') : '<li class="pm" style="padding:6px">No matching sounds.</li>';
+  }
+  function vidPart(id, html) { const el = $('#' + id); if (el) el.innerHTML = html; }
+  function vidRefresh() { vidPart('vid-tl', vidTimelineHtml()); vidPart('vid-insp', vidInspectorHtml()); const n = $('#vid-count'); if (n) n.textContent = `${VID.cues.length} sound${VID.cues.length === 1 ? '' : 's'}`; }
+  function renderVid() {
+    const v = $('#vidview'); if (!v) return;
+    if (v.dataset.url === VID.url && VID.url) { vidRefresh(); return; } v.dataset.url = VID.url;
+    const head = `<div class="seqhead"><h2>Sound for video</h2><div class="seqtools"><button class="btn${VID.url ? '' : ' primary'}" type="button" data-v="open"><svg aria-hidden="true"><use href="#i-film"/></svg>${VID.url ? 'Open another video' : 'Open a video'}</button>
+      ${VID.url ? '<button class="btn dl" type="button" data-v="saveproj">Save project</button><button class="btn" type="button" data-v="openproj">Open project</button>' : ''}</div></div>
+      <input type="file" id="vid-file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden><input type="file" id="vid-projfile" accept=".json,application/json" hidden>`;
+    if (!VID.url) {
+      v.innerHTML = head + `<div class="vidempty" id="vid-drop"><svg aria-hidden="true"><use href="#i-film"/></svg><h3>Add sound effects to a video</h3>
+        <p>Open a clip, tap where things happen (a punch, a door, a swipe), pick sounds from the library and export audio that lines up with your video. Drop the WAV into CapCut, iMovie, Premiere or any editor at 0:00.</p>
+        <p class="hint">Your video stays on your device. Nothing is uploaded.</p><button class="btn primary" type="button" data-v="open">Open a video</button></div>`;
+      return;
+    }
+    v.innerHTML = head + `<div class="vidwrap"><video id="vid-video" src="${VID.url}" playsinline preload="auto"></video></div>
+      <div class="seqbar vidbar"><button class="seqplay withlabel" type="button" data-v="play"></button><span class="vtime" id="vid-time">0:00.00 / 0:00.00</span>
+        <button class="btn primary" type="button" data-v="add"><svg aria-hidden="true"><use href="#i-layers"/></svg>Add sound here</button>
+        <label>Video's own sound <input type="range" min="0" max="100" value="${Math.round(VID.orig * 100)}" data-v="orig"></label>
+        <label>Zoom <input type="range" min="1" max="8" step="0.5" value="${VID.zoom}" data-v="zoom"></label><span class="hint" id="vid-count"></span></div>
+      <div class="timeline" id="vid-tl"></div><div id="vid-insp" class="seqbar vidinsp"></div><div id="vid-pickwrap">${vidPickerHtml()}</div>
+      <div class="seqbar export dl"><span class="lbl">Export</span><label><input type="checkbox" id="vid-incl"> Include the video's own sound</label>
+        <button class="btn primary" type="button" data-v="export"><svg aria-hidden="true"><use href="#i-down"/></svg>Export audio</button><span class="hint">A WAV as long as your video, plus a cue sheet. Line it up at 0:00 in your editor.</span></div>`;
+    const el = vidEl();
+    el.addEventListener('loadedmetadata', () => { VID.dur = el.duration || 0; VID.cues = VID.cues.filter((c) => c.t < VID.dur); vidRefresh(); vidTick(); });
+    el.addEventListener('pause', () => { if (VID.playing) { VID.playing = false; vidStopNodes(); vidSyncPlay(); } });
+    el.addEventListener('ended', () => { VID.playing = false; vidStopNodes(); vidSyncPlay(); vidTick(); });
+    el.addEventListener('seeked', () => { vidTick(); if (VID.playing) vidSchedule(); });
+    el.addEventListener('error', () => toast('This video can’t be opened in your browser. Try an .mp4 file.'));
+    el.addEventListener('click', () => (VID.playing ? vidPause() : vidPlay()));
+    vidSyncPlay(); vidRefresh(); if (VID.picker) vidResults($('#vid-q')?.value);
+  }
+  function vidOpenPicker(replace) { const v = vidEl(); VID.replace = !!replace; VID.pickAt = v ? v.currentTime : 0; VID.picker = true; if (VID.playing) vidPause(); vidPart('vid-pickwrap', vidPickerHtml()); vidResults(''); $('#vid-q')?.focus(); $('#vid-picker')?.scrollIntoView({ block: 'nearest' }); }
+  function vidClosePicker() { VID.picker = false; pvStop(); vidPart('vid-pickwrap', ''); }
+  function vidPick(slug) {
+    pvStop(); vidLoad(slug);
+    if (VID.replace && VID.cues[VID.sel]) VID.cues[VID.sel].slug = slug;
+    else { VID.cues.push(cleanCue({ slug, t: VID.pickAt, vol: 1 })); VID.sel = VID.cues.length - 1; }
+    vidSave(); vidClosePicker(); vidRefresh(); toast(`Placed “${bySlug[slug].title}” at ${fmtT(VID.replace ? VID.cues[VID.sel].t : VID.pickAt)}`);
+  }
+  async function vidExport() {
+    if (!VID.cues.length) { toast('Add some sounds first.'); return; } const btn = document.querySelector('[data-v="export"]'); btn.disabled = true; toast('Rendering your soundtrack…');
+    const base = (VID.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'video'); const incl = $('#vid-incl')?.checked;
+    try {
+      const sr = 48000; const oc = new OfflineAudioContext(2, Math.max(1, Math.ceil(VID.dur * sr)), sr); let origNote = '';
+      if (incl) { try { const ab = await VID.file.arrayBuffer(); const ob = await new Promise((res, rej) => ac().decodeAudioData(ab, res, rej)); const s = oc.createBufferSource(); s.buffer = ob; const g = oc.createGain(); g.gain.value = VID.orig; s.connect(g); g.connect(oc.destination); s.start(0); } catch { origNote = ' (the video’s own sound couldn’t be read, so it has your effects only)'; } }
+      for (const c of VID.cues) { const buf = await getBuf(bySlug[c.slug]); const s = oc.createBufferSource(); s.buffer = buf; const g = oc.createGain(); g.gain.value = c.vol; s.connect(g); g.connect(oc.destination); s.start(c.t); }
+      const audio = await oc.startRendering(); const pk = peakOf(audio); if (pk > 0.98) scaleBuf(audio, 0.98 / pk);
+      const csv = 'time_seconds,timecode,sound,volume_percent,sound_slug\n' + [...VID.cues].sort((a, b) => a.t - b.t).map((c) => `${c.t.toFixed(3)},${fmtT(c.t)},"${bySlug[c.slug].title.replace(/"/g, '""')}",${Math.round(c.vol * 100)},${c.slug}`).join('\n') + '\n';
+      const proj = JSON.stringify({ format: 'soundwell-video', name: VID.name, duration: VID.dur, cues: VID.cues }, null, 2);
+      const lic = `Sound for ${VID.name}, made with SoundWell.\n\nPlace ${base}-sound.wav at 0:00 in your video editor. It is exactly as long as the video.\n\nEvery SoundWell sound is CC0 1.0 (public domain): use it for anything, commercial work included. No credit required.\nhttps://creativecommons.org/publicdomain/zero/1.0/\n${incl ? '\nThe video’s own sound is yours and is not covered by this note.\n' : ''}`;
+      await saveZip(`${base}-sound.zip`, [{ name: `${base}-sound.wav`, data: toWav(audio) }, { name: `${base}-cues.csv`, data: enc(csv) }, { name: `${base}-soundwell.json`, data: enc(proj) }, { name: 'LICENSE.txt', data: enc(lic) }]);
+      if (origNote) toast('Exported' + origNote);
+    } catch { toast('Couldn’t render the soundtrack. Try a shorter video.'); }
+    btn.disabled = false;
+  }
+  async function vidSaveProject() {
+    if (!dlCap) { toast('Saving files isn’t available in this view.'); return; } const base = VID.name.replace(/\.[^.]+$/, '') || 'video';
+    try { await dlCap.save({ filename: `${base}-soundwell.json`, data: JSON.stringify({ format: 'soundwell-video', name: VID.name, duration: VID.dur, cues: VID.cues }, null, 2) }); } catch (e) { if (e && e.code !== 'declined') toast('Couldn’t save the file in this view.'); }
+  }
+  function vidOpenProject(file) {
+    const rd = new FileReader(); rd.onload = () => { let j = null; try { j = JSON.parse(String(rd.result)); } catch {} const cues = j && Array.isArray(j.cues) ? j.cues.filter((c) => c && bySlug[c.slug]).map(cleanCue) : [];
+      if (!cues.length) { toast('That file isn’t a SoundWell video project.'); return; } VID.cues = cues; VID.sel = -1; for (const c of cues) vidLoad(c.slug); vidSave(); vidRefresh(); toast(`Opened ${cues.length} sound placements${j.name && j.name !== VID.name ? ` (made for ${j.name})` : ''}.`); };
+    rd.readAsText(file);
+  }
+
+  // video events
+  const vidview = $('#vidview');
+  vidview.addEventListener('click', (e) => {
+    const pv = e.target.closest('[data-preview]'); if (pv) { seqPreview(pv.dataset.preview); return; }
+    const pk = e.target.closest('[data-vpick]'); if (pk) { vidPick(pk.dataset.vpick); return; }
+    const ch = e.target.closest('[data-vchip]'); if (ch) { const q = $('#vid-q'); q.value = ch.dataset.vchip; vidResults(q.value); return; }
+    const cue = e.target.closest('[data-cue]'); if (cue) return; // handled by pointer events
+    const tl = e.target.closest('#vid-tlin'); if (tl && VID.dur) { const r = tl.getBoundingClientRect(); vidSeek((e.clientX - r.left) / r.width * VID.dur); return; }
+    const b = e.target.closest('[data-v]'); if (!b || b.tagName === 'INPUT') return; const a = b.dataset.v; const c = VID.cues[VID.sel];
+    if (a === 'open') $('#vid-file').click();
+    else if (a === 'play') VID.playing ? vidPause() : vidPlay();
+    else if (a === 'add') vidOpenPicker(false);
+    else if (a === 'pickclose') vidClosePicker();
+    else if (a === 'export') vidExport();
+    else if (a === 'saveproj') vidSaveProject();
+    else if (a === 'openproj') $('#vid-projfile').click();
+    else if (c && a === 'nudge') { c.t = Math.max(0, Math.min(VID.dur, c.t + Number(b.dataset.d))); vidSave(); vidRefresh(); vidSeek(c.t); }
+    else if (c && a === 'tohere') { c.t = vidEl()?.currentTime || 0; vidSave(); vidRefresh(); }
+    else if (c && a === 'hear') { const s = bySlug[c.slug]; getBuf(s).then((buf) => { const x = ac(); const src = x.createBufferSource(); src.buffer = buf; const g = x.createGain(); g.gain.value = c.vol; src.connect(g); g.connect(x.destination); src.start(); }).catch(() => {}); }
+    else if (c && a === 'replace') vidOpenPicker(true);
+    else if (c && a === 'del') { VID.cues.splice(VID.sel, 1); VID.sel = -1; vidSave(); vidRefresh(); }
+  });
+  vidview.addEventListener('pointerdown', (e) => {
+    const cue = e.target.closest('[data-cue]'); if (!cue || e.button) return; e.preventDefault(); const i = +cue.dataset.cue; const tl = $('#vid-tlin'); const r = tl.getBoundingClientRect();
+    VID.sel = i; VID.drag = { i, id: e.pointerId, x0: e.clientX, t0: VID.cues[i].t, w: r.width, moved: false }; cue.setPointerCapture?.(e.pointerId);
+    for (const x of document.querySelectorAll('#vid-tlin .cue')) x.classList.toggle('sel', x === cue); vidPart('vid-insp', vidInspectorHtml());
+  });
+  vidview.addEventListener('pointermove', (e) => {
+    const d = VID.drag; if (!d || e.pointerId !== d.id) return; const dx = e.clientX - d.x0; if (!d.moved && Math.abs(dx) < 4) return; d.moved = true;
+    const c = VID.cues[d.i]; c.t = Math.max(0, Math.min(VID.dur - 0.01, d.t0 + dx / d.w * VID.dur)); const el = document.querySelector(`#vid-tlin [data-cue="${d.i}"]`); if (el) { el.style.left = (c.t / VID.dur * 100) + '%'; el.setAttribute('aria-label', `${bySlug[c.slug].title} at ${fmtT(c.t)}. Drag to move.`); }
+  });
+  const vidDragEnd = (e) => { const d = VID.drag; if (!d || e.pointerId !== d.id) return; VID.drag = null; if (d.moved) { vidSave(); vidRefresh(); if (VID.playing) vidSchedule(); } else vidSeek(VID.cues[d.i].t); };
+  vidview.addEventListener('pointerup', vidDragEnd); vidview.addEventListener('pointercancel', vidDragEnd);
+  vidview.addEventListener('input', (e) => {
+    const el = e.target; const a = el.dataset.v;
+    if (el.id === 'vid-q') { vidResults(el.value); return; }
+    if (a === 'orig') { VID.orig = el.value / 100; const v = vidEl(); if (v) v.volume = VID.orig; }
+    else if (a === 'zoom') { VID.zoom = +el.value; vidPart('vid-tl', vidTimelineHtml()); }
+    else if (a === 'cvol') { const c = VID.cues[VID.sel]; if (c) { c.vol = el.value / 100; el.nextElementSibling.textContent = el.value + '%'; vidSave(); } }
+  });
+  vidview.addEventListener('change', (e) => {
+    const el = e.target; if (el.id === 'vid-file' && el.files[0]) { vidOpenFile(el.files[0]); el.value = ''; } else if (el.id === 'vid-projfile' && el.files[0]) { vidOpenProject(el.files[0]); el.value = ''; }
+  });
+  vidview.addEventListener('keydown', (e) => { if (e.target.id === 'vid-q' && e.key === 'Enter') { const first = $('#vid-results [data-vpick]'); if (first) vidPick(first.dataset.vpick); } });
+  vidview.addEventListener('dragover', (e) => { if (e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); } });
+  vidview.addEventListener('drop', (e) => { const f = e.dataTransfer?.files?.[0]; if (f) { e.preventDefault(); vidOpenFile(f); } });
+  document.addEventListener('keydown', (e) => {
+    if (state.view !== 'video' || e.altKey || e.ctrlKey || e.metaKey) return; const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName) && document.activeElement.type !== 'range'; if (typing || !VID.url) return;
+    if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) (VID.playing ? vidPause() : vidPlay()); }
+    else if (e.key === 'a' || e.key === 'A') { e.preventDefault(); vidOpenPicker(false); }
+    else if ((e.key === 'Delete' || e.key === 'Backspace') && VID.cues[VID.sel]) { e.preventDefault(); VID.cues.splice(VID.sel, 1); VID.sel = -1; vidSave(); vidRefresh(); }
+    else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && VID.cues[VID.sel]) { e.preventDefault(); e.stopImmediatePropagation(); const c = VID.cues[VID.sel]; c.t = Math.max(0, Math.min(VID.dur, c.t + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 0.1 : 0.02))); vidSave(); vidRefresh(); }
+  }, true);
+  document.addEventListener('keyup', (e) => { if (state.view === 'video' && (e.key === ' ' || e.code === 'Space') && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName)) e.preventDefault(); }, true);
 
   // ---------- events ----------
   list.addEventListener('click', (e) => {
@@ -3350,11 +3854,19 @@ return { enumerate, renderEntry, peaks, SR };
     else if (act === 'edit') { state.edit = state.edit === s.slug ? null : s.slug; state.open = null; open(s.slug); if (state.edit) document.getElementById('e-' + s.slug)?.scrollIntoView({ block: 'nearest' }); }
     else if (act === 'delmine') { const i = SOUNDS.indexOf(s); if (i >= 0) SOUNDS.splice(i, 1); delete bySlug[s.slug]; removeFromMix(s.slug); saveMine(); state.open = null; toast(`Deleted “${s.title}”`); render(); }
     else if (act === 'eplay') previewEdit(s);
+    else if (act === 'kdice') { const m = km(s); m.seed = (m.seed || 0) + 1; const t = el.closest('.knobs').querySelector('[data-ko="seed"]'); if (t) t.textContent = 'Take ' + (m.seed + 1); previewEdit(s); }
+    else if (act === 'kreset') { knobs.delete(s.slug); state.open = null; open(s.slug); }
+    else if (act === 'ksave') {
+      const m = { ...km(s) }; const o = { ...eo(s) }; const what = modDesc(m);
+      const c = { slug: 'my-' + Date.now().toString(36), title: `${s.title} (my take)`.slice(0, 60), text: s.title, base: s.slug, o, m, desc: `Your take on ${s.title}${what ? ` (${what})` : ''}. Made with SoundWell's recipe knobs.` };
+      const mine = addCustom(c); saveMine(); toast(`Saved “${mine.title}” to Your creations. Add it to the sequencer like any sound.`);
+    }
     else if (act === 'edl') downloadEdit(s, false);
     else if (act === 'evar') downloadEdit(s, true);
     else if (act === 'ereset') { edits.delete(s.slug); state.open = null; open(s.slug); }
   });
   list.addEventListener('input', (e) => {
+    const kn = e.target.closest('[data-k]'); if (kn) { const s = bySlug[kn.closest('.row').dataset.slug]; const d = KNOBS.find((x) => x.k === kn.dataset.k); km(s)[d.k] = +kn.value; const o = kn.closest('.knobs').querySelector(`[data-ko="${d.k}"]`); if (o) o.textContent = d.fmt(+kn.value); return; }
     const el = e.target.closest('[data-e]'); if (!el) return; const s = bySlug[el.closest('.row').dataset.slug]; const o = eo(s); const k = el.dataset.e; const v = el.type === 'checkbox' ? el.checked : +el.value;
     const out = (txt) => { const x = el.closest('.editor').querySelector(`[data-o="${k}"]`); if (x) x.textContent = txt; };
     if (k === 'speed') { o.speed = v / 100; out(`${o.speed.toFixed(2)}×`); }
@@ -3366,6 +3878,7 @@ return { enumerate, renderEntry, peaks, SR };
     else if (k === 'rev') o.rev = v;
     drawEdit(s);
   });
+  list.addEventListener('change', (e) => { const kn = e.target.closest('[data-k]'); if (kn) { previewEdit(bySlug[kn.closest('.row').dataset.slug]); return; } });
   list.addEventListener('change', (e) => { if (e.target.matches('[data-e="rev"]')) { const s = bySlug[e.target.closest('.row').dataset.slug]; eo(s).rev = e.target.checked; drawEdit(s); } });
   home.addEventListener('click', (e) => {
     const k = e.target.closest('[data-kit]'); if (k) { loadKit(k.dataset.kit); return; }
@@ -3402,7 +3915,7 @@ return { enumerate, renderEntry, peaks, SR };
     l.vol = e.target.value / 100; saveMix(); const x = live.get(slug); if (x && !l.mute) x.g.gain.setTargetAtTime(l.vol, actx.currentTime, 0.02);
   });
   let qT = 0;
-  $('#q').addEventListener('input', (e) => { clearTimeout(qT); qT = setTimeout(() => { state.q = e.target.value.trim(); state.open = null; if (state.view === 'packs' || state.view === 'seq') state.view = 'list'; if (state.q && state.sort !== 'best') { /* keep user's sort */ } render(); }, 120); });
+  $('#q').addEventListener('input', (e) => { clearTimeout(qT); qT = setTimeout(() => { state.q = e.target.value.trim(); state.open = null; if (state.view === 'packs' || state.view === 'seq' || state.view === 'video') state.view = 'list'; if (state.q && state.sort !== 'best') { /* keep user's sort */ } render(); }, 120); });
   $('#q').addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.target.value = ''; state.q = ''; render(); } if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
   document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.kind = b.dataset.kind; state.cats.clear(); state.open = null; syncSeg(); render(); });
   $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; render(); });

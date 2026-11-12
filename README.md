@@ -6,7 +6,7 @@ A free, fast, accessible library of sound effects and music. **7,305 original so
 
 `site/index.html` is a single self-contained page (no server, no build step needed to run it):
 
-- **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer, Sequencer), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
+- **Library layout:** a side menu (Discover, All sounds, Packs, Stem kits, Loops, One-shots, Your creations, Saved, Mixer, Sequencer, Video), 104 packs with cover art generated in the browser, and table-style rows with waveform, time, key and BPM. Dark by default, with a light theme.
 - **Search** with synonyms, plus filters for type, category, key and tempo. Results load 40 at a time.
 - **Cinematic score collection** (1,776 sounds): string ostinatos and pulses, legato strings, brass swells, heroic horn themes, choir, piano with strings, pizzicato, harp, tension beds and orchestral percussion, in all 12 keys at 90 and 120 BPM, plus braams, orchestral hits, swells, risers, timpani, cymbals, harp glissandos, celesta, choir and brass stabs and solo strings. Rendered with band-limited oscillators, detuned ensembles, Karplus-Strong plucked strings and a concert-hall reverb.
 - **Spooky and horror collection** (202 sounds): creaks, ghostly whispers, dread drones, jump scares, horror risers, creepy music boxes, breathing, chains, footsteps in the dark, knocks, haunted wind, ghost moans, EVP static, scrapes, tolling bells, haunted organ, reversed swells and haunted-place ambiences.
@@ -20,6 +20,12 @@ A free, fast, accessible library of sound effects and music. **7,305 original so
   - Euclidean rhythms, shift, randomize, copy/paste, duplicate, humanize, undo/redo, and live recording from keys 1–8.
   - Nine genre templates (boom bap, trap, house, techno, lo-fi, reggaeton, drum & bass, afrobeats, cinematic).
   - Save in the browser or as a `.json` file; export the mix as WAV, stems (a WAV per track), or a MIDI file for any DAW.
+- **Beat-making partner** in the sequencer:
+  - **Describe a beat** (“dusty boom bap at 88 with a lazy snare”) and Claude writes the whole pattern, with a variation and a song chain. Without Claude it starts from the closest genre template.
+  - **Make a B section** writes a variation into the next empty pattern; **Add a fill** copies the pattern with a drum fill at the end. Both chain it as `AAAB`.
+  - **Beatbox it**: record yourself (“b” kick, “k”/“pf” snare, “ts” hi-hat) after a four-click count-in, or upload a voice memo. SoundWell hears each hit, sorts it and snaps it to the grid.
+- **Make it yours (recipe knobs)**: every generated sound has Pitch, Length, Tone, Room and Drive knobs plus 🎲 New take. They change the recipe itself (oscillator pitch without changing length, envelope length, filter brightness, the random seed), so you get a new sound, not an edited copy. Save it to Your creations and use it anywhere, the sequencer included. “5 variations” on a generated sound now exports five real new takes.
+- **Sound for video**: open a clip (it never leaves your device), add sounds at any moment on a timeline, drag or nudge them frame by frame, preview in sync, and export a WAV exactly as long as the video (optionally with the video's own sound) plus a CSV cue sheet and a project file.
 - **Community patterns:** on claude.ai, share patterns to a board everyone with access can load. Sharing needs Contributor access; the owner can remove any pattern.
 - **Stem kits** (Neon Groove, Rainy Lo-fi, Epic Trailer) in all 12 keys, and a **song starter** that builds chords, bass, arpeggio, melody and drums in any key.
 - **Sound editor:** speed/pitch, reverse, trim, fades, volume, and a pack of 5 natural variations.
