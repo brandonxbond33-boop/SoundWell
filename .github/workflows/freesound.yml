@@ -3,9 +3,12 @@ name: Import Freesound recordings
 on:
   workflow_dispatch:
     inputs:
+      max_mb:
+        description: Size budget for all recordings, in MB
+        default: '215'
       max:
         description: Maximum number of recordings in the library
-        default: '900'
+        default: '1400'
   push:
     branches: [main]
     paths: [build/freesound-queries.json]
@@ -27,7 +30,8 @@ jobs:
         env:
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
           FREESOUND_MINUTES: '120'
-        run: node --no-warnings build/fetch-freesound.mjs --max "${{ github.event.inputs.max || '900' }}"
+          FREESOUND_MAX_MB: ${{ github.event.inputs.max_mb || '215' }}
+        run: node --no-warnings build/fetch-freesound.mjs --max "${{ github.event.inputs.max || '1400' }}"
       - name: Bundle recordings into sound packs
         run: node --no-warnings build/pack-sprites.mjs
       - name: Rebuild the page

@@ -1057,6 +1057,446 @@
    "n": 4,
    "minRating": 4.2,
    "minRatings": 5
+  },
+  {
+   "q": "synth stab",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth pluck",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth bass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "analog synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "moog bass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "808 bass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "reese bass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth lead",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "analog lead",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth pad",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "analog pad",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "juno synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "sh-101",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "supersaw",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "wobble bass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "acid 303",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "modular synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth brass",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth chord",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "synth arp",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "vintage synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "fm synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "prophet synth",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "ms20",
+   "cat": "Synths",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "lofi drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "dusty kick",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "vinyl snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "sp1200",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "bitcrushed drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "distorted kick",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "gritty snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "tape drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "hip hop snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "boom bap drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "crunchy hi hat",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "overdriven drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "industrial drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "trash snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "lofi hihat",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "dirty kick",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "acoustic snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "acoustic kick drum",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "floor tom",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "rack tom",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "ride cymbal",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "closed hi hat",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "open hi hat",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "rimshot",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "cross stick",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "brush snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "china cymbal",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "splash cymbal",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "drum kit one shot",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "jazz drums",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
+  },
+  {
+   "q": "ghost note snare",
+   "cat": "Drum Hits",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 4,
+   "kind": "music"
   }
  ],
  "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."
