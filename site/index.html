@@ -213,6 +213,7 @@ body:not(.can-dl) .dl { display: none !important; }
 .egrid label span { display: flex; justify-content: space-between; }
 .egrid output { font: 500 .76rem var(--f-mono); color: var(--ink); }
 .egrid input[type=range] { width: 100%; accent-color: var(--accent); }
+.recby { margin: 0 0 8px; font-size: .86rem; color: var(--muted); } .recby a { color: var(--accent); font-weight: 700; }
 .knobs { display: grid; gap: 8px; padding: 12px; margin-top: 4px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--bg)); }
 .knobs .tagline { font: 600 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-left: 6px; }
 .knobs .hint { margin: 0; font-size: .8rem; color: var(--muted); }
@@ -2111,7 +2112,7 @@ return { enumerate, renderEntry, peaks, SR };
       ${state.open === s.slug ? detailHtml(s) : ''}
     </li>`;
   }
-  function credit(s) { return `"${s.title}" by SoundWell (CC0 1.0)`; }
+  function credit(s) { return s.credit ? `"${s.title}" by ${s.credit.by} on Freesound (CC0 1.0)` : `"${s.title}" by SoundWell (CC0 1.0)`; }
   function similar(s) {
     const tagset = new Set(s.tags);
     return SOUNDS.filter((o) => o !== s && o.kind === s.kind)
@@ -2121,7 +2122,7 @@ return { enumerate, renderEntry, peaks, SR };
   function detailHtml(s) {
     const sim = similar(s);
     return `<div class="detail" id="d-${s.slug}">
-      <div><p>${esc(s.desc)}</p>${s.custom ? '' : `<p style="margin:0 0 8px;font-size:.86rem">From the pack <button class="clear" type="button" data-pack="${s.pack}">${esc(packName(s))}</button></p>`}
+      <div><p>${esc(s.desc)}</p>${s.credit ? `<p class="recby">🎙 Recorded by <a href="${esc(s.credit.url)}" target="_blank" rel="noopener">${esc(s.credit.by)}</a> on Freesound · CC0, no credit required</p>` : ''}${s.custom ? '' : `<p style="margin:0 0 8px;font-size:.86rem">From the pack <button class="clear" type="button" data-pack="${s.pack}">${esc(packName(s))}</button></p>`}
         <dl class="facts"><dt>Type</dt><dd>${s.kindLabel}</dd><dt>Length</dt><dd>${fmtDur(s.dur)}</dd>${s.bpm ? `<dt>Tempo</dt><dd>${s.bpm} BPM</dd>` : ''}${s.key ? `<dt>Key</dt><dd>${esc(s.key)}</dd>` : ''}<dt>Seamless loop</dt><dd>${s.loop ? 'Yes' : 'No'}</dd><dt>Format</dt><dd>${s.custom ? 'Your custom sound · 16-bit WAV' : s.g ? 'Generated in your browser · 16-bit WAV · 44.1 kHz' : 'MP3 · 192 kbps · 44.1 kHz'}</dd></dl>
         <div class="tags">${s.tags.map((t) => `<button type="button" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div>
         ${s.kit ? `<p style="margin:10px 0 0;font-size:.86rem">Part of the <b>${esc(kitOf(s.kit).name)}</b> stem kit (${kitOf(s.kit).bpm} BPM, ${esc(kitOf(s.kit).key)}). Every stem lines up with the others.</p>` : ''}
@@ -2224,17 +2225,17 @@ return { enumerate, renderEntry, peaks, SR };
     'hr-creak': 'Creaks and Groans', 'hr-whisper': 'Ghostly Whispers', 'hr-drone': 'Dread Drones', 'hr-scare': 'Jump Scares', 'hr-riser': 'Horror Risers', 'hr-musicbox': 'Creepy Music Boxes', 'hr-breath': 'Breathing in the Dark',
     'hr-chains': 'Chains', 'hr-approach': 'Footsteps in the Dark', 'hr-knock': 'Knocks in an Empty House', 'hr-wind': 'Haunted Wind', 'hr-ghost': 'Ghost Moans and Wails', 'hr-evp': 'EVP and Spirit Box', 'hr-scrape': 'Scrapes and Scratches',
     'hr-bell': 'Tolling Bells', 'hr-organ': 'Haunted Organ', 'hr-reverse': 'Reversed and Unsettling', 'hr-place': 'Haunted Places' };
-  const packIdOf = (s) => (s.custom ? 'mine' : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+  const packIdOf = (s) => (s.custom ? 'mine' : s.credit ? 'rec-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
   for (const s of SOUNDS) s.pack = packIdOf(s);
   const PACKS = new Map();
   for (const s of SOUNDS) {
     if (s.custom) continue;
     let p = PACKS.get(s.pack);
-    if (!p) { p = { id: s.pack, name: s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
+    if (!p) { p = { id: s.pack, name: s.credit ? `Real ${s.cat} Recordings` : s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
     p.count++; for (const t of s.tags.slice(0, 6)) p.tags.set(t, (p.tags.get(t) || 0) + 1);
   }
   for (const p of PACKS.values()) { p.top = [...p.tags.entries()].sort((a, b) => b[1] - a[1]).map((x) => x[0]).filter((t) => t !== 'loop').slice(0, 4); p.desc = `${p.count.toLocaleString('en-US')} ${p.kind === 'music' ? 'music loops and one-shots' : 'sound effects'} in ${p.cat}. ${p.top.length ? 'Tagged ' + p.top.join(', ') + '.' : ''}`; }
-  const FEATURED = ['chords', 'drumloop', 'kitstem', 'magic', 'rain', 'laser', 'drumhit', 'padtex', 'gunshot', 'birds', 'hud', 'toon', 'whoosh', 'melody'].filter((id) => PACKS.has(id));
+  const FEATURED = ['rec-ambience-layers', 'rec-foley', 'rec-nature', 'rec-animals', 'chords', 'drumloop', 'kitstem', 'magic', 'rain', 'laser', 'drumhit', 'padtex', 'gunshot', 'birds', 'hud', 'toon', 'whoosh', 'melody'].filter((id) => PACKS.has(id));
   const SCORE_FEATURED = ['sc-legato', 'sc-ostinato', 'sc-braam', 'sc-horns', 'sc-choir', 'sc-perc', 'sc-hit', 'sc-piano', 'sc-harp', 'sc-tension', 'sc-swell', 'sc-timpani'].filter((id) => PACKS.has(id));
   const SPOOKY_FEATURED = ['hr-scare', 'hr-place', 'hr-whisper', 'hr-creak', 'hr-musicbox', 'hr-ghost', 'hr-drone', 'hr-organ', 'hr-approach', 'hr-evp', 'hr-chains', 'hr-wind'].filter((id) => PACKS.has(id));
   const packName = (s) => (s.custom ? 'Your Creations' : PACKS.get(s.pack)?.name || s.cat);

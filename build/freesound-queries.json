@@ -1,0 +1,23 @@
+{
+  "perQuery": 7,
+  "minRating": 4,
+  "minRatings": 4,
+  "queries": [
+    { "q": "footsteps wood", "cat": "Foley" }, { "q": "footsteps gravel", "cat": "Foley" }, { "q": "footsteps snow", "cat": "Foley" },
+    { "q": "door close", "cat": "Household" }, { "q": "door creak", "cat": "Household" }, { "q": "keys", "cat": "Foley" },
+    { "q": "cloth rustle", "cat": "Foley" }, { "q": "paper", "cat": "Foley" }, { "q": "glass break", "cat": "Impacts" },
+    { "q": "punch", "cat": "Impacts" }, { "q": "body fall", "cat": "Impacts" }, { "q": "metal impact", "cat": "Impacts" },
+    { "q": "wood impact", "cat": "Impacts" }, { "q": "whoosh", "cat": "Transitions" }, { "q": "swoosh", "cat": "Transitions" },
+    { "q": "rain", "cat": "Weather", "bed": true }, { "q": "thunder", "cat": "Weather" }, { "q": "wind", "cat": "Weather", "bed": true },
+    { "q": "ocean waves", "cat": "Nature", "bed": true }, { "q": "forest birds", "cat": "Nature", "bed": true }, { "q": "stream water", "cat": "Nature", "bed": true },
+    { "q": "fire crackling", "cat": "Nature", "bed": true }, { "q": "night crickets", "cat": "Nature", "bed": true },
+    { "q": "city street ambience", "cat": "Ambience Layers", "bed": true }, { "q": "cafe restaurant ambience", "cat": "Ambience Layers", "bed": true }, { "q": "crowd", "cat": "Ambience Layers", "bed": true },
+    { "q": "dog bark", "cat": "Animals" }, { "q": "cat meow", "cat": "Animals" }, { "q": "horse", "cat": "Animals" }, { "q": "rooster", "cat": "Animals" }, { "q": "frog", "cat": "Animals" },
+    { "q": "car engine", "cat": "Vehicles" }, { "q": "car pass by", "cat": "Vehicles" }, { "q": "train", "cat": "Vehicles" }, { "q": "airplane", "cat": "Vehicles" },
+    { "q": "gunshot", "cat": "Weapons" }, { "q": "sword", "cat": "Weapons" }, { "q": "explosion", "cat": "Impacts" },
+    { "q": "applause", "cat": "Human" }, { "q": "laugh", "cat": "Human" }, { "q": "breath", "cat": "Human" },
+    { "q": "kitchen cooking", "cat": "Household" }, { "q": "water pour", "cat": "Household" },
+    { "q": "button click", "cat": "Interface" }, { "q": "notification", "cat": "Interface" },
+    { "q": "creepy", "cat": "Horror" }, { "q": "church bell", "cat": "Nature" }
+  ]
+}

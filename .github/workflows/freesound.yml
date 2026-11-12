@@ -1,0 +1,40 @@
+name: Import Freesound recordings
+# Runs when build/freesound-queries.json changes, or by hand from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: Maximum number of recordings in the library
+        default: '300'
+  push:
+    branches: [main]
+    paths: [build/freesound-queries.json]
+permissions:
+  contents: write
+concurrency: freesound
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Fetch and process sounds
+        env:
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+        run: node --no-warnings build/fetch-freesound.mjs --max "${{ github.event.inputs.max || '300' }}"
+      - name: Rebuild the page
+        run: node build/build-page.cjs build site/index.html
+      - name: Commit
+        run: |
+          git config user.name "soundwell-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add build/freesound.json site/media site/index.html
+          git diff --cached --quiet && echo "Nothing new" && exit 0
+          git commit -m "Import Freesound CC0 recordings"
+          git pull --rebase origin main
+          git push origin HEAD:main
