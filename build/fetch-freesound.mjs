@@ -14,7 +14,7 @@ const OUT = 'build/freesound.json'; const MEDIA = 'site/media';
 const MAX = Number(process.argv[process.argv.indexOf('--max') + 1]) || 300;
 const DEADLINE = Date.now() + (Number(process.env.FREESOUND_MINUTES) || 40) * 60000; // stop early and keep what we have; the next run continues
 const lib = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : { sounds: [] };
-const have = new Set(lib.sounds.map((s) => s.fsid));
+const have = new Set([...lib.sounds.map((s) => s.fsid), ...(lib.blocked || [])]); // blocked: removed by hand, never re-import
 const SR = 44100; const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let calls = 0;
 async function api(path, params) {

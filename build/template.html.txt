@@ -2225,13 +2225,14 @@ return { enumerate, renderEntry, peaks, SR };
     'hr-creak': 'Creaks and Groans', 'hr-whisper': 'Ghostly Whispers', 'hr-drone': 'Dread Drones', 'hr-scare': 'Jump Scares', 'hr-riser': 'Horror Risers', 'hr-musicbox': 'Creepy Music Boxes', 'hr-breath': 'Breathing in the Dark',
     'hr-chains': 'Chains', 'hr-approach': 'Footsteps in the Dark', 'hr-knock': 'Knocks in an Empty House', 'hr-wind': 'Haunted Wind', 'hr-ghost': 'Ghost Moans and Wails', 'hr-evp': 'EVP and Spirit Box', 'hr-scrape': 'Scrapes and Scratches',
     'hr-bell': 'Tolling Bells', 'hr-organ': 'Haunted Organ', 'hr-reverse': 'Reversed and Unsettling', 'hr-place': 'Haunted Places' };
-  const packIdOf = (s) => (s.custom ? 'mine' : s.credit ? 'rec-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+  const recCount = {}; for (const s of SOUNDS) if (s.credit) recCount[s.cat] = (recCount[s.cat] || 0) + 1;
+  const packIdOf = (s) => (s.custom ? 'mine' : s.credit ? (recCount[s.cat] >= 5 ? 'rec-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'rec-more') : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
   for (const s of SOUNDS) s.pack = packIdOf(s);
   const PACKS = new Map();
   for (const s of SOUNDS) {
     if (s.custom) continue;
     let p = PACKS.get(s.pack);
-    if (!p) { p = { id: s.pack, name: s.credit ? `Real ${s.cat} Recordings` : s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
+    if (!p) { p = { id: s.pack, name: s.credit ? (s.pack === 'rec-more' ? 'More Real Recordings' : `Real ${({ 'Ambience Layers': 'Ambience' })[s.cat] || s.cat} Recordings`) : s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
     p.count++; for (const t of s.tags.slice(0, 6)) p.tags.set(t, (p.tags.get(t) || 0) + 1);
   }
   for (const p of PACKS.values()) { p.top = [...p.tags.entries()].sort((a, b) => b[1] - a[1]).map((x) => x[0]).filter((t) => t !== 'loop').slice(0, 4); p.desc = `${p.count.toLocaleString('en-US')} ${p.kind === 'music' ? 'music loops and one-shots' : 'sound effects'} in ${p.cat}. ${p.top.length ? 'Tagged ' + p.top.join(', ') + '.' : ''}`; }
