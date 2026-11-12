@@ -474,7 +474,7 @@ body.seqmode .seq { padding-bottom: 84px; }
 .trk .tctl input[type=range] { width: 64px; accent-color: var(--accent); }
 .trk .tctl select { width: 52px; padding: 3px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font: 500 .74rem var(--f-mono); }
 .steps { display: grid; grid-auto-flow: column; grid-auto-columns: 30px; gap: 4px; }
-.steps button { width: 30px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); padding: 0; position: relative; overflow: hidden; font: 800 .66rem var(--f-mono); color: var(--ink); }
+.steps button { touch-action: pan-y; -webkit-user-select: none; user-select: none; width: 30px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); padding: 0; position: relative; overflow: hidden; font: 800 .66rem var(--f-mono); color: var(--ink); }
 .steps button:nth-child(4n+1) { border-color: color-mix(in srgb, var(--muted) 45%, var(--line)); }
 .steps button[data-v="x"] { background: color-mix(in srgb, var(--accent) 55%, var(--panel2)); border-color: var(--accent); }
 .steps button[data-v="X"] { background: var(--grad); border-color: var(--accent2); box-shadow: 0 0 10px -2px var(--accent2); color: #fff; }
@@ -532,7 +532,7 @@ body.seqmode .seq { padding-bottom: 84px; }
   .seqgrid { overflow-x: visible; gap: 10px; }
   .trk { grid-template-columns: minmax(0, 1fr) auto auto; min-width: 0; row-gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
   .trk .tctl.vol { display: none; } .trk .tname kbd { display: none; }
-  .trk .steps { grid-column: 1 / -1; grid-row: 2; grid-auto-columns: minmax(18px, 1fr); gap: 3px; overflow-x: auto; padding: 3px 2px; }
+  .trk .steps { grid-column: 1 / -1; grid-row: 2; grid-auto-flow: row; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; padding: 3px 2px; }
   .steps button { width: auto; height: 40px; } .steps.lanemode button { height: 60px; }
   .seqdock .dbpm { display: none; }
   .seqbar input#seq-title { width: 100%; } .seqbar .songctl, .seqbar .pos { margin-left: 0; }
@@ -2742,7 +2742,7 @@ return { enumerate, renderEntry, peaks, SR };
   const CONDS = ['', '1:2', '2:2', '1:4', '2:4', '3:4', '4:4', 'fill', '!fill', 'first', '!first'];
   const condLabel = (c) => ({ '': 'Always', fill: 'Fill', '!fill': 'No fill', first: '1st', '!first': 'Not 1st' })[c] ?? c;
   const LANES = {
-    steps: { name: 'Steps', help: 'Tap a step once for a hit, twice for an accent, three times to clear.' },
+    steps: { name: 'Steps', help: 'Tap a step for a hit, again for an accent, again to clear. Drag across a row to add many hits at once; start a drag on a hit to erase.' },
     vel: { name: 'Velocity', min: 5, max: 100, step: 5, help: 'Drag up or down on a step to set how hard it hits.', fmt: (v) => v + '%' },
     chance: { name: 'Chance', min: 0, max: 100, step: 5, def: 100, help: 'Drag to set the odds a step plays each time round. Keeps loops from sounding stiff.', fmt: (v) => v + '%' },
     cond: { name: 'Condition', help: 'Tap to cycle: 1:2 plays on the first of every 2 loops, 2:4 on the second of every 4, Fill only while Fill is on, 1st only on the first loop.' },
@@ -3217,7 +3217,7 @@ return { enumerate, renderEntry, peaks, SR };
     const st = e.target.closest('[data-step]');
     if (st) {
       const [t] = trackOf(st); const k = +st.dataset.step; const L = laneOf(t); const lane = SEQ.lane;
-      if (lane === 'steps') { snapSoon(); const nxt = { '.': 'x', x: 'X', X: '.' }[L.s[k]]; L.s = L.s.slice(0, k) + nxt + L.s.slice(k + 1); if (nxt === '.') delete L.p[k]; seqCell(st, t, k); seqPersist(); if (nxt !== '.' && !SEQ.playing) audition(t, (L.p[k] || {}).tune || 0, nxt === 'X' ? 1 : 0.62); return; }
+      if (lane === 'steps') { if (e.detail === 0) stepCycle(st, t, k); return; }
       if (L.s[k] === '.') { toast('Turn the step on in the Steps view first.'); return; }
       if (lane === 'cond') { snapSoon(); const i = CONDS.indexOf(laneVal(t, k, 'cond')); setLane(t, k, 'cond', CONDS[(i + (e.shiftKey ? -1 : 1) + CONDS.length) % CONDS.length]); seqCell(st, t, k); seqPersist(); return; }
       if (e.detail === 0) { snapSoon(); const d = LANES[lane]; let v = laneVal(t, k, lane) + d.step * (lane === 'rep' ? 1 : 4); if (v > d.max) v = d.min; setLane(t, k, lane, v); seqCell(st, t, k); seqPersist(); }
@@ -3261,6 +3261,30 @@ return { enumerate, renderEntry, peaks, SR };
     else if (a === 'loadmine') { const p2 = cleanPattern(store.get(SEQ_SAVED_KEY, [])[+b.dataset.i]); if (p2) seqLoadPattern(p2, `Loaded “${p2.title}”`); }
     else if (a === 'delmine') { const list = store.get(SEQ_SAVED_KEY, []); list.splice(+b.dataset.i, 1); store.set(SEQ_SAVED_KEY, list); renderSeq(); }
   });
+  // Steps view: a tap cycles off → hit → accent → off; dragging across a row paints hits (or erases, if the drag starts on a hit).
+  function stepCycle(btn, t, k) { snapSoon(); const L = laneOf(t); const nxt = { '.': 'x', x: 'X', X: '.' }[L.s[k]]; L.s = L.s.slice(0, k) + nxt + L.s.slice(k + 1); if (nxt === '.') delete L.p[k]; seqCell(btn, t, k); seqPersist(); if (nxt !== '.' && !SEQ.playing) audition(t, (L.p[k] || {}).tune || 0, nxt === 'X' ? 1 : 0.62); }
+  let stepPaint = null;
+  function paintCell(btn) {
+    const t = pat.tracks[stepPaint.ti]; const k = +btn.dataset.step; if (stepPaint.done.has(k)) return; stepPaint.done.add(k); const L = laneOf(t); const c = L.s[k];
+    if (stepPaint.on && c === '.') { L.s = L.s.slice(0, k) + 'x' + L.s.slice(k + 1); if (!SEQ.playing) audition(t, 0, 0.62); }
+    else if (!stepPaint.on && c !== '.') { L.s = L.s.slice(0, k) + '.' + L.s.slice(k + 1); delete L.p[k]; } else return;
+    seqCell(btn, t, k);
+  }
+  seqview.addEventListener('pointerdown', (e) => {
+    const btn = e.target.closest('.steps:not(.lanemode) [data-step]'); if (!btn || e.button) return; if (e.pointerType === 'mouse') e.preventDefault();
+    const [t, ti] = trackOf(btn); stepPaint = { ti, first: btn, on: laneOf(t).s[+btn.dataset.step] === '.', done: new Set(), moved: false, id: e.pointerId };
+    try { btn.releasePointerCapture(e.pointerId); } catch {}
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!stepPaint || e.pointerId !== stepPaint.id) return;
+    // follow the finger along the row it started on, even if it drifts up or down a little
+    let el = null, best = Infinity; for (const b of stepPaint.first.parentElement.children) { const r = b.getBoundingClientRect(); if (e.clientX < r.left - 2 || e.clientX > r.right + 2) continue; const d = Math.abs(r.top + r.height / 2 - e.clientY); if (d < best) { best = d; el = b; } }
+    if (!el || el === stepPaint.first && !stepPaint.moved) return;
+    if (!stepPaint.moved) { stepPaint.moved = true; snap(); paintCell(stepPaint.first); } paintCell(el);
+  });
+  const paintEnd = (e) => { if (!stepPaint || e.pointerId !== stepPaint.id) return; const p2 = stepPaint; stepPaint = null;
+    if (p2.moved) { seqPersist(); return; } if (e.type === 'pointerup') { const [t] = trackOf(p2.first); if (t) stepCycle(p2.first, t, +p2.first.dataset.step); } };
+  window.addEventListener('pointerup', paintEnd); window.addEventListener('pointercancel', paintEnd);
   // drag on a step to draw velocity, chance, repeat, nudge or pitch (paints across steps)
   let laneDrag = null;
   const laneAt = (x, y) => { const el = document.elementFromPoint(x, y)?.closest('#seqview .steps.lanemode [data-step]'); return el || null; };
