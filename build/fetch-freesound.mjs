@@ -12,6 +12,7 @@ const API = process.env.FREESOUND_API_BASE || 'https://freesound.org/apiv2';
 const CFG = JSON.parse(readFileSync('build/freesound-queries.json', 'utf8'));
 const OUT = 'build/freesound.json'; const MEDIA = 'site/media';
 const MAX = Number(process.argv[process.argv.indexOf('--max') + 1]) || 300;
+const DEADLINE = Date.now() + (Number(process.env.FREESOUND_MINUTES) || 40) * 60000; // stop early and keep what we have; the next run continues
 const lib = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : { sounds: [] };
 const have = new Set(lib.sounds.map((s) => s.fsid));
 const SR = 44100; const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -20,7 +21,7 @@ async function api(path, params) {
   const url = new URL(API + path); for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   for (let tries = 0; tries < 4; tries++) {
     if (calls++) await sleep(1100); // stay under 60 requests a minute
-    const res = await fetch(url, { headers: { Authorization: `Token ${KEY}` } });
+    const res = await fetch(url, { headers: { Authorization: `Token ${KEY}` }, signal: AbortSignal.timeout(60000) });
     if (res.status === 429) { await sleep(15000); continue; }
     if (!res.ok) throw new Error(`Freesound ${res.status} for ${url.pathname}: ${(await res.text()).slice(0, 200)}`);
     return res.json();
@@ -62,20 +63,20 @@ function encode(l, r, file) {
 const titles = new Map(); for (const s of lib.sounds) titles.set(s.title, (titles.get(s.title) || 0) + 1);
 let added = 0; const report = { searched: 0, rejected: {} };
 for (const { q, cat, bed = false, n } of CFG.queries) {
-  if (lib.sounds.length >= MAX) break;
+  if (lib.sounds.length >= MAX || Date.now() > DEADLINE) break;
   const want = n || CFG.perQuery; let got = lib.sounds.filter((s) => s.query === q).length; if (got >= want) continue;
   const data = await api('/search/text/', {
     query: q, page_size: 60, sort: 'downloads_desc',
-    filter: `license:"Creative Commons 0" duration:[0.15 TO ${bed ? 300 : 20}] avg_rating:[${CFG.minRating} TO *] num_ratings:[${CFG.minRatings} TO *] samplerate:[44100 TO *]`,
+    filter: `license:"Creative Commons 0" duration:[0.15 TO ${bed ? 90 : 20}] avg_rating:[${CFG.minRating} TO *] num_ratings:[${CFG.minRatings} TO *] samplerate:[44100 TO *]`,
     fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews',
   }); report.searched++;
   const perUser = new Map();
   for (const s of data.results) {
-    if (got >= want || lib.sounds.length >= MAX) break;
+    if (got >= want || lib.sounds.length >= MAX || Date.now() > DEADLINE) break;
     if (have.has(s.id) || !/publicdomain\/zero/.test(s.license)) continue;
     if ((perUser.get(s.username) || 0) >= 2) continue;
     const pre = s.previews?.['preview-hq-ogg'] || s.previews?.['preview-hq-mp3']; if (!pre) continue;
-    const res = await fetch(pre); if (!res.ok) continue;
+    let res; try { res = await fetch(pre, { signal: AbortSignal.timeout(60000) }); } catch { continue; } if (!res.ok) continue;
     const pcm = decode(Buffer.from(await res.arrayBuffer())); if (!pcm) { report.rejected['undecodable'] = (report.rejected['undecodable'] || 0) + 1; continue; }
     const out = processAudio(pcm, bed); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
     const tags = [...new Set((s.tags || []).map((t) => t.toLowerCase().replace(/[-_]/g, ' ')).filter((t) => t.length > 2 && !/\d/.test(t) && !JUNK1.test(t)))].slice(0, 10);
@@ -87,6 +88,7 @@ for (const { q, cat, bed = false, n } of CFG.queries) {
       dur: Math.round(out.l.length / SR * 100) / 100, n: out.l.length, kit: '', stem: '', layer: false, peaks: peaks(mid).filter((_, i) => i % 2 === 0),
       credit: { by: s.username, url: s.url, license: 'CC0', source: 'Freesound' }, fsid: s.id, query: q, rating: Math.round(s.avg_rating * 10) / 10 });
     have.add(s.id); perUser.set(s.username, (perUser.get(s.username) || 0) + 1); got++; added++;
+    writeFileSync(OUT, JSON.stringify(lib, null, 1));
     console.log(`+ ${title}  (${cat}, by ${s.username}, ★${s.avg_rating.toFixed(1)})`);
   }
 }
