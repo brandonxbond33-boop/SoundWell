@@ -1497,6 +1497,174 @@
    "minRating": 4.0,
    "minRatings": 4,
    "kind": "music"
+  },
+  {
+   "q": "microwave",
+   "cat": "Household",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "blender",
+   "cat": "Household",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "kettle",
+   "cat": "Household",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "toaster",
+   "cat": "Household",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "hair dryer",
+   "cat": "Household",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "hail",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "rain on roof",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "rain on window",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "light rain",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "heavy rain",
+   "cat": "Weather",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "frog chorus",
+   "cat": "Animals",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "whale",
+   "cat": "Animals",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "bird song",
+   "cat": "Animals",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "songbird",
+   "cat": "Animals",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "train horn",
+   "cat": "Vehicles",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "truck horn",
+   "cat": "Vehicles",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "car idle",
+   "cat": "Vehicles",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "motorbike pass by",
+   "cat": "Vehicles",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "gun cocking",
+   "cat": "Weapons",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "shell casings",
+   "cat": "Weapons",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "rifle shot",
+   "cat": "Weapons",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5
+  },
+  {
+   "q": "city night",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
+  },
+  {
+   "q": "suburb ambience",
+   "cat": "Ambience Layers",
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 5,
+   "bed": true
   }
  ],
  "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."

@@ -1999,7 +1999,13 @@ return { enumerate, renderEntry, peaks, SR };
   const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
   const PROC = SoundwellEngine().enumerate();
   PROC.forEach((e, i) => { e.slug = `${e.g}-${Object.values(e.p).join('-')}`.toLowerCase(); e.n = DATA.proc.n[i]; e.dur = Math.round(e.n / 441) / 100; e.peaks = []; for (let k = 0; k < 40; k++) e.peaks.push(Math.round(B64.indexOf(DATA.proc.pk[i * 40 + k]) / 63 * 100)); e.mood = e.mood || ''; e.key = e.key || ''; e.bpm = e.bpm || 0; e.kit = e.kit || ''; e.stem = e.stem || ''; });
-  const SOUNDS = [...DATA.sounds, ...PROC];
+  // Generated families that imitate real-world sounds are retired now that real recordings cover them: hidden from
+  // browsing, search and packs, but still playable wherever a saved beat, mix or creation already uses them.
+  const RETIRED = new Set(['steps', 'knock', 'typing', 'clock', 'phonering', 'doorbell', 'alarmclock', 'appliance', 'drip', 'rain', 'wind', 'ocean', 'night', 'birds', 'fire', 'stream', 'crowd',
+    'frog', 'buzz', 'owl', 'howl', 'whale', 'engine', 'passby', 'horn', 'thunder', 'hail', 'gunshot', 'reload', 'glass']);
+  for (const e of PROC) if (RETIRED.has(e.g)) e.retired = true;
+  const ALL_SOUNDS = [...DATA.sounds, ...PROC];
+  const SOUNDS = ALL_SOUNDS.filter((s) => !s.retired);
   const $ = (s, r = document) => r.querySelector(s);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const fmt = (sec) => { sec = Math.max(0, sec || 0); const m = Math.floor(sec / 60); const s = Math.floor(sec % 60); return `${m}:${String(s).padStart(2, '0')}`; };
@@ -2016,11 +2022,12 @@ return { enumerate, renderEntry, peaks, SR };
     football: ['sports', 'stadium', 'referee'], ghost: ['ghostly', 'haunted', 'spirit'], ghosts: ['ghost', 'haunted'], haunted: ['horror', 'spooky', 'ghost'], halloween: ['spooky', 'horror', 'haunted'], creepy: ['horror', 'spooky'], jumpscare: ['jump scare', 'stinger'], zombie: ['horror', 'moan'], paranormal: ['evp', 'ghost', 'spirit'], orchestral: ['score', 'orchestra'], orchestra: ['orchestral', 'score'], cinematic: ['score', 'orchestral', 'trailer'], film: ['score', 'cinematic'], movie: ['score', 'cinematic'], trailer: ['cinematic', 'braam', 'epic'], strings: ['string', 'violin', 'cello'], violin: ['strings'], stem: ['stems', 'kit'], stems: ['stem', 'kit'], magic: ['fantasy', 'spell'], fantasy: ['magic'], sport: ['sports'], win: ['victory', 'success', 'fanfare'], lose: ['fail', 'game over', 'sad'],
     funny: ['cartoon', 'comedy'], car: ['vehicle', 'engine'], storm: ['thunder', 'rain'], alert: ['alarm', 'notification'], notification: ['alert', 'ping'] };
   const words = (s) => String(s).toLowerCase().replace(/\b([a-g])#/g, '$1sharp').replace(/\b([a-g])b\b/g, '$1flat').normalize('NFKD').replace(/[̀-ͯ]/g, '').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
-  for (const s of SOUNDS) {
+  for (const s of ALL_SOUNDS) {
     s.ix = { title: words(s.title), tags: s.tags.flatMap(words), cat: words(s.cat), mood: words(s.mood), desc: words(s.desc) };
     s.kindLabel = s.kind === 'music' ? 'Music' : 'Sound effect';
   }
   const WEIGHT = { title: 10, tags: 6, cat: 5, mood: 3, desc: 1 };
+  const DESIGNED = new Set(['Sci-Fi', 'Game', 'Interface', 'Synths', 'Cartoon', 'Fantasy', 'Transitions', 'Cinematic']);
   function score(s, toks) {
     let total = 0;
     for (const t of toks) {
@@ -2037,12 +2044,13 @@ return { enumerate, renderEntry, peaks, SR };
       if (!best) return 0;
       total += best;
     }
-    return total;
+    return s.credit && !DESIGNED.has(s.cat) ? total * 1.15 : total; // real recordings rank first for real-world sounds; designed categories stay neutral
   }
 
   // ---------- state ----------
   const state = { q: '', kind: 'all', cats: new Set(), loops: false, saved: false, sort: 'best', open: null, edit: null, key: '', bpm: 0, pack: '', view: 'list', browse: false, nav: 'discover' };
-  let saved = new Set(store.get('saved', []));
+  const canon = (slug) => (DATA.alias && DATA.alias[slug]) || slug; // retired early sounds → the recording that replaced them
+  let saved = new Set(store.get('saved', []).map(canon));
   let results = [];
 
   function filtered({ ignoreCats = false } = {}) {
@@ -2217,7 +2225,8 @@ return { enumerate, renderEntry, peaks, SR };
     }
   }
   function drawAll() { for (const c of list.querySelectorAll('canvas.wave')) { const s = bySlug[c.closest('.row').dataset.slug]; draw(c, s, cur === s ? progressOf() : 0); } }
-  const bySlug = Object.fromEntries(SOUNDS.map((s) => [s.slug, s]));
+  const bySlug = Object.fromEntries(ALL_SOUNDS.map((s) => [s.slug, s]));
+  for (const [old, now] of Object.entries(DATA.alias || {})) if (!bySlug[old] && bySlug[now]) bySlug[old] = bySlug[now];
   // ---------- packs ----------
   const PACK_NAMES = { laser: 'Laser Arsenal', pickup: 'Pixel Pickups', jump: 'Platform Jumps', bitboom: '8-Bit Blasts', click: 'Interface Clicks', chime: 'Notification Chimes', deny: 'Error Tones', whoosh: 'Whoosh Library', riser: 'Risers', boom: 'Cinematic Impacts', punch: 'Fight Hits', strike: 'Metal Strikes', steps: 'Footsteps', knock: 'Door Knocks', drip: 'Water Drops', toon: 'Cartoon Classics', siren: 'Alarms and Sirens', beep: 'Beeps and Timers', bell: 'Tuned Bells', bleep: 'Computer Bleeps', magic: 'Spellbook', stinger: 'Horror Stingers', heart: 'Heartbeats', typing: 'Typing', glass: 'Glass Breaks', coins: 'Coins and Treasure', rain: 'Rain Layers', wind: 'Wind Layers', ocean: 'Ocean Layers', night: 'Night Insects', birds: 'Birdsong', fire: 'Fire Layers', stream: 'Rivers and Streams', crowd: 'Crowds', drone: 'Drones', roomtone: 'Room Tones', clock: 'Clocks', drumloop: 'Drum Loops', chords: 'Chord Loops', bass: 'Bass Loops', arp: 'Arpeggios', melody: 'Melodies', kitstem: 'Stem Kits in Every Key', sting: 'Musical Stings', gunshot: 'Gunshots', reload: 'Reloads', blade: 'Blades', frog: 'Frogs', buzz: 'Buzzing Insects', owl: 'Owls', howl: 'Wolf Howls', whale: 'Whale Song', engine: 'Engines', passby: 'Pass-Bys', horn: 'Horns', flyby: 'Spaceship Flybys', thunder: 'Thunder', hail: 'Hail', hud: 'HUD Interface', servo: 'Servos', power: 'Power Up and Down', forcefield: 'Force Fields', bonk: 'Cartoon Bonks', phonering: 'Phone Rings', doorbell: 'Doorbells', alarmclock: 'Alarm Clocks', appliance: 'Appliance Hums', toggle: 'Toggles', swipe: 'Swipes', downlifter: 'Downlifters', drumhit: 'Drum Hits', note808: '808 Notes', notebass: 'Bass Notes', notepiano: 'Piano Notes', notepluck: 'Pluck Notes', stab: 'Chord Stabs', padtex: 'Pad Textures', 'sc-ostinato': 'String Ostinatos', 'sc-pulse': 'Low String Pulses', 'sc-legato': 'Legato Strings', 'sc-brass': 'Brass Swells', 'sc-horns': 'Heroic Horn Themes', 'sc-choir': 'Choir Pads',
     'sc-piano': 'Piano and Strings', 'sc-pizz': 'Pizzicato Loops', 'sc-harp': 'Harp Arpeggios', 'sc-tension': 'Tension Beds', 'sc-perc': 'Orchestral Percussion', 'sc-braam': 'Braams', 'sc-hit': 'Orchestral Hits', 'sc-swell': 'String Swells',
@@ -2227,7 +2236,7 @@ return { enumerate, renderEntry, peaks, SR };
     'hr-bell': 'Tolling Bells', 'hr-organ': 'Haunted Organ', 'hr-reverse': 'Reversed and Unsettling', 'hr-place': 'Haunted Places' };
   const recCount = {}; for (const s of SOUNDS) if (s.credit) recCount[s.cat] = (recCount[s.cat] || 0) + 1;
   const packIdOf = (s) => (s.custom ? 'mine' : s.credit ? (recCount[s.cat] >= 5 ? 'rec-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'rec-more') : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
-  for (const s of SOUNDS) s.pack = packIdOf(s);
+  for (const s of ALL_SOUNDS) s.pack = packIdOf(s);
   const PACKS = new Map();
   for (const s of SOUNDS) {
     if (s.custom) continue;
@@ -2561,7 +2570,7 @@ return { enumerate, renderEntry, peaks, SR };
   }
 
   // ---------- mixer ----------
-  let mix = store.get('mix', []).filter((l) => bySlug[l.slug]);
+  let mix = store.get('mix', []).map((l) => ({ ...l, slug: canon(l.slug) })).filter((l) => bySlug[l.slug]);
   let mixVol = store.get('mixvol', 0.85); $('#mixvol').value = Math.round(mixVol * 100);
   let mixOn = false, mixT0 = 0; const live = new Map();
   const saveMix = () => store.set('mix', mix);
@@ -2975,7 +2984,7 @@ return { enumerate, renderEntry, peaks, SR };
       }
       return { s, p: pp };
     };
-    const tracks = (Array.isArray(p.tracks) ? p.tracks : []).slice(0, SEQ_MAX_TRACKS).filter((t) => t && typeof t.slug === 'string' && bySlug[t.slug] && (allowCustom || !bySlug[t.slug].custom)).map((t) => {
+    const tracks = (Array.isArray(p.tracks) ? p.tracks : []).slice(0, SEQ_MAX_TRACKS).map((t) => (t && typeof t.slug === 'string' ? { ...t, slug: canon(t.slug) } : t)).filter((t) => t && typeof t.slug === 'string' && bySlug[t.slug] && (allowCustom || !bySlug[t.slug].custom)).map((t) => {
       const pats = {}; if (t.pats && typeof t.pats === 'object') { for (const b of BANKS) if (t.pats[b]) pats[b] = cleanSteps(t.pats[b]); } else pats.A = cleanSteps({ s: t.pat });
       return { slug: t.slug, vol: Math.min(1, Math.max(0, Number.isFinite(Number(t.vol)) && t.vol !== '' && t.vol != null ? Number(t.vol) : 0.8)), pitch: num(t.pitch, -12, 12, 0), pan: num(t.pan, -100, 100, 0), tone: num(t.tone, -100, 100, 0),
         send: num(t.send, 0, 100, 0), choke: num(t.choke, 0, 2, 0), len: num(t.len, 1, steps, steps), mute: !!t.mute, solo: !!t.solo, pats };
@@ -3876,7 +3885,7 @@ Reply with JSON only: {"tracks":[{"i":0,"s":"exactly ${n} characters","params":[
 
   // ---------- game audio: engine-ready packs, and a procedural runtime that ships recipes instead of audio ----------
   const GAME_KEY = 'game-pack';
-  const GAME = { name: store.get('game-pack-name', 'my-game-sounds'), items: (store.get(GAME_KEY, []) || []).filter((x) => x && bySlug[x.slug]), picker: false, busy: false };
+  const GAME = { name: store.get('game-pack-name', 'my-game-sounds'), items: (store.get(GAME_KEY, []) || []).map((x) => (x && x.slug ? { ...x, slug: canon(x.slug) } : x)).filter((x) => x && bySlug[x.slug]), picker: false, busy: false };
   const gameSave = () => { store.set(GAME_KEY, GAME.items); store.set('game-pack-name', GAME.name); };
   const gameId = (t) => t.toLowerCase().replace(/·/g, ' ').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'sound';
   /** The recipe behind a sound, if it can run in the procedural runtime (generated sounds, and creations made from them). */

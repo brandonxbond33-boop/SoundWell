@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 
 const SR = 44100; const GAP = 0.25; const MAX_BYTES = 3.8e6; const MAX_SOUNDS = 60; const KBPS = 192;
-const lib = JSON.parse(readFileSync('build/freesound.json', 'utf8')).sounds;
+const lib = JSON.parse(readFileSync('build/freesound.json', 'utf8')).sounds.filter((s) => !s.loop); // seamless loops stay as their own files
 const OUT = 'build/sprites.json';
 const state = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : { sprites: {}, map: {} };
 mkdirSync('site/media/sp', { recursive: true });
