@@ -2458,7 +2458,7 @@ return { enumerate, renderEntry, peaks, SR };
     end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cdSize, true); end.setUint32(16, off, true);
     return new Blob([...parts, ...central, new Uint8Array(end.buffer)]);
   }
-  const fname = (s) => (s.custom ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : '') || s.slug;
+  const fname = (s) => (s.custom || s.credit ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : '') || s.slug;
   async function download(s) {
     if (!dlCap) { toast('Downloads aren’t available in this view.'); return; }
     try {
@@ -3205,7 +3205,7 @@ return { enumerate, renderEntry, peaks, SR };
         <select id="seq-reps" aria-label="Length">${pat.song ? '<option value="1">Song once</option><option value="2" selected>Song twice</option>' : '<option value="1">1 pass</option><option value="2" selected>2 passes</option><option value="4">4 passes</option><option value="8">8 passes</option>'}</select>
         <button class="btn primary" type="button" data-seq="export"><svg aria-hidden="true"><use href="#i-down"/></svg>Export</button></div>
       <div class="seqcols">
-        <section class="plist" aria-label="Community patterns"><h3>Community patterns</h3><p class="note" id="comm-note">${dbCap ? 'Loading…' : 'Community sharing works when SoundWell is opened on claude.ai.'}</p>
+        <section class="plist" aria-label="Community patterns"><h3>Community patterns</h3><p class="note" id="comm-note">${dbCap ? 'Loading…' : 'Sharing beats with the community is coming soon. For now, save patterns in your browser or as a file.'}</p>
           ${dbCap ? `<div class="seqtools"><button class="btn primary" type="button" data-seq="share" id="seq-share">Share this pattern</button></div>` : ''}<ul id="comm-list"></ul></section>
         <section class="plist" aria-label="Saved in this browser"><h3>Saved in this browser</h3>${saved.length ? `<ul>${saved.map((p2, i) => `<li><span class="pt">${esc(p2.title)}</span><span class="pm">${p2.bpm} BPM · ${p2.tracks.length} tracks · ${p2.steps} steps</span><span class="pa"><button class="btn" type="button" data-seq="loadmine" data-i="${i}">Load</button><button class="btn" type="button" data-seq="delmine" data-i="${i}" aria-label="Delete ${esc(p2.title)}">Delete</button></span></li>`).join('')}</ul>` : '<p class="note">Nothing saved yet. “Save in browser” keeps patterns on this device.</p>'}</section>
       </div>
