@@ -635,7 +635,7 @@ body.seqmode .seq { padding-bottom: 84px; }
       <li><button type="button" data-nav="video"><svg aria-hidden="true"><use href="#i-film"/></svg>Video</button></li>
       <li><button type="button" data-nav="game"><svg aria-hidden="true"><use href="#i-game"/></svg>Game audio</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
-      <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Score</button></li>
+      <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Real music</button></li>
       <li><button type="button" data-nav="spooky"><svg aria-hidden="true"><use href="#i-ghost"/></svg>Spooky</button></li>
       <li><button type="button" data-nav="packs"><svg aria-hidden="true"><use href="#i-grid"/></svg>Packs</button></li>
       <li><button type="button" data-nav="kits"><svg aria-hidden="true"><use href="#i-layers"/></svg>Stem kits</button></li>
@@ -655,7 +655,7 @@ body.seqmode .seq { padding-bottom: 84px; }
       <li><button type="button" data-nav="video"><svg aria-hidden="true"><use href="#i-film"/></svg>Video</button></li>
       <li><button type="button" data-nav="game"><svg aria-hidden="true"><use href="#i-game"/></svg>Game audio</button></li>
       <li><button type="button" data-nav="all"><svg aria-hidden="true"><use href="#i-wave"/></svg>All sounds</button></li>
-      <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Score</button></li>
+      <li><button type="button" data-nav="score"><svg aria-hidden="true"><use href="#i-score"/></svg>Real music</button></li>
       <li><button type="button" data-nav="spooky"><svg aria-hidden="true"><use href="#i-ghost"/></svg>Spooky</button></li>
       <li><button type="button" data-nav="packs"><svg aria-hidden="true"><use href="#i-grid"/></svg>Packs</button></li>
       <li><button type="button" data-nav="kits"><svg aria-hidden="true"><use href="#i-layers"/></svg>Stem kits</button></li>
@@ -2002,8 +2002,12 @@ return { enumerate, renderEntry, peaks, SR };
   // Generated families that imitate real-world sounds are retired now that real recordings cover them: hidden from
   // browsing, search and packs, but still playable wherever a saved beat, mix or creation already uses them.
   const RETIRED = new Set(['steps', 'knock', 'typing', 'clock', 'phonering', 'doorbell', 'alarmclock', 'appliance', 'drip', 'rain', 'wind', 'ocean', 'night', 'birds', 'fire', 'stream', 'crowd',
-    'frog', 'buzz', 'owl', 'howl', 'whale', 'engine', 'passby', 'horn', 'thunder', 'hail', 'gunshot', 'reload', 'glass']);
-  for (const e of PROC) if (RETIRED.has(e.g)) e.retired = true;
+    'frog', 'buzz', 'owl', 'howl', 'whale', 'engine', 'passby', 'horn', 'thunder', 'hail', 'gunshot', 'reload', 'glass',
+    // generated music: real played loops replace it (808s, synth stabs, chiptune and drum hits stay, code suits them)
+    'chords', 'bass', 'arp', 'melody', 'drumloop', 'padtex', 'kitstem', 'notepiano', 'notepluck', 'notebass', 'bell', 'sting']);
+  for (const e of PROC) if (RETIRED.has(e.g) || /^sc-/.test(e.g)) e.retired = true;
+  const CODE_MUSIC = new Set(['Hip-Hop', 'Jazz', 'Corporate', 'Electronic', 'Lo-fi', 'World', 'Ambient', 'Cinematic', 'Drums', 'Jingles', 'Stem Kits']);
+  for (const s of DATA.sounds) if (!s.credit && !s.g && CODE_MUSIC.has(s.cat) && s.kind === 'music') s.retired = true;
   const ALL_SOUNDS = [...DATA.sounds, ...PROC];
   const SOUNDS = ALL_SOUNDS.filter((s) => !s.retired);
   const $ = (s, r = document) => r.querySelector(s);
@@ -2153,7 +2157,7 @@ return { enumerate, renderEntry, peaks, SR };
   }
   function header() {
     const n = results.length; const label = n === 1 ? 'sound' : 'sounds'; const p = state.pack ? PACKS.get(state.pack) : null;
-    const what = state.q ? `Results for “${esc(state.q)}”` : p ? 'In this pack' : state.saved ? 'Saved sounds' : state.cats.has('Your Creations') ? 'Your creations' : navKey() === 'score' ? 'Cinematic score' : navKey() === 'spooky' ? 'Spooky and horror' : state.kind === 'music' ? 'Music' : state.kind === 'sfx' ? 'Sound effects' : state.browse ? 'All sounds' : 'New and notable';
+    const what = state.q ? `Results for “${esc(state.q)}”` : p ? 'In this pack' : state.saved ? 'Saved sounds' : state.cats.has('Your Creations') ? 'Your creations' : navKey() === 'score' ? 'Real music' : navKey() === 'spooky' ? 'Spooky and horror' : state.kind === 'music' ? 'Music' : state.kind === 'sfx' ? 'Sound effects' : state.browse ? 'All sounds' : 'New and notable';
     $('#reshead').innerHTML = `${what}<span>${n.toLocaleString('en-US')} ${label}</span>`;
     $('#clear').hidden = !(state.q || state.cats.size || state.loops || state.saved || state.kind !== 'all' || state.key || state.bpm || state.pack);
     $('#packhead').innerHTML = p ? `<div class="packhero"><span class="cover" style="background-image:url(${packArt(p, 360, false)})"></span><div><span class="eyebrow">Pack · ${esc(p.cat)}</span><h2>${esc(p.name)}</h2><p>${esc(p.desc)}</p><span class="pmeta">${p.count.toLocaleString('en-US')} sounds · CC0</span></div></div>` : '';
@@ -2165,7 +2169,7 @@ return { enumerate, renderEntry, peaks, SR };
   const isDiscover = () => !state.q && !state.cats.size && !state.loops && !state.saved && state.kind === 'all' && !state.pack && !state.browse && state.view === 'list' && !state.key && !state.bpm;
   function navKey() {
     if (state.view === 'packs') return 'packs'; if (state.view === 'seq') return 'seq'; if (state.view === 'video') return 'video'; if (state.view === 'game') return 'game'; if (state.saved) return 'saved'; if (state.cats.has('Your Creations')) return 'mine'; if (state.cats.has('Stem Kits') && state.cats.size === 1) return 'kits';
-    if (state.cats.has('Drum Hits') && state.cats.has('Musical FX')) return 'oneshots'; if (state.cats.has('Score Loops') && state.cats.has('Score One-Shots') && state.cats.size === 2) return 'score'; if (state.cats.has('Horror') && state.cats.size === 1) return 'spooky'; if (state.kind === 'music' && state.loops) return 'loops'; if (isDiscover()) return 'discover'; if (state.browse && !state.q && !state.cats.size && !state.pack) return 'all'; return '';
+    if (state.cats.has('Drum Hits') && state.cats.has('Musical FX')) return 'oneshots'; if (state.cats.has('Orchestral') && state.cats.has('Drum Loops') && state.cats.size === MUSIC_CATS.size + 1) return 'score'; if (state.cats.has('Horror') && state.cats.size === 1) return 'spooky'; if (state.kind === 'music' && state.loops) return 'loops'; if (isDiscover()) return 'discover'; if (state.browse && !state.q && !state.cats.size && !state.pack) return 'all'; return '';
   }
   function resetFilters() { state.q = ''; $('#q').value = ''; state.cats.clear(); state.kind = 'all'; state.loops = false; state.saved = false; state.key = ''; state.bpm = 0; state.pack = ''; state.browse = false; state.view = 'list'; state.open = null; syncSeg(); }
   function nav(key) {
@@ -2173,7 +2177,7 @@ return { enumerate, renderEntry, peaks, SR };
     resetFilters();
     if (key === 'all') state.browse = true; else if (key === 'packs') state.view = 'packs'; else if (key === 'seq') state.view = 'seq'; else if (key === 'video') state.view = 'video'; else if (key === 'game') state.view = 'game'; else if (key === 'kits') state.cats.add('Stem Kits');
     else if (key === 'loops') { state.kind = 'music'; state.loops = true; syncSeg(); } else if (key === 'oneshots') { state.cats.add('Drum Hits'); state.cats.add('Musical FX'); }
-    else if (key === 'mine') state.cats.add('Your Creations'); else if (key === 'score') { state.cats.add('Score Loops'); state.cats.add('Score One-Shots'); } else if (key === 'spooky') state.cats.add('Horror'); else if (key === 'saved') state.saved = true;
+    else if (key === 'mine') state.cats.add('Your Creations'); else if (key === 'score') { for (const c of MUSIC_CATS) state.cats.add(c); state.cats.add('Instruments'); } else if (key === 'spooky') state.cats.add('Horror'); else if (key === 'saved') state.saved = true;
     render(); window.scrollTo({ top: 0 });
   }
   function openPack(id) { resetFilters(); state.pack = id; render(); window.scrollTo({ top: 0 }); }
@@ -2237,16 +2241,17 @@ return { enumerate, renderEntry, peaks, SR };
   const recCount = {}; for (const s of SOUNDS) if (s.credit) recCount[s.cat] = (recCount[s.cat] || 0) + 1;
   const packIdOf = (s) => (s.custom ? 'mine' : s.credit ? (recCount[s.cat] >= 5 ? 'rec-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'rec-more') : s.g ? s.g : 'orig-' + s.cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
   for (const s of ALL_SOUNDS) s.pack = packIdOf(s);
+  const MUSIC_CATS = new Set(['Drum Loops', 'Guitar Loops', 'Bass Loops', 'Keys Loops', 'Synth Loops', 'Orchestral', 'Vocals', 'World Music']);
   const PACKS = new Map();
   for (const s of SOUNDS) {
     if (s.custom) continue;
     let p = PACKS.get(s.pack);
-    if (!p) { p = { id: s.pack, name: s.credit ? (s.pack === 'rec-more' ? 'More Real Recordings' : `Real ${({ 'Ambience Layers': 'Ambience' })[s.cat] || s.cat} Recordings`) : s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
+    if (!p) { p = { id: s.pack, name: s.credit ? (s.pack === 'rec-more' ? 'More Real Recordings' : (MUSIC_CATS.has(s.cat) ? `Real ${s.cat}` : `Real ${({ 'Ambience Layers': 'Ambience' })[s.cat] || s.cat} Recordings`)) : s.g ? (PACK_NAMES[s.g] || s.cat) : `${s.cat} Originals`, cat: s.cat, kind: s.kind, count: 0, tags: new Map(), first: s }; PACKS.set(s.pack, p); }
     p.count++; for (const t of s.tags.slice(0, 6)) p.tags.set(t, (p.tags.get(t) || 0) + 1);
   }
   for (const p of PACKS.values()) { p.top = [...p.tags.entries()].sort((a, b) => b[1] - a[1]).map((x) => x[0]).filter((t) => t !== 'loop').slice(0, 4); p.desc = `${p.count.toLocaleString('en-US')} ${p.kind === 'music' ? 'music loops and one-shots' : 'sound effects'} in ${p.cat}. ${p.top.length ? 'Tagged ' + p.top.join(', ') + '.' : ''}`; }
   const FEATURED = ['rec-ambience-layers', 'rec-foley', 'rec-nature', 'rec-animals', 'chords', 'drumloop', 'kitstem', 'magic', 'rain', 'laser', 'drumhit', 'padtex', 'gunshot', 'birds', 'hud', 'toon', 'whoosh', 'melody'].filter((id) => PACKS.has(id));
-  const SCORE_FEATURED = ['sc-legato', 'sc-ostinato', 'sc-braam', 'sc-horns', 'sc-choir', 'sc-perc', 'sc-hit', 'sc-piano', 'sc-harp', 'sc-tension', 'sc-swell', 'sc-timpani'].filter((id) => PACKS.has(id));
+  const SCORE_FEATURED = [...MUSIC_CATS, 'Drum Hits', 'Synths', 'Instruments'].map((c) => 'rec-' + c.toLowerCase().replace(/[^a-z0-9]+/g, '-')).filter((id) => PACKS.has(id));
   const SPOOKY_FEATURED = ['hr-scare', 'hr-place', 'hr-whisper', 'hr-creak', 'hr-musicbox', 'hr-ghost', 'hr-drone', 'hr-organ', 'hr-approach', 'hr-evp', 'hr-chains', 'hr-wind'].filter((id) => PACKS.has(id));
   const packName = (s) => (s.custom ? 'Your Creations' : PACKS.get(s.pack)?.name || s.cat);
 
@@ -2259,7 +2264,7 @@ return { enumerate, renderEntry, peaks, SR };
   ];
   const STYLE_BY_CAT = { 'Ambience Layers': 'waves', Nature: 'waves', Weather: 'waves', Animals: 'waves', 'Pad Textures': 'waves', 'Sci-Fi': 'orbits', Interface: 'orbits', Alarms: 'orbits',
     'Drum Loops': 'bars', 'Drum Hits': 'bars', 'Bass Loops': 'bars', Weapons: 'bars', Impacts: 'bars', 'Chord Loops': 'blobs', 'Melody Loops': 'blobs', 'Arpeggio Loops': 'blobs', Jingles: 'blobs',
-    'Stem Kits': 'blobs', 'Musical FX': 'blobs', Fantasy: 'blobs', Game: 'grid', Cartoon: 'grid', Household: 'grid', Foley: 'grid', Vehicles: 'grid', Horror: 'eerie', Transitions: 'sunset', Sports: 'sunset', 'Score Loops': 'staves', 'Score One-Shots': 'staves' };
+    'Stem Kits': 'blobs', 'Musical FX': 'blobs', Fantasy: 'blobs', Game: 'grid', Cartoon: 'grid', Household: 'grid', Foley: 'grid', Vehicles: 'grid', Horror: 'eerie', Transitions: 'sunset', Sports: 'sunset', 'Score Loops': 'staves', Orchestral: 'staves', 'Keys Loops': 'staves', 'Guitar Loops': 'blobs', 'Synth Loops': 'blobs', Vocals: 'sunset', 'World Music': 'sunset', 'Score One-Shots': 'staves' };
   function hashStr(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function paint(ctx, W, H, id, style, pal) {
     const r = rng(hashStr(id)); const [a, b, c, d, e] = pal;
@@ -2854,7 +2859,7 @@ return { enumerate, renderEntry, peaks, SR };
     const show = isDiscover(); home.hidden = !show;
     if (!show || home.dataset.built) return; home.dataset.built = '1';
     home.innerHTML = `<div class="secth"><h2>Featured packs</h2><button class="clear" type="button" data-nav="packs">See all ${PACKS.size} packs</button></div><div class="packrow">${FEATURED.map((id) => pcardHtml(PACKS.get(id))).join('')}</div>` +
-      `<div class="secth"><h2>Cinematic score</h2><button class="clear" type="button" data-nav="score">Browse all ${SOUNDS.filter((x) => /^Score/.test(x.cat)).length.toLocaleString('en-US')} score sounds</button></div><div class="packrow">${SCORE_FEATURED.map((id) => pcardHtml(PACKS.get(id))).join('')}</div>` +
+      (SCORE_FEATURED.length ? `<div class="secth"><h2>Real music</h2><button class="clear" type="button" data-nav="score">Browse all ${SOUNDS.filter((x) => x.credit && (MUSIC_CATS.has(x.cat) || x.kind === 'music')).length.toLocaleString('en-US')} played loops and instruments</button></div><div class="packrow">${SCORE_FEATURED.map((id) => pcardHtml(PACKS.get(id))).join('')}</div>` : '') +
       `<div class="secth"><h2>Spooky and horror</h2><button class="clear" type="button" data-nav="spooky">Browse all ${SOUNDS.filter((x) => x.cat === 'Horror').length} spooky sounds</button></div><div class="packrow">${SPOOKY_FEATURED.map((id) => pcardHtml(PACKS.get(id))).join('')}</div>` +
       `<div class="secth"><h2>Make something new</h2></div>` +
       `<article class="card describe"><div class="dhead"><span class="eyebrow">Describe a sound</span><h3>Type any sound. Get a custom one.</h3></div>
@@ -2864,17 +2869,9 @@ return { enumerate, renderEntry, peaks, SR };
       <div id="desc-out"><p class="hint" style="margin:0;color:var(--muted);font-size:.86rem">Helion Sound Labs picks the closest sound from the library and tunes its pitch, speed, length, direction and fades to match. Your creations are saved in this browser under Your Creations.</p></div></article>` +
       `<article class="card scene"><span class="eyebrow">Scene builder</span><h3>Describe it. Hear it.</h3><p>Type a scene and get a layered, looping soundscape you can adjust and download.</p>
       <textarea id="scene2" aria-label="Describe a scene" placeholder="Cozy cabin during a thunderstorm"></textarea><button class="btn" type="button" id="scene2go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Build the mix</button></article>` +
-      `<article class="card starter"><span class="eyebrow">Song starter</span><h3>Start a song in any key</h3><p>Pick a key, progression and tempo. Chords, bass, arpeggio, melody and drums load into the mixer, all locked together.</p>
-        <div class="selrow"><select id="ss-key" aria-label="Key">${NOTE_NAMES.map((n, i) => `<option value="${i}">${n}</option>`).join('')}</select>
-        <select id="ss-prog" aria-label="Chord progression">${PROG_NAMES.map((n, i) => `<option value="${i}">${n}</option>`).join('')}</select>
-        <select id="ss-bpm" aria-label="Tempo"><option value="90">90 BPM</option><option value="100">100 BPM</option><option value="120">120 BPM</option></select>
-        <select id="ss-inst" aria-label="Chord instrument"><option value="1">Piano</option><option value="0">Pad</option><option value="2">Guitar</option><option value="3">Strings</option></select></div>
-        <button class="btn primary" type="button" id="ss-go"><svg aria-hidden="true"><use href="#i-layers"/></svg>Build song starter</button></article>` +
-      `<div class="secth"><h2>Stem kits</h2><button class="clear" type="button" data-nav="kits">Browse stems</button></div>` +
-      KITS.map((k) => { const stems = SOUNDS.filter((s) => s.kit === k.id && !s.g); const keys = kitKeys(k.id); return `<article class="card kit"><div class="kitart" style="background-image:url(${kitArt(k, 480)})"></div><div class="kitbody"><span class="eyebrow">Stem kit</span><h3>${esc(k.name)}</h3><span class="kmeta">${k.bpm} BPM · ${stems.length} stems · ${keys.length} keys</span><p>${esc(k.desc)}</p>
-        <div class="stemdots">${stems.map((s) => `<span>${esc(s.stem)}</span>`).join('')}</div>
-        <label class="sortwrap">Key <select data-kitkey="${k.id}">${keys.map((key) => `<option${key === k.key ? ' selected' : ''}>${esc(key)}</option>`).join('')}</select></label>
-        <div class="btnrow"><button class="btn primary" type="button" data-kit="${k.id}"><svg aria-hidden="true"><use href="#i-layers"/></svg>Open in mixer</button><button class="btn" type="button" data-kitq="${esc(k.name)}">See stems</button></div></div></article>`; }).join('');
+      '';
+    // stem kits were all code-made; hide their menu entries while none are left
+    if (!SOUNDS.some((x) => x.cat === 'Stem Kits')) document.querySelectorAll('[data-nav="kits"]').forEach((b) => { const li = b.closest('li'); if (li) li.hidden = true; });
   }
 
   // ---------- sequencer ----------
@@ -3252,7 +3249,7 @@ return { enumerate, renderEntry, peaks, SR };
   function aiBusy(on) { SEQ.aiBusy = on; document.querySelectorAll('[data-seq="describe"],[data-seq="bsec"],[data-seq="fill2"]').forEach((b) => { b.disabled = on; }); }
   function beatPool(text) {
     const one = SOUNDS.filter((s) => !s.custom && !s.loop && (s.kind === 'sfx' || s.kind === 'music'));
-    const core = one.filter((s) => s.g === 'drumhit' || s.g === 'note808' || s.g === 'notebass' || (s.g === 'stab' && s.p.minor === 1) || s.g === 'sc-hit' || (s.g === 'sc-timpani' && s.p.roll === 0));
+    const core = one.filter((s) => s.g === 'drumhit' || s.g === 'note808' || (s.g === 'stab' && s.p.minor === 1) || (s.credit && (s.cat === 'Drum Hits' || (s.cat === 'Synths' && s.dur < 2.5))));
     const toks = words(text); const extra = toks.length ? one.map((s) => [s, score(s, toks)]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 30).map((x) => x[0]) : [];
     return [...new Set([...extra, ...core])].slice(0, 200);
   }

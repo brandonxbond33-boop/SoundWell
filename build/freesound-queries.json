@@ -1665,6 +1665,438 @@
    "minRating": 4.2,
    "minRatings": 5,
    "bed": true
+  },
+  {
+   "q": "drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "breakbeat loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "hip hop drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "house drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "trap drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "jazz drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "funk drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "rock drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "boom bap drums",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "lofi drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "percussion loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "shaker loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "guitar loop",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "acoustic guitar loop",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "electric guitar riff",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "funk guitar loop",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "acoustic guitar chords",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "clean electric guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "guitar strum",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bass loop",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bassline loop",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "electric bass groove",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth bass loop",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "upright bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "piano loop",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "rhodes loop",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "piano chords",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "electric piano",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "organ loop",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "grand piano melody",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth loop",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "arpeggio loop",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth pad loop",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth lead melody",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "analog synth sequence",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "strings loop",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "orchestral loop",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "string ensemble",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "cello melody",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "violin melody",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "brass section",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "orchestra",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "flute melody",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vocal loop",
+   "cat": "Vocals",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vocal chop",
+   "cat": "Vocals",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "choir",
+   "cat": "Vocals",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "humming melody",
+   "cat": "Vocals",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "female vocal melody",
+   "cat": "Vocals",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "world percussion loop",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "sitar",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "steel drum",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "tabla loop",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "djembe loop",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "marimba melody",
+   "cat": "World Music",
+   "music": true,
+   "n": 10,
+   "minRating": 4.0,
+   "minRatings": 3
   }
  ],
  "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."

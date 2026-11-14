@@ -46,6 +46,25 @@ function decode(buf) {
   if (r.status !== 0) return null; const f = new Float32Array(r.stdout.buffer, r.stdout.byteOffset, Math.floor(r.stdout.byteLength / 4));
   const n = f.length >> 1; const L = new Float32Array(n), R = new Float32Array(n); for (let i = 0; i < n; i++) { L[i] = f[2 * i]; R[i] = f[2 * i + 1]; } return [L, R];
 }
+/** Music: loops keep their exact length (trimming would break the loop); phrases get a short fade-out. */
+function processMusic([L, R], loopable) {
+  const n = L.length; let pk = 0, clip = 0, sq = 0; for (let i = 0; i < n; i++) { const a = Math.max(Math.abs(L[i]), Math.abs(R[i])); pk = Math.max(pk, a); if (a > 0.999) clip++; sq += (L[i] * L[i] + R[i] * R[i]) / 2; }
+  const rms = Math.sqrt(sq / (n || 1)); if (pk < 0.02 || rms < 0.004) return { why: 'too quiet' }; if (clip / n > 0.01) return { why: 'clipped' };
+  if (n < SR * 0.8) return { why: 'too short' };
+  const cap = Math.round(SR * 32); let loop = loopable && n <= cap; let l = L.slice(0, Math.min(n, cap)), r = R.slice(0, Math.min(n, cap));
+  [l, r] = master(l, r, { loop: true, fade: loop ? 0 : 0.004 });
+  if (!loop) { const f = Math.min(Math.round(SR * 0.5), l.length >> 2); for (let i = 0; i < f; i++) { const g = i / f; l[l.length - 1 - i] *= g; r[r.length - 1 - i] *= g; } }
+  return { l, r, loop };
+}
+const NOTE_RX = /\b([A-G])(#|b|sharp|flat)?\s?(maj(or)?|min(or)?|m)?\b/;
+function musicMeta(s) {
+  const ac = s.ac_analysis || {}; const text = `${s.name} ${(s.tags || []).join(' ')}`;
+  let bpm = Math.round(+ac.ac_tempo || 0); const m = text.match(/(\d{2,3})\s?-?bpm|bpm\s?-?(\d{2,3})/i); if (m) bpm = +(m[1] || m[2]);
+  if (!(bpm >= 50 && bpm <= 200)) bpm = 0;
+  let key = ''; const t = String(ac.ac_tonality || ''); const km = t.match(/^([A-G][#b]?) (major|minor)$/); if (km) key = `${km[1].replace('b', '♭')} ${km[2]}`;
+  const loopable = ac.ac_loop === true || (s.tags || []).some((x) => /^loop(s|able)?$/i.test(x)) || /\bloop/i.test(s.name);
+  return { bpm, key, loopable };
+}
 /** Quality gate, silence trim, loudness match (the same mastering as the generated library), MP3 encode. */
 function processAudio([L, R], bed, strict) {
   const n = L.length; let pk = 0, clip = 0, sq = 0; for (let i = 0; i < n; i++) { const a = Math.max(Math.abs(L[i]), Math.abs(R[i])); pk = Math.max(pk, a); if (a > 0.999) clip++; sq += (L[i] * L[i] + R[i] * R[i]) / 2; }
@@ -66,13 +85,14 @@ function encode(l, r, file) {
 
 const titles = new Map(); for (const s of lib.sounds) titles.set(s.title, (titles.get(s.title) || 0) + 1);
 let added = 0; const report = { searched: 0, rejected: {} };
-async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 'sfx' }) {
+async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 'sfx', music = false }) {
+  if (music) kind = 'music';
   if (full()) return;
   const want = n || CFG.perQuery; let got = lib.sounds.filter((s) => s.query === q).length; if (got >= want) return; const strict = minRating != null;
   const data = await api('/search/text/', {
     query: q, page_size: 60, sort: 'downloads_desc',
-    filter: `license:"Creative Commons 0" duration:[0.15 TO ${bed ? 90 : 20}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *] samplerate:[44100 TO *]`,
-    fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews',
+    filter: `license:"Creative Commons 0" duration:[${music ? '1 TO 40' : `0.15 TO ${bed ? 90 : 20}`}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *] samplerate:[44100 TO *]`,
+    fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews' + (music ? ',ac_analysis' : ''),
   }); report.searched++;
   const perUser = new Map();
   for (const s of data.results) {
@@ -83,13 +103,13 @@ async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 
     const pre = s.previews?.['preview-hq-ogg'] || s.previews?.['preview-hq-mp3']; if (!pre) continue;
     let res; try { res = await fetch(pre, { signal: AbortSignal.timeout(60000) }); } catch { continue; } if (!res.ok) continue;
     let pcm; try { pcm = decode(Buffer.from(await res.arrayBuffer())); } catch { pcm = null; } if (!pcm) { report.rejected['undecodable'] = (report.rejected['undecodable'] || 0) + 1; continue; }
-    const out = processAudio(pcm, bed, strict); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
+    const mm = music ? musicMeta(s) : null; const out = music ? processMusic(pcm, mm.loopable) : processAudio(pcm, bed, strict); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
     const tags = [...new Set((s.tags || []).map((t) => t.toLowerCase().replace(/[-_]/g, ' ')).filter((t) => t.length > 2 && !/\d/.test(t) && !JUNK1.test(t)))].slice(0, 10);
-    let title = cleanTitle(s.name, tags); const k = (titles.get(title) || 0) + 1; titles.set(title, k); if (k > 1) title = `${title} ${k}`;
+    let title = cleanTitle(s.name, tags); if (mm && mm.bpm) title = `${title} ${mm.bpm} BPM`; const k = (titles.get(title) || 0) + 1; titles.set(title, k); if (k > 1) title = `${title} ${k}`;
     const slug = `fs-${slugify(title)}-${s.id}`; const file = `${MEDIA}/${slug}.mp3`; if (!encode(out.l, out.r, file)) continue; mediaBytes += statSync(file).size;
     const mid = new Float32Array(out.l.length); for (let i = 0; i < mid.length; i++) mid[i] = (out.l[i] + out.r[i]) / 2;
     let desc = stripHtml(s.description); desc = desc.length > 20 ? (desc.split(/(?<=[.!?])\s/)[0] || desc).slice(0, 220) : '';
-    lib.sounds.push({ slug, title, desc: desc || `A real recording: ${title.toLowerCase()}.`, kind, cat, tags: [...new Set([...tags, 'recorded', 'field recording', 'real'])], mood: '', bpm: 0, key: '', loop: false, bed,
+    lib.sounds.push({ slug, title, desc: desc || (mm ? `Played by ${s.username}${mm.key ? ', in ' + mm.key : ''}.` : `A real recording: ${title.toLowerCase()}.`), kind, cat, tags: [...new Set([...tags, ...(mm ? ['played', 'real', 'music', ...(out.loop ? ['loop'] : [])] : ['recorded', 'field recording', 'real'])])], mood: '', bpm: mm ? mm.bpm : 0, key: mm ? mm.key : '', loop: !!(mm && out.loop), bed,
       dur: Math.round(out.l.length / SR * 100) / 100, n: out.l.length, kit: '', stem: '', layer: false, peaks: peaks(mid).filter((_, i) => i % 2 === 0),
       credit: { by: s.username, url: s.url, license: 'CC0', source: 'Freesound' }, fsid: s.id, query: q, rating: Math.round(s.avg_rating * 10) / 10 });
     perUser.set(s.username, (perUser.get(s.username) || 0) + 1); got++; added++;
