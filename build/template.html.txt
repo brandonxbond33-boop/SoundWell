@@ -645,7 +645,7 @@ body.seqmode .seq { padding-bottom: 84px; }
       <li><button type="button" data-nav="saved"><svg aria-hidden="true"><use href="#i-heart"/></svg>Saved<span class="cnt" data-cnt="saved"></span></button></li>
       <li><button type="button" data-nav="mixer"><svg aria-hidden="true"><use href="#i-sliders"/></svg>Mixer<span class="cnt" data-cnt="mix"></span></button></li>
     </ul>
-  <p class="sidefoot">Every sound is original and CC0. Use it anywhere, no credit needed.</p>
+  <p class="sidefoot">Every sound is CC0. Use it anywhere, no credit needed.</p>
 </nav>
 <header class="wrap mast" id="mast">
   <div class="brand mobile-brand"><a class="lockup" href="#" data-nav="discover" aria-label="SoundWell home"><svg class="lmark" aria-hidden="true"><use href="#i-logo"/></svg><span class="lword">SoundWell</span><span class="lsub">Helion Design Labs</span></a></div>
@@ -667,7 +667,7 @@ body.seqmode .seq { padding-bottom: 84px; }
     </ul></nav>
   <div class="hero" id="hero"><canvas id="heroart" aria-hidden="true"></canvas><svg class="hero-mark" aria-hidden="true"><use href="#i-logo"/></svg>
     <div class="hero-in"><span class="eyebrow">Free sound library</span><h1>Sounds for anything you make.</h1>
-      <p class="tag">Effects, loops, stems and one-shots, most of them generated right in your browser. Layer them, tweak them, download them. Every sound is CC0: use it anywhere, commercial work included.</p>
+      <p class="tag">Real recordings, music played by real musicians, and designed effects. Layer them, tweak them, sequence them, download them. Every sound is CC0: use it anywhere, commercial work included.</p>
       <ul class="stats" id="stats"></ul></div></div>
 </header>
 
@@ -2086,8 +2086,8 @@ return { enumerate, renderEntry, peaks, SR };
   const list = $('#list');
   function statsLine() {
     const LIB = SOUNDS.filter((s) => !s.custom); const sfx = LIB.filter((s) => s.kind === 'sfx').length; const mins = LIB.reduce((a, s) => a + s.dur, 0) / 60;
-    const nf = (x) => x.toLocaleString('en-US'); const keys = new Set(SOUNDS.filter((s) => s.kind === 'music' && s.key).map((s) => s.key)).size;
-    $('#stats').innerHTML = `<li><b>${nf(LIB.length)}</b> sounds</li><li><b>${nf(sfx)}</b> effects</li><li><b>${nf(LIB.length - sfx)}</b> music loops and stems</li><li><b>${keys}</b> keys</li><li><b>${nf(Math.round(mins / 60))}</b> hours of audio</li><li><b>CC0</b> license</li>`;
+    const nf = (x) => x.toLocaleString('en-US'); const rec = LIB.filter((s) => s.credit).length; const people = new Set(LIB.filter((s) => s.credit).map((s) => s.credit.by)).size;
+    $('#stats').innerHTML = `<li><b>${nf(LIB.length)}</b> sounds</li><li><b>${nf(sfx)}</b> effects</li><li><b>${nf(LIB.length - sfx)}</b> music loops and one-shots</li><li><b>${nf(rec)}</b> real recordings</li><li><b>${nf(people)}</b> creators</li><li><b>${nf(Math.round(mins / 60))}</b> hours of audio</li><li><b>CC0</b> license</li>`;
   }
   function chips() {
     const { out } = filtered({ ignoreCats: true });
