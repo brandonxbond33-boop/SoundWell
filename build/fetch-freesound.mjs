@@ -60,12 +60,15 @@ const keyOf = (t) => { const km = String(t || '').trim().match(/^([A-G])([#b]?)\
 const NOTE_RX = /\b([A-G])(#|b|sharp|flat)?\s?(maj(or)?|min(or)?|m)?\b/;
 function musicMeta(s) {
   const ac = s.ac_analysis || {}; const text = `${s.name} ${(s.tags || []).join(' ')}`;
-  let bpm = Math.round(+s.bpm || +ac.ac_tempo || 0); const m = text.match(/(\d{2,3})\s?-?bpm|bpm\s?-?(\d{2,3})/i); if (m) bpm = +(m[1] || m[2]);
+  let bpm = 0; const m = text.match(/(\d{2,3})\s?-?bpm|bpm\s?-?(\d{2,3})/i); if (m) bpm = +(m[1] || m[2]); const named = !!m;
   if (!(bpm >= 50 && bpm <= 200)) bpm = 0;
-  let key = keyOf(s.tonality || ac.ac_tonality);
-  if (!key) { const m2 = s.name.replace(/[_-]/g, ' ').match(/\b([A-G])(#|b)?\s?(maj|major|min|minor|m)?\b(?=\s|$|\.)/); if (m2 && (m2[3] || /\bkey\b|\bin [A-G]/i.test(s.name))) key = `${m2[1]}${m2[2] === 'b' ? '♭' : m2[2] || ''} ${/^m(in(or)?)?$/.test(m2[3] || '') ? 'minor' : 'major'}`; }
+  let key = '';
+  { const m2 = s.name.replace(/[_-]/g, ' ').match(/\b([A-G])(#|b)?\s?(maj|major|min|minor|m)?\b(?=\s|$|\.)/); if (m2 && (m2[3] || /\bkey\b|\bin [A-G]/i.test(s.name))) key = `${m2[1]}${m2[2] === 'b' ? '♭' : m2[2] || ''} ${/^m(in(or)?)?$/.test(m2[3] || '') ? 'minor' : 'major'}`; }
   const loopable = ac.ac_loop === true || (s.tags || []).some((x) => /^loop(s|able)?$/i.test(x)) || /\bloop/i.test(s.name);
-  return { bpm, key, loopable };
+  // Freesound's own analysis fills the gaps: tempo only for loops, key only for pitched material
+  if (!bpm && loopable) { bpm = Math.round(+s.bpm || +ac.ac_tempo || 0); if (!(bpm >= 50 && bpm <= 200)) bpm = 0; }
+  if (!key && !/drum|percussion|beat|djembe|tabla|bongo|conga|cajon|shaker/i.test(text)) key = keyOf(s.tonality || ac.ac_tonality);
+  return { bpm, key, loopable, named };
 }
 /** Quality gate, silence trim, loudness match (the same mastering as the generated library), MP3 encode. */
 function processAudio([L, R], bed, strict) {
@@ -107,7 +110,7 @@ async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 
     let pcm; try { pcm = decode(Buffer.from(await res.arrayBuffer())); } catch { pcm = null; } if (!pcm) { report.rejected['undecodable'] = (report.rejected['undecodable'] || 0) + 1; continue; }
     const mm = music ? musicMeta(s) : null; const out = music ? processMusic(pcm, mm.loopable) : processAudio(pcm, bed, strict); if (out.why) { report.rejected[out.why] = (report.rejected[out.why] || 0) + 1; continue; }
     const tags = [...new Set((s.tags || []).map((t) => t.toLowerCase().replace(/[-_]/g, ' ')).filter((t) => t.length > 2 && !/\d/.test(t) && !JUNK1.test(t)))].slice(0, 10);
-    let title = cleanTitle(s.name, tags); if (mm && mm.bpm) title = `${title} ${mm.bpm} BPM`; const k = (titles.get(title) || 0) + 1; titles.set(title, k); if (k > 1) title = `${title} ${k}`;
+    let title = cleanTitle(s.name, tags); if (mm && mm.bpm && (mm.named || mm.loopable)) title = `${title} ${mm.bpm} BPM`; const k = (titles.get(title) || 0) + 1; titles.set(title, k); if (k > 1) title = `${title} ${k}`;
     const slug = `fs-${slugify(title)}-${s.id}`; const file = `${MEDIA}/${slug}.mp3`; if (!encode(out.l, out.r, file)) continue; mediaBytes += statSync(file).size;
     const mid = new Float32Array(out.l.length); for (let i = 0; i < mid.length; i++) mid[i] = (out.l[i] + out.r[i]) / 2;
     let desc = stripHtml(s.description); desc = desc.length > 20 ? (desc.split(/(?<=[.!?])\s/)[0] || desc).slice(0, 220) : '';
