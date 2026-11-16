@@ -56,12 +56,14 @@ function processMusic([L, R], loopable) {
   if (!loop) { const f = Math.min(Math.round(SR * 0.5), l.length >> 2); for (let i = 0; i < f; i++) { const g = i / f; l[l.length - 1 - i] *= g; r[r.length - 1 - i] *= g; } }
   return { l, r, loop };
 }
+const keyOf = (t) => { const km = String(t || '').trim().match(/^([A-G])([#b]?)\s*(major|minor|maj|min)$/i); return km ? `${km[1].toUpperCase()}${km[2] === 'b' ? '♭' : km[2]} ${/^min/i.test(km[3]) ? 'minor' : 'major'}` : ''; };
 const NOTE_RX = /\b([A-G])(#|b|sharp|flat)?\s?(maj(or)?|min(or)?|m)?\b/;
 function musicMeta(s) {
   const ac = s.ac_analysis || {}; const text = `${s.name} ${(s.tags || []).join(' ')}`;
-  let bpm = Math.round(+ac.ac_tempo || 0); const m = text.match(/(\d{2,3})\s?-?bpm|bpm\s?-?(\d{2,3})/i); if (m) bpm = +(m[1] || m[2]);
+  let bpm = Math.round(+s.bpm || +ac.ac_tempo || 0); const m = text.match(/(\d{2,3})\s?-?bpm|bpm\s?-?(\d{2,3})/i); if (m) bpm = +(m[1] || m[2]);
   if (!(bpm >= 50 && bpm <= 200)) bpm = 0;
-  let key = ''; const t = String(ac.ac_tonality || ''); const km = t.match(/^([A-G][#b]?) (major|minor)$/); if (km) key = `${km[1].replace('b', '♭')} ${km[2]}`;
+  let key = keyOf(s.tonality || ac.ac_tonality);
+  if (!key) { const m2 = s.name.replace(/[_-]/g, ' ').match(/\b([A-G])(#|b)?\s?(maj|major|min|minor|m)?\b(?=\s|$|\.)/); if (m2 && (m2[3] || /\bkey\b|\bin [A-G]/i.test(s.name))) key = `${m2[1]}${m2[2] === 'b' ? '♭' : m2[2] || ''} ${/^m(in(or)?)?$/.test(m2[3] || '') ? 'minor' : 'major'}`; }
   const loopable = ac.ac_loop === true || (s.tags || []).some((x) => /^loop(s|able)?$/i.test(x)) || /\bloop/i.test(s.name);
   return { bpm, key, loopable };
 }
@@ -92,7 +94,7 @@ async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 
   const data = await api('/search/text/', {
     query: q, page_size: 60, sort: 'downloads_desc',
     filter: `license:"Creative Commons 0" duration:[${music ? '1 TO 40' : `0.15 TO ${bed ? 90 : 20}`}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *] samplerate:[44100 TO *]`,
-    fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews' + (music ? ',ac_analysis' : ''),
+    fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews' + (music ? ',bpm,tonality' : ''),
   }); report.searched++;
   const perUser = new Map();
   for (const s of data.results) {
@@ -117,6 +119,17 @@ async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 
     console.log(`+ ${title}  (${cat}, by ${s.username}, ★${s.avg_rating.toFixed(1)})`);
   }
 }
+// tempo and key for music imported before Freesound's analysis fields were read (150 sounds per request)
+const needs = lib.sounds.filter((s) => s.kind === 'music' && s.credit && s.fsid && !s.key && !s.keyChecked);
+for (let i = 0; i < needs.length && !full(); i += 100) {
+  const batch = needs.slice(i, i + 100);
+  try {
+    const data = await api('/search/text/', { query: '', filter: `id:(${batch.map((s) => s.fsid).join(' OR ')})`, fields: 'id,bpm,tonality', page_size: 150 });
+    const got = new Map(data.results.map((r) => [r.id, r]));
+    for (const s of batch) { const r = got.get(s.fsid); s.keyChecked = true; if (!r) continue; const k = keyOf(r.tonality); if (k) s.key = k; const b = Math.round(+r.bpm || 0); if (!s.bpm && b >= 50 && b <= 200 && s.loop) s.bpm = b; }
+  } catch (e) { console.log('! backfill: ' + e.message); }
+}
+if (needs.length) { writeFileSync(OUT, JSON.stringify(lib, null, 1)); console.log(`backfill: ${needs.filter((s) => s.key).length}/${needs.length} music sounds now have a key`); }
 // four searches at a time; API calls still go out one by one through the throttle
 const queue = [...CFG.queries];
 await Promise.all(Array.from({ length: 4 }, async () => { while (queue.length && !full()) { const q = queue.shift(); try { await runQuery(q); } catch (e) { console.log('! ' + q.q + ': ' + e.message); } } }));

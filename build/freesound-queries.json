@@ -2097,6 +2097,889 @@
    "n": 10,
    "minRating": 4.0,
    "minRatings": 3
+  },
+  {
+   "q": "jazz brushes loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "reggae drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "drum and bass loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "techno drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "latin percussion loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "conga loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bongo loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "rock drum beat",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "wah guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "ukulele",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "banjo",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "mandolin",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "nylon guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "power chords",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "slide guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "twelve string guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "funk bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "reggae bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "808 bass loop",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "fretless bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "acid bassline",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "jazz piano",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "clavinet",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "wurlitzer",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "lofi piano chords",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "harpsichord",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "accordion",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "music box melody",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "toy piano",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "house chords",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "ambient pad",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "trance arp",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synthwave",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "chiptune melody",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "drone pad",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "plucked synth melody",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "saxophone",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "trombone",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "french horn",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "brass stab",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "string staccato",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "pizzicato",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "harp glissando",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "clarinet",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "oboe",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "timpani roll",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "orchestral hit",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "celesta",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "gospel choir",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vocal ooh",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "male choir",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "throat singing",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "whistling melody",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "scat singing",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "harmonica",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "fiddle",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bagpipes",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "didgeridoo",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "koto",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "erhu",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "oud",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "handpan",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "balafon",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "cajon loop",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "shakuhachi",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bodhran",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "piano single note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "guitar single note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "marimba note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vibraphone note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "kalimba note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bell note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "xylophone note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "harp note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "cello note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "violin note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "flute note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "music box note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "magic spell",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "fairy",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "sparkle",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "potion",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "portal",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "enchant",
+   "cat": "Fantasy",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "boing",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cartoon slip",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cartoon pop",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "slide whistle",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cartoon run",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "squeaky toy",
+   "cat": "Cartoon",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "spaceship",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "robot",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "teleport",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "energy beam",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "computer beeps",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "hologram",
+   "cat": "Sci-Fi",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "fire alarm",
+   "cat": "Alarms",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "car alarm",
+   "cat": "Alarms",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "air raid siren",
+   "cat": "Alarms",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "buzzer",
+   "cat": "Alarms",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "smoke detector",
+   "cat": "Alarms",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "swell",
+   "cat": "Transitions",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "reverse cymbal",
+   "cat": "Transitions",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "downlifter",
+   "cat": "Transitions",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "impact boom",
+   "cat": "Transitions",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "braam",
+   "cat": "Cinematic",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "trailer hit",
+   "cat": "Cinematic",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cinematic drone",
+   "cat": "Cinematic",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "tension drone",
+   "cat": "Cinematic",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "sub drop",
+   "cat": "Cinematic",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "crowd cheer",
+   "cat": "Sports",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "laughter",
+   "cat": "Human",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "crowd gasp",
+   "cat": "Human",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "clapping",
+   "cat": "Human",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "keys jingle",
+   "cat": "Household",
+   "n": 6,
+   "minRating": 4.2,
+   "minRatings": 4
   }
  ],
  "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."

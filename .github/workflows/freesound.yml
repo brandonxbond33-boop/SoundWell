@@ -5,10 +5,10 @@ on:
     inputs:
       max_mb:
         description: Size budget for all recordings, in MB
-        default: '650'
+        default: '780'
       max:
         description: Maximum number of recordings in the library
-        default: '2400'
+        default: '3000'
   push:
     branches: [main]
     paths: [build/freesound-queries.json]
@@ -30,8 +30,8 @@ jobs:
         env:
           FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
           FREESOUND_MINUTES: '120'
-          FREESOUND_MAX_MB: ${{ github.event.inputs.max_mb || '650' }}
-        run: node --no-warnings build/fetch-freesound.mjs --max "${{ github.event.inputs.max || '2400' }}"
+          FREESOUND_MAX_MB: ${{ github.event.inputs.max_mb || '780' }}
+        run: node --no-warnings build/fetch-freesound.mjs --max "${{ github.event.inputs.max || '3000' }}"
       - name: Turn long ambiences into seamless loops
         run: node --no-warnings build/loop-beds.mjs
       - name: Bundle recordings into sound packs
