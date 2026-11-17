@@ -2980,6 +2980,893 @@
    "n": 6,
    "minRating": 4.2,
    "minRatings": 4
+  },
+  {
+   "q": "bass guitar groove",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "slap bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "dubstep bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "sub bass loop",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "motown bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "jazz walking bass",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth bassline",
+   "cat": "Bass Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "soul vocal",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "rnb vocal",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vocal harmony",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "opera singer",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "beatbox loop",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "chant",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "female choir",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vocal adlib",
+   "cat": "Vocals",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "hip hop beat loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "afrobeat drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "dubstep drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "garage drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "metal drum loop",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "drum fill",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "brush drums",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "marching drums",
+   "cat": "Drum Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "gospel organ",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "hammond organ",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "soul piano",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "ragtime piano",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth keys loop",
+   "cat": "Keys Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "blues guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "country guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "metal riff",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "surf guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "flamenco guitar",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "indie guitar loop",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "reggae guitar skank",
+   "cat": "Guitar Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "dubstep wobble",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "future bass chords",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "edm lead",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "vaporwave",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "lofi synth",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "ambient texture",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "arpeggiated synth",
+   "cat": "Synth Loops",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "cinematic strings",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "string quartet",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "epic orchestral",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "tuba",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bassoon",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "piccolo",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "marching band",
+   "cat": "Orchestral",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "gamelan",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "sitar melody",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "pan flute",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "mbira",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "dulcimer",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "shamisen",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "latin guitar",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "samba percussion",
+   "cat": "World Music",
+   "music": true,
+   "n": 8,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "synth single note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "organ note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "trumpet note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "saxophone note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "glockenspiel note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "steel drum note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "bass guitar note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "choir note",
+   "cat": "Instruments",
+   "kind": "music",
+   "n": 6,
+   "minRating": 4.0,
+   "minRatings": 3
+  },
+  {
+   "q": "restaurant ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "subway station",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "airport ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "library ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "hospital ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "train interior",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "spaceship ambience room tone",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "underwater ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "market ambience",
+   "cat": "Ambience Layers",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "blizzard wind",
+   "cat": "Weather",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "rain on tent",
+   "cat": "Weather",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "jungle ambience",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "desert wind",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "creek",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cave dripping",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "crickets night",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "summer meadow",
+   "cat": "Nature",
+   "bed": true,
+   "n": 4,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "level up",
+   "cat": "Game",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "achievement",
+   "cat": "Game",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "collect item",
+   "cat": "Game",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "jump sound",
+   "cat": "Game",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "alarm beep",
+   "cat": "Alarms",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "warning siren",
+   "cat": "Alarms",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "klaxon",
+   "cat": "Alarms",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "emergency beacon",
+   "cat": "Alarms",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "punch impact",
+   "cat": "Impacts",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "debris",
+   "cat": "Impacts",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "laser gun",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "force field",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "alien",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "spaceship engine",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "sci-fi computer",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "power down",
+   "cat": "Sci-Fi",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "shotgun",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "pistol",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cannon",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "grenade explosion",
+   "cat": "Weapons",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cow",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "sheep",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "lion roar",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "elephant",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "monkey",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "seagull",
+   "cat": "Animals",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "cloth movement",
+   "cat": "Foley",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "leather creak",
+   "cat": "Foley",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "paper rustle",
+   "cat": "Foley",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "door knock",
+   "cat": "Foley",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "train passing",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "boat engine",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
+  },
+  {
+   "q": "airplane flyby",
+   "cat": "Vehicles",
+   "n": 5,
+   "minRating": 4.2,
+   "minRatings": 4
   }
  ],
  "note": "perQuery/minRating/minRatings apply to queries without their own n/minRating. Newer queries use a stricter bar."
