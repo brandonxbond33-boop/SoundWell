@@ -103,6 +103,8 @@ async function runQuery({ q, cat, bed = false, n, minRating, minRatings, minDown
   for (const s of data.results) {
     if (got >= want || full()) break;
     if (have.has(s.id) || !/publicdomain\/zero/.test(s.license)) continue;
+    // the search filter's rating scale doesn't match the 5-star ratings people see, so check the real numbers here
+    if (s.avg_rating < (minRating ?? CFG.minRating) || s.num_ratings < (minRatings ?? CFG.minRatings) || (minDownloads && s.num_downloads < minDownloads)) continue;
     if ((perUser.get(s.username) || 0) >= 2) continue;
     have.add(s.id); // claim it so a parallel search doesn't take it too
     const pre = s.previews?.['preview-hq-ogg'] || s.previews?.['preview-hq-mp3']; if (!pre) continue;
