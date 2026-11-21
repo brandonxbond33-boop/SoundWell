@@ -90,13 +90,13 @@ function encode(l, r, file) {
 
 const titles = new Map(); for (const s of lib.sounds) titles.set(s.title, (titles.get(s.title) || 0) + 1);
 let added = 0; const report = { searched: 0, rejected: {} };
-async function runQuery({ q, cat, bed = false, n, minRating, minRatings, kind = 'sfx', music = false }) {
+async function runQuery({ q, cat, bed = false, n, minRating, minRatings, minDownloads, kind = 'sfx', music = false }) {
   if (music) kind = 'music';
   if (full()) return;
   const want = n || CFG.perQuery; let got = lib.sounds.filter((s) => s.query === q).length; if (got >= want) return; const strict = minRating != null;
   const data = await api('/search/text/', {
     query: q, page_size: 60, sort: 'downloads_desc',
-    filter: `license:"Creative Commons 0" duration:[${music ? '1 TO 40' : `0.15 TO ${bed ? 90 : 20}`}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *] samplerate:[44100 TO *]`,
+    filter: `license:"Creative Commons 0" duration:[${music ? '1 TO 40' : `0.15 TO ${bed ? 90 : 20}`}] avg_rating:[${minRating ?? CFG.minRating} TO *] num_ratings:[${minRatings ?? CFG.minRatings} TO *]${minDownloads ? ` num_downloads:[${minDownloads} TO *]` : ''} samplerate:[44100 TO *]`,
     fields: 'id,name,tags,description,username,url,license,duration,avg_rating,num_ratings,num_downloads,previews' + (music ? ',bpm,tonality' : ''),
   }); report.searched++;
   const perUser = new Map();
